@@ -1,0 +1,51 @@
+{
+  "type": "app",
+  "name": "kubernetes",
+  "id": "raintank-kubernetes-app",
+
+  "routes": [
+  ],
+
+  "info": {
+    "description": "Kubernetes app. shows data collected by snap.",
+    "author": {
+      "name": "Raintank Inc.",
+      "url": "http://raintank.io"
+    },
+    "keywords": ["raintank", "kubernetes", "snap"],
+    "logos": {
+      "small": "img/logo.png",
+      "large": "img/logo.png"
+    },
+    "links": [
+      {"name": "raintank", "url": "http://raintank.io"},
+      {"name": "GitHub", "url": "https://github.com/raintank/kubernetes-app"},
+      {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
+    ],
+    "screenshots": [
+    ],
+    "version": "0.0.1",
+    "updated": "2016-09-26"
+  },
+
+  "includes": [
+    { "type": "page", "name": "Clusters", "component": "ClustersCtrl", "role": "Viewer", "addToNav": true},
+    { "type": "page", "name": "Cluster Config", "component": "ClusterConfigCtrl", "role": "Editor", "addToNav": false},
+    { "type": "page", "name": "Cluster Info", "component": "ClusterInfoCtrl", "role": "Viewer", "addToNav": false},
+    {
+      "type": "datasource",
+      "name": "kubernetes DS"
+    },
+    {
+      "type": "dashboard",
+      "name": "Kubernetese Node",
+      "path": "dashboards/kubernetes-node.json",
+      "addToNav": false
+    }
+  ],
+
+  "dependencies": {
+    "grafanaVersion": "3.0+",
+    "plugins": []
+  }
+}

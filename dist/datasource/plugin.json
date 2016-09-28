@@ -1,0 +1,37 @@
+{
+  "name": "Kubernetes",
+  "id": "raintank-kubernetes-datasource",
+  "type": "datasource",
+
+  "staticRoot": ".",
+
+  "partials": {
+    "config": "public/app/plugins/raintank-kubernetes-app/datasource/config.html"
+  },
+
+  "metrics": false,
+  "annotations": false,
+
+  "info": {
+    "description": "Kubernetes datasource",
+    "author": {
+      "name": "Raintank Inc.",
+      "url": "http://raintank.io"
+    },
+    "logos": {
+      "small": "img/simpleJson_logo.svg",
+      "large": "img/simpleJson_logo.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/raintank/kubernetes-app"},
+      {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
+    ],
+    "version": "0.0.1",
+    "updated": "2016-09-27"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": [ ]
+  }
+}

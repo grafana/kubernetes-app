@@ -1,0 +1,47 @@
+<form name="clusterForm">
+    <div class="gf-form-group">
+    	<div class="gf-form-inline">
+    		<div class="gf-form">
+    			<span class="gf-form-label width-7">Name</span>
+    				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="My cluster name" required="" />
+    			</div>
+    			<div ng-show="ctrl.isOrgEditor && !ctrl.snapDeployed">
+				  	<button type="submit" class="btn btn-success" ng-click="ctrl.deploySnap()" ng-enabled="clusterform.$valid">Deploy</button>
+				</div>
+    		</div>
+    	</div>
+    </div>
+	<datasource-http-settings
+		current="ctrl.cluster"
+		suggest-url="http://localhost:8080">
+	</datasource-http-settings>
+
+	<div class="gf-form-group">
+    	<div class="gf-form-inline">
+    		<div class="gf-form">
+    			<span class="gf-form-label width-7">Datasource</span>
+    				<select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.datasources" required></select>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+    <div class="gf-form-group">
+    	<div class="gf-form-inline">
+    		<div class="gf-form">
+    			<span class="gf-form-label width-7">Server</span>
+    				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.server" placeholder="Carbon host" required="" />
+    			</div>
+    		</div>
+    		<div class="gf-form">
+    			<span class="gf-form-label width-7">Port</span>
+    				<input class="gf-form-input max-width-21" type="number" ng-model="ctrl.cluster.jsonData.port" placeholder="2003" required="" />
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+</form>
+<div ng-show="ctrl.isOrgEditor">
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
+  	<a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
+</div>

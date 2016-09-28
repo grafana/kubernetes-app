@@ -1,0 +1,45 @@
+<div class="page-header">
+	<h1 >Kubernetes Clusters</h1>
+	<a class="btn btn-success" href="plugins/raintank-kubernetes-app/page/cluster-config" ng-show="ctrl.isOrgEditor">
+		<i class="fa fa-plus"></i>
+		New Cluster
+	</a>
+</div>
+
+<div ng-if="!ctrl.pageReady">
+	...loading
+</div>
+
+<div ng-if="ctrl.pageReady">
+	<div ng-if="ctrl.clusters.length === 0">
+		<div style="text-align: center; padding-top: 90px; min-height: 220px; min-width: 400px;  margin: 0 auto;">
+			<i ng-class="icon" class="icon-gf icon-gf-endpoint no-endpoints"></i>
+			<p ng-if="ctrl.isOrgEditor">Looks like you don’t have any clulsters yet.<br>
+				<a class="highlight-word" href="plugins/raintank-kubernetes-app/page/cluster-config">Add a new cluster</a>
+			</p>
+			<p ng-if="!ctrl.isOrgEditor">Your org does not have any clusters configured. Contact your org admin.
+			</p>
+		</div>
+	</div>
+
+	<section ng-if="ctrl.clusters.length > 0" class="card-section card-list-layout-list" layout-mode>
+		<ol class="card-list" >
+			<li class="card-item-wrapper" ng-repeat="cluster in ctrl.clusters">
+				<div class="card-item pointer" ng-click="ctrl.clusterInfo(cluster, $event)">
+					<div class="card-item-header card-item-header-action">
+						<a style="margin-left: 15px; vertical-align: sub;" href="plugins/raintank-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
+							<i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Cluster Config'"></i>
+						</a>
+					</div>
+					<div class="card-item-body">
+						<div class="card-item-details">
+							<div class="card-item-name">
+								{{cluster.name}}
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ol>
+	</section>
+</div>
