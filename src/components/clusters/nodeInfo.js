@@ -1,10 +1,3 @@
-import _ from 'lodash';
-import $ from 'jquery';
-
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
-  return slug;
-}
 
 export class NodeInfoCtrl {
   /** @ngInject */
@@ -14,14 +7,6 @@ export class NodeInfoCtrl {
     this.$location = $location;
     this.pageReady = false;
     this.node = {};
-    // this.componentStatuses = [];
-    // this.namespaces = [];
-    // this.namespace = "";
-    // this.nodes = [];
-    // this.daemonSets = [];
-    // this.replicationControllers = [];
-    // this.deployments = [];
-    // this.pods = [];
     if (!("cluster" in $location.search())) {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
@@ -32,7 +17,6 @@ export class NodeInfoCtrl {
     this.getNode($location.search().node)
       .then(() => {
         this.pageReady = true;
-        console.log(this.node);
       });
   }
 

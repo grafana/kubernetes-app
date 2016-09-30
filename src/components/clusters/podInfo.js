@@ -1,10 +1,3 @@
-import _ from 'lodash';
-import $ from 'jquery';
-
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
-  return slug;
-}
 
 export class PodInfoCtrl {
   /** @ngInject */
@@ -25,7 +18,6 @@ export class PodInfoCtrl {
     this.getPod($location.search().namespace, $location.search().pod)
       .then(() => {
         this.pageReady = true;
-        console.log(this.pod);
       });
   }
 
