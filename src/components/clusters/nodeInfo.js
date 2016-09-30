@@ -50,6 +50,20 @@ export class NodeInfoCtrl {
         this.node = node;
       });
   }
+
+  conditionStatus(condition) {
+    var status;
+    if (condition.type === "Ready") {
+      status = condition.status === "True";
+    } else {
+      status = condition.status === "False";
+    }
+
+    return {
+      value: status,
+      text: status ? "Ok" : "Error"
+    };
+  }
 }
 
 NodeInfoCtrl.templateUrl = 'components/clusters/node_info.html';

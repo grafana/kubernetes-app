@@ -1,2 +1,57 @@
-<h1>Node: {{ctrl.node.metadata.name}}</h1>
+<h2>Node:</h2>
+<h2>{{ctrl.node.metadata.name}}</h2>
+<br>
+
+<h3 class="page-heading">Labels</h3>
+<div class="gf-form-group">
+	<div class="gf-form" ng-repeat="(k, v) in ctrl.node.metadata.labels">
+		<span class="btn btn-primary btn-mini btn-inverse">
+			{{k}}: {{v}}
+		</span>
+	</div>
+</div>
+
+<h3 class="page-heading">Conditions</h3>
+<table class="grafana-options-table">
+	<tr ng-repeat="condition in ctrl.node.status.conditions">
+		<td style="padding-left: 25px;">
+			<span class="btn btn-mini"
+				ng-class="{'btn-outline-danger': !ctrl.conditionStatus(condition).value,
+							'btn-outline-success': ctrl.conditionStatus(condition).value}">
+				{{ctrl.conditionStatus(condition).text}}
+			</span>
+		</td>
+		<td>{{condition.type}}</td>
+		<td>{{condition.message}}</td>
+	</tr>
+</table>
+<br>
+
+<h3 class="page-heading">Capacity</h3>
+<div class="card-section card-list-layout-grid">
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="(k, v) in ctrl.node.status.capacity">
+			<div class="card-item">
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-type">
+							{{k}}
+						</div>
+						<div class="card-item-details">
+							{{v}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</div>
+
+<h3 class="page-heading">Info</h3>
+<table class="grafana-options-table">
+	<tr ng-repeat="(k, v) in ctrl.node.status.nodeInfo">
+		<td style="padding-left: 25px;">{{k}}</td>
+		<td>{{v}}</td>
+	</tr>
+</table>
 <br>
