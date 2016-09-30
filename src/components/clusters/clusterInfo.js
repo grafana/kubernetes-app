@@ -126,6 +126,21 @@ export class ClusterInfoCtrl {
     }
   }
 
+  nodeInfo(node, evt) {
+    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+
+    var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
+    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
+    if (clickTargetIsLinkOrHasLinkParents === false &&
+        clickTargetIsNodeDashboard === false) {
+      this.$location.path("plugins/raintank-kubernetes-app/page/node-info")
+      .search({
+        "cluster": this.cluster.id,
+        "node": slugify(node.metadata.name)
+      });
+    }
+  }
+
   getResource(prefix, resource) {
     var self = this;
     if (this.namespace) {
