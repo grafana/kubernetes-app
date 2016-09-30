@@ -140,8 +140,8 @@ export class ClusterInfoCtrl {
       this.$location.path("dashboard/db/kubernetes-container")
       .search({
         "var-datasource": this.cluster.jsonData.ds,
-        "var-environment": this.cluster.name,
-        "var-server": pod.spec.nodeName,
+        "var-cluster": this.cluster.name,
+        "var-node": pod.spec.nodeName,
         "var-container": containerIDs
       });
     }

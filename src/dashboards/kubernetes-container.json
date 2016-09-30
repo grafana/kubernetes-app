@@ -1,12 +1,14 @@
 {
   "id": null,
   "title": "Kubernetes Container",
-  "tags": [],
+  "tags": [
+    "kubernetes"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
-  "sharedCrosshair": false,
+  "sharedCrosshair": true,
   "rows": [
     {
       "collapse": false,
@@ -60,7 +62,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(removeEmptySeries(snap.$environment.$server.intel.docker.$container.stats.cgroups.memory_stats.usage.usage), 5)",
+              "target": "aliasByNode(removeEmptySeries(snap.$cluster.$node.intel.docker.$container.stats.cgroups.memory_stats.usage.usage), 5)",
               "textEditor": false
             }
           ],
@@ -149,13 +151,13 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasSub(groupByNode(perSecond(snap.$environment.$server.intel.docker.$container.stats.network.*.rx_bytes), 5, 'sum'), '(.*)', '\\1-in')",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.network.*.rx_bytes), 5, 'sum'), '(.*)', '\\1-in')",
               "textEditor": false
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "aliasSub(groupByNode(perSecond(snap.$environment.$server.intel.docker.$container.stats.network.*.tx_bytes), 5, 'sum'), '(.*)', '\\1-out')",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.network.*.tx_bytes), 5, 'sum'), '(.*)', '\\1-out')",
               "textEditor": false
             }
           ],
@@ -241,7 +243,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(removeEmptySeries(snap.$environment.$server.intel.docker.$container.stats.connection.tcp.*), 5, 9)",
+              "target": "aliasByNode(removeEmptySeries(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.*), 5, 9)",
               "textEditor": false
             }
           ],
@@ -324,7 +326,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(perSecond(snap.$environment.$server.intel.docker.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 5)",
+              "target": "aliasByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 5)",
               "textEditor": false
             }
           ],
@@ -415,7 +417,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$environment.$server.intel.docker.$container.stats.filesystem.*.reads_completed), 8), 5)",
+              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$container.stats.filesystem.*.reads_completed), 8), 5)",
               "textEditor": false
             }
           ],
@@ -497,7 +499,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$environment.$server.intel.docker.$container.stats.filesystem.*.writes_completed), 8), 5)",
+              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$container.stats.filesystem.*.writes_completed), 8), 5)",
               "textEditor": false
             }
           ],
@@ -587,7 +589,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "groupByNode(snap.$environment.$server.intel.docker.$container.stats.connection.tcp.established, 5, 'sum')",
+              "target": "groupByNode(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.established, 5, 'sum')",
               "textEditor": false
             }
           ],
@@ -676,7 +678,7 @@
         "hide": 0,
         "includeAll": false,
         "multi": false,
-        "name": "environment",
+        "name": "cluster",
         "options": [],
         "query": "snap.*",
         "refresh": 1,
@@ -689,9 +691,9 @@
         "hide": 0,
         "includeAll": true,
         "multi": true,
-        "name": "server",
+        "name": "node",
         "options": [],
-        "query": "snap.$environment.*",
+        "query": "snap.$cluster.*",
         "refresh": 1,
         "type": "query"
       },
@@ -703,7 +705,7 @@
         "multi": true,
         "name": "container",
         "options": [],
-        "query": "snap.$environment.$server.intel.docker.*",
+        "query": "snap.$cluster.$node.intel.docker.*",
         "refresh": 1,
         "type": "query"
       }
