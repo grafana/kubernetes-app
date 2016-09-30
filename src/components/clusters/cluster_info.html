@@ -135,7 +135,13 @@ Namespace: <select ng-model="ctrl.namespace" ng-options="ns.metadata.name as ns.
 	<div class="card-section card-list-layout-list">
 		<ol class="card-list">
 			<li class="card-item-wrapper" ng-repeat="pod in ctrl.pods">
-				<div class="pointer card-item">
+				<div class="pointer card-item" ng-click="ctrl.podInfo(pod, $event)">
+					<div class="card-item-header card-item-header-action"
+							 ng-click="ctrl.podDashboard(pod, $event)"
+							 style="margin-left: 15px; vertical-align: sub;">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Pod dashboard'"></i>
+						Pod dashboard
+					</div>
 					<div class="card-item-body">
 						<div class="card-item-details">
 							<div class="card-item-name">

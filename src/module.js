@@ -4,6 +4,7 @@ import {ClustersCtrl} from './components/clusters/clusters';
 import {ClusterConfigCtrl} from './components/clusters/clusterConfig';
 import {ClusterInfoCtrl} from './components/clusters/clusterInfo';
 import {NodeInfoCtrl} from './components/clusters/nodeInfo';
+import {PodInfoCtrl} from './components/clusters/podInfo';
 
 loadPluginCss({
   dark: 'plugins/raintank-kubernetese-app/css/kubernetes.dark.css',
@@ -15,5 +16,6 @@ export {
   ClustersCtrl,
   ClusterConfigCtrl,
   ClusterInfoCtrl,
-  NodeInfoCtrl
+  NodeInfoCtrl,
+  PodInfoCtrl
 };
