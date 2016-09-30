@@ -6,6 +6,11 @@ function slugify(str) {
   return slug;
 }
 
+function extractContainerID(str) {
+  var dockerIDPattern = /docker\:\/\/(.{12})/;
+  return dockerIDPattern.exec(str)[1];
+}
+
 export class ClusterInfoCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
@@ -126,6 +131,22 @@ export class ClusterInfoCtrl {
     }
   }
 
+  podDashboard(pod, evt) {
+    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    if (clickTargetIsLinkOrHasLinkParents === false) {
+      var containerIDs = _.map(pod.status.containerStatuses, (status) => {
+        return extractContainerID(status.containerID);
+      });
+      this.$location.path("dashboard/db/kubernetes-container")
+      .search({
+        "var-datasource": this.cluster.jsonData.ds,
+        "var-environment": this.cluster.name,
+        "var-server": pod.spec.nodeName,
+        "var-container": containerIDs
+      });
+    }
+  }
+
   nodeInfo(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
@@ -145,7 +166,7 @@ export class ClusterInfoCtrl {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
     var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
+    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.podDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/raintank-kubernetes-app/page/pod-info")
