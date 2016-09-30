@@ -32,6 +32,8 @@
     { "type": "page", "name": "Clusters", "component": "ClustersCtrl", "role": "Viewer", "addToNav": true},
     { "type": "page", "name": "Cluster Config", "component": "ClusterConfigCtrl", "role": "Editor", "addToNav": false},
     { "type": "page", "name": "Cluster Info", "component": "ClusterInfoCtrl", "role": "Viewer", "addToNav": false},
+    { "type": "page", "name": "Node Info", "component": "NodeInfoCtrl", "role": "Viewer", "addToNav": false},
+    { "type": "page", "name": "Pod Info", "component": "PodInfoCtrl", "role": "Viewer", "addToNav": false},
     {
       "type": "datasource",
       "name": "kubernetes DS"
@@ -40,6 +42,12 @@
       "type": "dashboard",
       "name": "Kubernetese Node",
       "path": "dashboards/kubernetes-node.json",
+      "addToNav": false
+    },
+    {
+      "type": "dashboard",
+      "name": "Kubernetes Container",
+      "path": "dashboards/kubernetes-container.json",
       "addToNav": false
     }
   ],

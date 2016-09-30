@@ -16,6 +16,11 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
     return slug;
   }
 
+  function extractContainerID(str) {
+    var dockerIDPattern = /docker\:\/\/(.{12})/;
+    return dockerIDPattern.exec(str)[1];
+  }
+
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
@@ -166,6 +171,51 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
                 "var-datasource": this.cluster.jsonData.ds,
                 "var-cluster": this.cluster.name,
                 "var-node": slugify(node.metadata.name)
+              });
+            }
+          }
+        }, {
+          key: 'podDashboard',
+          value: function podDashboard(pod, evt) {
+            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+            if (clickTargetIsLinkOrHasLinkParents === false) {
+              var containerIDs = _.map(pod.status.containerStatuses, function (status) {
+                return extractContainerID(status.containerID);
+              });
+              this.$location.path("dashboard/db/kubernetes-container").search({
+                "var-datasource": this.cluster.jsonData.ds,
+                "var-cluster": this.cluster.name,
+                "var-node": pod.spec.nodeName,
+                "var-container": containerIDs
+              });
+            }
+          }
+        }, {
+          key: 'nodeInfo',
+          value: function nodeInfo(node, evt) {
+            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+
+            var clickTargetClickAttr = _.find(evt.target.attributes, { name: "ng-click" });
+            var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
+            if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
+              this.$location.path("plugins/raintank-kubernetes-app/page/node-info").search({
+                "cluster": this.cluster.id,
+                "node": slugify(node.metadata.name)
+              });
+            }
+          }
+        }, {
+          key: 'podInfo',
+          value: function podInfo(pod, evt) {
+            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+
+            var clickTargetClickAttr = _.find(evt.target.attributes, { name: "ng-click" });
+            var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.podDashboard(pod, $event)" : false;
+            if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
+              this.$location.path("plugins/raintank-kubernetes-app/page/pod-info").search({
+                "cluster": this.cluster.id,
+                "namespace": pod.metadata.namespace,
+                "pod": pod.metadata.name
               });
             }
           }
