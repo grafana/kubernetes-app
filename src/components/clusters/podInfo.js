@@ -43,6 +43,20 @@ export class PodInfoCtrl {
         this.pod = pod;
       });
   }
+
+  conditionStatus(condition) {
+    var status;
+    if (condition.type === "Ready") {
+      status = condition.status === "True";
+    } else {
+      status = condition.status === "False";
+    }
+
+    return {
+      value: status,
+      text: status ? "Ok" : "Error"
+    };
+  }
 }
 
 PodInfoCtrl.templateUrl = 'components/clusters/pod_info.html';
