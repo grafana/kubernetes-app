@@ -1,3 +1,4 @@
+import moment from 'moment'
 
 export class NodeInfoCtrl {
   /** @ngInject */
@@ -51,6 +52,10 @@ export class NodeInfoCtrl {
 
   isConditionOk(condition) {
     return this.conditionStatus(condition).value;
+  }
+
+  conditionLastTransitionTime(condition) {
+    return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
   }
 }
 
