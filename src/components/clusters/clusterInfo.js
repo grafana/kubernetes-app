@@ -92,6 +92,10 @@ export class ClusterInfoCtrl {
     return health;
   }
 
+  isComponentHealthy(component) {
+    return this.componentHealth(component) === "healthy";
+  }
+
   getNamespaces() {
     var self = this;
     return this.backendSrv.request({
@@ -109,6 +113,7 @@ export class ClusterInfoCtrl {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+
   nodeStatus(node) {
     var health = "unhealthy";
     _.forEach(node.status.conditions, function(condition) {
@@ -117,6 +122,10 @@ export class ClusterInfoCtrl {
       }
     });
     return health;
+  }
+
+  isNodeHealthy(node) {
+    return this.nodeStatus(node) === "healthy";
   }
 
   nodeDashboard(node, evt) {

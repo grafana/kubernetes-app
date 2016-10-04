@@ -32,6 +32,12 @@
 							{{component.metadata.name}}
 						</div>
 						<div class="card-item-sub-name">
+							<i class="icon-gf"
+								ng-class="{
+									'icon-gf-critical alert-state-critical': !ctrl.isComponentHealthy(component),
+									'icon-gf-online alert-state-ok': ctrl.isComponentHealthy(component)
+								}">
+							</i>
 							{{ctrl.componentHealth(component)}}
 						</div>
 					</div>
@@ -49,8 +55,18 @@
 				<div class="card-item-header card-item-header-action"
 						 ng-click="ctrl.nodeDashboard(node, $event)"
 						 style="margin-left: 15px; vertical-align: sub;">
-					<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Node dashboard'"></i>
-					Node dashboard
+
+					<div style="display:inline-block; padding-right: 8px;">
+						<i class="icon-gf"
+							ng-class="{
+								'icon-gf-critical alert-state-critical': !ctrl.isNodeHealthy(node),
+								'icon-gf-online alert-state-ok': ctrl.isNodeHealthy(node)
+							}">
+						</i>
+					</div>
+					<div style="display:inline-block;">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Node dashboard'"></i>
+					</div>
 				</div>
 				<div class="card-item-body">
 					<div class="card-item-details">
