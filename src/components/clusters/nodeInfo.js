@@ -48,6 +48,10 @@ export class NodeInfoCtrl {
       text: status ? "Ok" : "Error"
     };
   }
+
+  isConditionOk(condition) {
+    return this.conditionStatus(condition).value;
+  }
 }
 
 NodeInfoCtrl.templateUrl = 'components/clusters/node_info.html';

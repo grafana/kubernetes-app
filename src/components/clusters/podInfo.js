@@ -49,6 +49,10 @@ export class PodInfoCtrl {
       text: status ? "Ok" : "Error"
     };
   }
+
+  isConditionOk(condition) {
+    return this.conditionStatus(condition).value;
+  }
 }
 
 PodInfoCtrl.templateUrl = 'components/clusters/pod_info.html';

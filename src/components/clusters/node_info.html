@@ -15,11 +15,13 @@
 <table class="grafana-options-table">
 	<tr ng-repeat="condition in ctrl.node.status.conditions">
 		<td style="padding-left: 25px;">
-			<span class="btn btn-mini"
-				ng-class="{'btn-outline-danger': !ctrl.conditionStatus(condition).value,
-							'btn-outline-success': ctrl.conditionStatus(condition).value}">
-				{{ctrl.conditionStatus(condition).text}}
-			</span>
+			<i class="icon-gf"
+				ng-class="{
+					'icon-gf-critical alert-state-critical': !ctrl.isConditionOk(condition),
+					'icon-gf-online alert-state-ok': ctrl.isConditionOk(condition)
+				}">
+			</i>
+			{{ctrl.conditionStatus(condition).text}}
 		</td>
 		<td>{{condition.type}}</td>
 		<td>{{condition.message}}</td>
