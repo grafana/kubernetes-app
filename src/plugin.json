@@ -29,7 +29,7 @@
   },
 
   "includes": [
-    { "type": "page", "name": "Clusters", "component": "ClustersCtrl", "role": "Viewer", "addToNav": true},
+    { "type": "page", "name": "Clusters", "component": "ClustersCtrl", "role": "Viewer", "addToNav": true, "defaultNav": true},
     { "type": "page", "name": "Cluster Config", "component": "ClusterConfigCtrl", "role": "Editor", "addToNav": false},
     { "type": "page", "name": "Cluster Info", "component": "ClusterInfoCtrl", "role": "Viewer", "addToNav": false},
     { "type": "page", "name": "Node Info", "component": "NodeInfoCtrl", "role": "Viewer", "addToNav": false},
