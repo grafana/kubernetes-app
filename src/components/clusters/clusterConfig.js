@@ -109,7 +109,7 @@ export class ClusterConfigCtrl {
 
 }
 
-ClusterConfigCtrl.templateUrl = 'components/clusters/cluster_config.html';
+ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
 var configMap = {
   "kind": "ConfigMap",

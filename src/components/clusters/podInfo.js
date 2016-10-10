@@ -55,4 +55,4 @@ export class PodInfoCtrl {
   }
 }
 
-PodInfoCtrl.templateUrl = 'components/clusters/pod_info.html';
+PodInfoCtrl.templateUrl = 'components/clusters/partials/pod_info.html';

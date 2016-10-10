@@ -59,4 +59,4 @@ export class NodeInfoCtrl {
   }
 }
 
-NodeInfoCtrl.templateUrl = 'components/clusters/node_info.html';
+NodeInfoCtrl.templateUrl = 'components/clusters/partials/node_info.html';

@@ -228,4 +228,4 @@ export class ClusterInfoCtrl {
   }
 }
 
-ClusterInfoCtrl.templateUrl = 'components/clusters/cluster_info.html';
+ClusterInfoCtrl.templateUrl = 'components/clusters/partials/cluster_info.html';

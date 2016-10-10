@@ -31,4 +31,4 @@ export class ClustersCtrl {
   }
 }
 
-ClustersCtrl.templateUrl = 'components/clusters/clusters.html';
+ClustersCtrl.templateUrl = 'components/clusters/partials/clusters.html';

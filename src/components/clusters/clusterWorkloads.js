@@ -162,4 +162,4 @@ export class ClusterWorkloadsCtrl {
   }
 }
 
-ClusterWorkloadsCtrl.templateUrl = 'components/clusters/cluster_workloads.html';
+ClusterWorkloadsCtrl.templateUrl = 'components/clusters/partials/cluster_workloads.html';
