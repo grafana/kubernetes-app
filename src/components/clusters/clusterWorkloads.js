@@ -1,17 +1,12 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
-  return slug;
-}
-
 function extractContainerID(str) {
   var dockerIDPattern = /docker\:\/\/(.{12})/;
   return dockerIDPattern.exec(str)[1];
 }
 
-export class ClusterInfoCtrl {
+export class ClusterWorkloadsCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
     var self = this;
@@ -47,9 +42,6 @@ export class ClusterInfoCtrl {
     });
     this.getNamespaces().then(ns => {
       self.namespaces = ns.items;
-    });
-    this.getNodes().then(nodes => {
-      self.nodes = nodes.items;
     });
     this.getDaemonSets().then(ds => {
       self.daemonSets = ds.items;
@@ -105,41 +97,6 @@ export class ClusterInfoCtrl {
     });
   }
 
-  getNodes() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/nodes',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  nodeStatus(node) {
-    var health = "unhealthy";
-    _.forEach(node.status.conditions, function(condition) {
-      if ((condition.type === "Ready") && (condition.status === "True")) {
-        health = "healthy";
-      }
-    });
-    return health;
-  }
-
-  isNodeHealthy(node) {
-    return this.nodeStatus(node) === "healthy";
-  }
-
-  nodeDashboard(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-    if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("dashboard/db/kubernetes-node")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": slugify(node.metadata.name)
-      });
-    }
-  }
-
   podDashboard(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
@@ -152,32 +109,6 @@ export class ClusterInfoCtrl {
         "var-cluster": this.cluster.name,
         "var-node": pod.spec.nodeName,
         "var-container": containerIDs
-      });
-    }
-  }
-
-  goToWorkloads(ns, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-    if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("plugins/raintank-kubernetes-app/page/cluster-workloads")
-      .search({
-        "cluster": this.cluster.id,
-        "namespace": slugify(ns.metadata.name)
-      });
-    }
-  }
-
-  nodeInfo(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-
-    var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
-    if (clickTargetIsLinkOrHasLinkParents === false &&
-        clickTargetIsNodeDashboard === false) {
-      this.$location.path("plugins/raintank-kubernetes-app/page/node-info")
-      .search({
-        "cluster": this.cluster.id,
-        "node": slugify(node.metadata.name)
       });
     }
   }
@@ -228,4 +159,4 @@ export class ClusterInfoCtrl {
   }
 }
 
-ClusterInfoCtrl.templateUrl = 'components/clusters/cluster_info.html';
+ClusterWorkloadsCtrl.templateUrl = 'components/clusters/cluster_workloads.html';

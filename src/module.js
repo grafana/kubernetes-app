@@ -3,6 +3,7 @@ import {loadPluginCss} from 'app/plugins/sdk';
 import {ClustersCtrl} from './components/clusters/clusters';
 import {ClusterConfigCtrl} from './components/clusters/clusterConfig';
 import {ClusterInfoCtrl} from './components/clusters/clusterInfo';
+import {ClusterWorkloadsCtrl} from './components/clusters/clusterWorkloads';
 import {NodeInfoCtrl} from './components/clusters/nodeInfo';
 import {PodInfoCtrl} from './components/clusters/podInfo';
 
@@ -16,6 +17,7 @@ export {
   ClustersCtrl,
   ClusterConfigCtrl,
   ClusterInfoCtrl,
+  ClusterWorkloadsCtrl,
   NodeInfoCtrl,
   PodInfoCtrl
 };

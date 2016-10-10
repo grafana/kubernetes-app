@@ -4,7 +4,9 @@
 <h2>Namespaces</h2>
 <div class="card-section card-list-layout-grid">
 	<ol class="card-list">
-		<li class="card-item-wrapper" ng-repeat="ns in ctrl.namespaces">
+		<li class="card-item-wrapper"
+			ng-repeat="ns in ctrl.namespaces"
+			ng-click="ctrl.goToWorkloads(ns, $event)">
 			<div class="card-item">
 				<div class="card-item-body">
 					<div class="card-item-details">
@@ -81,92 +83,4 @@
 			</dev>
 		</li>
 	</ol>
-</div>
-
-<h1>Workloads</h1>
-Namespace: <select ng-model="ctrl.namespace" ng-options="ns.metadata.name as ns.metadata.name for ns in ctrl.namespaces" ng-change="ctrl.getWorkloads()">
-	<option name="All" value="">All</option>
-</select>
-
-
-<div ng-show="ctrl.daemonSets.length > 0">
-	<h2>Daemon Sets</h2>
-	<div class="card-section card-list-layout-list">
-		<ol class="card-list">
-			<li class="card-item-wrapper" ng-repeat="ds in ctrl.daemonSets">
-				<div class="pointer card-item">
-					<div class="card-item-body">
-						<div class="card-item-details">
-							<div class="card-item-name">
-								{{ds.metadata.name}}
-							</div>
-						</div>
-					</div>
-				</dev>
-			</li>
-		</ol>
-	</div>
-</div>
-
-<div ng-show="ctrl.replicationControllers.length > 0">
-	<h2>Replication Controllers</h2>
-	<div class="card-section card-list-layout-list">
-		<ol class="card-list">
-			<li class="card-item-wrapper" ng-repeat="rc in ctrl.replicationControllers">
-				<div class="pointer card-item">
-					<div class="card-item-body">
-						<div class="card-item-details">
-							<div class="card-item-name">
-								{{rc.metadata.name}}
-							</div>
-						</div>
-					</div>
-				</dev>
-			</li>
-		</ol>
-	</div>
-</div>
-
-<div ng-show="ctrl.deployments.length > 0">
-	<h2>Deployments</h2>
-	<div class="card-section card-list-layout-list">
-		<ol class="card-list">
-			<li class="card-item-wrapper" ng-repeat="deploy in ctrl.deployments">
-				<div class="pointer card-item">
-					<div class="card-item-body">
-						<div class="card-item-details">
-							<div class="card-item-name">
-								{{deploy.metadata.name}}
-							</div>
-						</div>
-					</div>
-				</dev>
-			</li>
-		</ol>
-	</div>
-</div>
-
-<div ng-show="ctrl.pods.length > 0">
-	<h2>Pods</h2>
-	<div class="card-section card-list-layout-list">
-		<ol class="card-list">
-			<li class="card-item-wrapper" ng-repeat="pod in ctrl.pods">
-				<div class="pointer card-item" ng-click="ctrl.podInfo(pod, $event)">
-					<div class="card-item-header card-item-header-action"
-							 ng-click="ctrl.podDashboard(pod, $event)"
-							 style="margin-left: 15px; vertical-align: sub;">
-						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Pod dashboard'"></i>
-						Containers Stats
-					</div>
-					<div class="card-item-body">
-						<div class="card-item-details">
-							<div class="card-item-name">
-								{{pod.metadata.name}}
-							</div>
-						</div>
-					</div>
-				</dev>
-			</li>
-		</ol>
-	</div>
 </div>
