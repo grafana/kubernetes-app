@@ -18,7 +18,6 @@ export class ClusterWorkloadsCtrl {
     this.componentStatuses = [];
     this.namespaces = [];
     this.namespace = "";
-    this.nodes = [];
     this.daemonSets = [];
     this.replicationControllers = [];
     this.deployments = [];
@@ -26,6 +25,10 @@ export class ClusterWorkloadsCtrl {
     if (!("cluster" in $location.search())) {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
+    }
+
+    if ("namespace" in $location.search()) {
+      this.namespace = $location.search().namespace;
     }
 
     self.getCluster($location.search().cluster)
