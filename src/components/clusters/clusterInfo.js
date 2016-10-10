@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
+import {K8sClusterAPI} from './k8sClusterAPI';
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
@@ -14,10 +15,11 @@ function extractContainerID(str) {
 export class ClusterInfoCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
-    var self = this;
     this.$q = $q;
     this.backendSrv = backendSrv;
     this.$location = $location;
+    this.clusterAPI = {};
+
     this.pageReady = false;
     this.cluster = {};
     this.componentStatuses = [];
@@ -33,52 +35,41 @@ export class ClusterInfoCtrl {
       return;
     }
 
-    self.getCluster($location.search().cluster)
-    .then(() => {
-      self.pageReady = true;
-      self.getWorkloads();
+    this.getCluster($location.search().cluster).then(() => {
+      this.clusterAPI = new K8sClusterAPI(this.cluster.id, backendSrv);
+      this.pageReady = true;
+      this.getWorkloads();
     });
   }
 
   getWorkloads() {
-    var self = this;
-    this.getComponentStatuses().then(stats => {
-      self.componentStatuses = stats.items;
+    this.clusterAPI.get('componentstatuses').then(stats => {
+      this.componentStatuses = stats.items;
     });
-    this.getNamespaces().then(ns => {
-      self.namespaces = ns.items;
+    this.clusterAPI.get('namespaces').then(ns => {
+      this.namespaces = ns.items;
     });
-    this.getNodes().then(nodes => {
-      self.nodes = nodes.items;
+    this.clusterAPI.get('nodes').then(nodes => {
+      this.nodes = nodes.items;
     });
     this.getDaemonSets().then(ds => {
-      self.daemonSets = ds.items;
+      this.daemonSets = ds.items;
     });
     this.getReplicationControllers().then(rc => {
-      self.replicationControllers = rc.items;
+      this.replicationControllers = rc.items;
     });
     this.getDeployments().then(deploy => {
-      self.deployments = deploy.items;
+      this.deployments = deploy.items;
     });
     this.getPods().then(pod => {
-      self.pods = pod.items;
+      this.pods = pod.items;
     });
   }
 
   getCluster(id) {
-    var self = this;
     return this.backendSrv.get('api/datasources/'+id)
     .then((ds) => {
-      self.cluster = ds;
-    });
-  }
-
-  getComponentStatuses() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/componentstatuses',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      this.cluster = ds;
     });
   }
 
@@ -96,24 +87,6 @@ export class ClusterInfoCtrl {
     return this.componentHealth(component) === "healthy";
   }
 
-  getNamespaces() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  getNodes() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/nodes',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
   nodeStatus(node) {
     var health = "unhealthy";
     _.forEach(node.status.conditions, function(condition) {
@@ -128,7 +101,7 @@ export class ClusterInfoCtrl {
     return this.nodeStatus(node) === "healthy";
   }
 
-  nodeDashboard(node, evt) {
+  goToNodeDashboard(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
       this.$location.path("dashboard/db/kubernetes-node")
@@ -140,7 +113,7 @@ export class ClusterInfoCtrl {
     }
   }
 
-  podDashboard(pod, evt) {
+  goToPodDashboard(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
       var containerIDs = _.map(pod.status.containerStatuses, (status) => {
@@ -167,11 +140,12 @@ export class ClusterInfoCtrl {
     }
   }
 
-  nodeInfo(node, evt) {
+  goToNodeInfo(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
+    var closestElm = _.head($(evt.target).closest('div'));
+    var clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
+    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/raintank-kubernetes-app/page/node-info")
@@ -182,11 +156,11 @@ export class ClusterInfoCtrl {
     }
   }
 
-  podInfo(pod, evt) {
+  goToPodInfo(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
     var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.podDashboard(pod, $event)" : false;
+    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/raintank-kubernetes-app/page/pod-info")
@@ -199,16 +173,11 @@ export class ClusterInfoCtrl {
   }
 
   getResource(prefix, resource) {
-    var self = this;
     if (this.namespace) {
-      resource = "namespaces/"+this.namespace+"/"+resource;
+      resource = "namespaces/" + this.namespace + "/" + resource;
     }
 
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + prefix + resource,
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return this.clusterAPI.getRawResource(prefix + resource);
   }
 
   getDaemonSets() {

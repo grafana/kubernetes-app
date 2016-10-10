@@ -56,10 +56,9 @@
 <div class="card-section card-list-layout-list">
 	<ol class="card-list">
 		<li class="card-item-wrapper" ng-repeat="node in ctrl.nodes">
-			<div class="pointer card-item" ng-click="ctrl.nodeInfo(node, $event)">
+			<div class="pointer card-item" ng-click="ctrl.goToNodeInfo(node, $event)">
 				<div class="card-item-header card-item-header-action"
-						 ng-click="ctrl.nodeDashboard(node, $event)"
-						 style="margin-left: 15px; vertical-align: sub;">
+					style="margin-left: 15px; vertical-align: sub;">
 
 					<div style="display:inline-block; padding-right: 8px;">
 						<i class="icon-gf"
@@ -69,7 +68,8 @@
 							}">
 						</i>
 					</div>
-					<div style="display:inline-block;">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToNodeDashboard(node, $event)">
 						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Node dashboard'"></i>
 					</div>
 				</div>
