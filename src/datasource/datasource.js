@@ -80,6 +80,10 @@ export class K8sDatasource {
         return result.items;
       });
   }
+
+  getNode(name) {
+    return this._get('/api/v1/nodes/' + name);
+  }
 }
 
 function addNamespace(namespace) {

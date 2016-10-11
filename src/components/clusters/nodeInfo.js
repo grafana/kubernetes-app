@@ -2,37 +2,39 @@ import moment from 'moment';
 
 export class NodeInfoCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
     this.$q = $q;
     this.backendSrv = backendSrv;
+    this.datasourceSrv = datasourceSrv;
     this.$location = $location;
+
     this.pageReady = false;
+    this.clusterDS = {};
     this.node = {};
+
     if (!("cluster" in $location.search())) {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-    }
+      let node_name = $location.search().node;
 
-    this.getNode($location.search().node)
-      .then(() => {
-        this.pageReady = true;
+      this.loadDatasource(this.cluster_id).then(() => {
+        this.clusterDS.getNode(node_name).then(node => {
+          this.node = node;
+          this.pageReady = true;
+        });
       });
+    }
   }
 
-  k8sApiRequest_GET(api_resource) {
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + this.cluster_id + '/api/v1/' + api_resource,
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  getNode(name) {
-    return this.k8sApiRequest_GET('nodes/' + name)
-      .then((node) => {
-        this.node = node;
+  loadDatasource(id) {
+    return this.backendSrv.get('api/datasources/' + id)
+      .then(ds => {
+        return this.datasourceSrv.get(ds.name);
+      }).then(clusterDS => {
+        this.clusterDS = clusterDS;
+        return clusterDS;
       });
   }
 
