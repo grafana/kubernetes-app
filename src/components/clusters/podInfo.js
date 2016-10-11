@@ -1,4 +1,3 @@
-
 export class PodInfoCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
