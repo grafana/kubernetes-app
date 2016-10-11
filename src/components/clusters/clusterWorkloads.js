@@ -1,5 +1,11 @@
 import _ from 'lodash';
 import $ from 'jquery';
+import {K8sClusterAPI} from './k8sClusterAPI';
+
+function slugify(str) {
+  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  return slug;
+}
 
 function extractContainerID(str) {
   var dockerIDPattern = /docker\:\/\/(.{12})/;
@@ -9,19 +15,19 @@ function extractContainerID(str) {
 export class ClusterWorkloadsCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
-    var self = this;
     this.$q = $q;
     this.backendSrv = backendSrv;
     this.$location = $location;
+
     this.pageReady = false;
     this.cluster = {};
-    this.componentStatuses = [];
     this.namespaces = [];
     this.namespace = "";
     this.daemonSets = [];
     this.replicationControllers = [];
     this.deployments = [];
     this.pods = [];
+
     if (!("cluster" in $location.search())) {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
@@ -31,49 +37,34 @@ export class ClusterWorkloadsCtrl {
       this.namespace = $location.search().namespace;
     }
 
-    self.getCluster($location.search().cluster)
-    .then(() => {
-      self.pageReady = true;
-      self.getWorkloads();
+    this.getCluster($location.search().cluster).then(() => {
+      this.clusterAPI = new K8sClusterAPI(this.cluster.id, backendSrv);
+      this.pageReady = true;
+      this.getWorkloads();
     });
   }
 
   getWorkloads() {
-    var self = this;
-    this.getComponentStatuses().then(stats => {
-      self.componentStatuses = stats.items;
-    });
-    this.getNamespaces().then(ns => {
-      self.namespaces = ns.items;
+    this.clusterAPI.get('namespaces').then(ns => {
+      this.namespaces = ns.items;
     });
     this.getDaemonSets().then(ds => {
-      self.daemonSets = ds.items;
+      this.daemonSets = ds.items;
     });
     this.getReplicationControllers().then(rc => {
-      self.replicationControllers = rc.items;
+      this.replicationControllers = rc.items;
     });
     this.getDeployments().then(deploy => {
-      self.deployments = deploy.items;
+      this.deployments = deploy.items;
     });
     this.getPods().then(pod => {
-      self.pods = pod.items;
+      this.pods = pod.items;
     });
   }
 
   getCluster(id) {
-    var self = this;
-    return this.backendSrv.get('api/datasources/'+id)
-    .then((ds) => {
-      self.cluster = ds;
-    });
-  }
-
-  getComponentStatuses() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/componentstatuses',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+    return this.backendSrv.get('api/datasources/'+id).then(ds => {
+      this.cluster = ds;
     });
   }
 
@@ -91,16 +82,7 @@ export class ClusterWorkloadsCtrl {
     return this.componentHealth(component) === "healthy";
   }
 
-  getNamespaces() {
-    var self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces',
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  podDashboard(pod, evt) {
+  goToPodDashboard(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
       var containerIDs = _.map(pod.status.containerStatuses, (status) => {
@@ -110,39 +92,35 @@ export class ClusterWorkloadsCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": pod.spec.nodeName,
+        "var-node": slugify(pod.spec.nodeName),
         "var-container": containerIDs
       });
     }
   }
 
-  podInfo(pod, evt) {
+  goToPodInfo(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    var clickTargetClickAttr = _.find(evt.target.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.podDashboard(pod, $event)" : false;
+    var closestElm = _.head($(evt.target).closest('div'));
+    var clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
+    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/raintank-kubernetes-app/page/pod-info")
       .search({
         "cluster": this.cluster.id,
-        "namespace": pod.metadata.namespace,
-        "pod": pod.metadata.name
+        "namespace": slugify(pod.metadata.namespace),
+        "pod": slugify(pod.metadata.name)
       });
     }
   }
 
   getResource(prefix, resource) {
-    var self = this;
     if (this.namespace) {
-      resource = "namespaces/"+this.namespace+"/"+resource;
+      resource = "namespaces/" + this.namespace + "/" + resource;
     }
 
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + prefix + resource,
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return this.clusterAPI.getRawResource(prefix + resource);
   }
 
   getDaemonSets() {
