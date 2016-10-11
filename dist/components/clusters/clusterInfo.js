@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _context) {
+System.register(['lodash', 'jquery'], function (_export, _context) {
   "use strict";
 
-  var _, $, K8sClusterAPI, _createClass, ClusterInfoCtrl;
+  var _, $, _createClass, ClusterInfoCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -21,8 +21,6 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
       _ = _lodash.default;
     }, function (_jquery) {
       $ = _jquery.default;
-    }, function (_k8sClusterAPI) {
-      K8sClusterAPI = _k8sClusterAPI.K8sClusterAPI;
     }],
     execute: function () {
       _createClass = function () {
@@ -45,15 +43,15 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
 
       _export('ClusterInfoCtrl', ClusterInfoCtrl = function () {
         /** @ngInject */
-        function ClusterInfoCtrl($scope, $injector, backendSrv, $q, $location, alertSrv) {
+        function ClusterInfoCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
           var _this = this;
 
           _classCallCheck(this, ClusterInfoCtrl);
 
           this.$q = $q;
           this.backendSrv = backendSrv;
+          this.datasourceSrv = datasourceSrv;
           this.$location = $location;
-          this.clusterAPI = {};
 
           this.pageReady = false;
           this.cluster = {};
@@ -67,35 +65,36 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
             return;
           }
 
-          this.getCluster($location.search().cluster).then(function () {
-            _this.clusterAPI = new K8sClusterAPI(_this.cluster.id, backendSrv);
+          this.getCluster($location.search().cluster).then(function (clusterDS) {
+            _this.clusterDS = clusterDS;
             _this.pageReady = true;
-            _this.getWorkloads();
+            _this.getClusterInfo();
           });
         }
 
         _createClass(ClusterInfoCtrl, [{
-          key: 'getWorkloads',
-          value: function getWorkloads() {
+          key: 'getCluster',
+          value: function getCluster(id) {
             var _this2 = this;
 
-            this.clusterAPI.get('componentstatuses').then(function (stats) {
-              _this2.componentStatuses = stats.items;
-            });
-            this.clusterAPI.get('namespaces').then(function (ns) {
-              _this2.namespaces = ns.items;
-            });
-            this.clusterAPI.get('nodes').then(function (nodes) {
-              _this2.nodes = nodes.items;
+            return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
+              _this2.cluster = ds;
+              return _this2.datasourceSrv.get(ds.name);
             });
           }
         }, {
-          key: 'getCluster',
-          value: function getCluster(id) {
+          key: 'getClusterInfo',
+          value: function getClusterInfo() {
             var _this3 = this;
 
-            return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
-              _this3.cluster = ds;
+            this.clusterDS.getComponentStatuses().then(function (stats) {
+              _this3.componentStatuses = stats;
+            });
+            this.clusterDS.getNamespaces().then(function (namespaces) {
+              _this3.namespaces = namespaces;
+            });
+            this.clusterDS.getNodes().then(function (nodes) {
+              _this3.nodes = nodes;
             });
           }
         }, {

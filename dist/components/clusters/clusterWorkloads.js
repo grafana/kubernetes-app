@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _context) {
+System.register(['lodash', 'jquery'], function (_export, _context) {
   "use strict";
 
-  var _, $, K8sClusterAPI, _createClass, ClusterWorkloadsCtrl;
+  var _, $, _createClass, ClusterWorkloadsCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -26,8 +26,6 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
       _ = _lodash.default;
     }, function (_jquery) {
       $ = _jquery.default;
-    }, function (_k8sClusterAPI) {
-      K8sClusterAPI = _k8sClusterAPI.K8sClusterAPI;
     }],
     execute: function () {
       _createClass = function () {
@@ -50,13 +48,14 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
 
       _export('ClusterWorkloadsCtrl', ClusterWorkloadsCtrl = function () {
         /** @ngInject */
-        function ClusterWorkloadsCtrl($scope, $injector, backendSrv, $q, $location, alertSrv) {
+        function ClusterWorkloadsCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
           var _this = this;
 
           _classCallCheck(this, ClusterWorkloadsCtrl);
 
           this.$q = $q;
           this.backendSrv = backendSrv;
+          this.datasourceSrv = datasourceSrv;
           this.$location = $location;
 
           this.pageReady = false;
@@ -77,41 +76,43 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
             this.namespace = $location.search().namespace;
           }
 
-          this.getCluster($location.search().cluster).then(function () {
-            _this.clusterAPI = new K8sClusterAPI(_this.cluster.id, backendSrv);
+          this.getCluster($location.search().cluster).then(function (clusterDS) {
+            _this.clusterDS = clusterDS;
             _this.pageReady = true;
             _this.getWorkloads();
           });
         }
 
         _createClass(ClusterWorkloadsCtrl, [{
-          key: 'getWorkloads',
-          value: function getWorkloads() {
+          key: 'getCluster',
+          value: function getCluster(id) {
             var _this2 = this;
 
-            this.clusterAPI.get('namespaces').then(function (ns) {
-              _this2.namespaces = ns.items;
-            });
-            this.getDaemonSets().then(function (ds) {
-              _this2.daemonSets = ds.items;
-            });
-            this.getReplicationControllers().then(function (rc) {
-              _this2.replicationControllers = rc.items;
-            });
-            this.getDeployments().then(function (deploy) {
-              _this2.deployments = deploy.items;
-            });
-            this.getPods().then(function (pod) {
-              _this2.pods = pod.items;
+            return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
+              _this2.cluster = ds;
+              return _this2.datasourceSrv.get(ds.name);
             });
           }
         }, {
-          key: 'getCluster',
-          value: function getCluster(id) {
+          key: 'getWorkloads',
+          value: function getWorkloads() {
             var _this3 = this;
 
-            return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
-              _this3.cluster = ds;
+            var namespace = this.namespace;
+            this.clusterDS.getNamespaces().then(function (namespaces) {
+              _this3.namespaces = namespaces;
+            });
+            this.clusterDS.getDaemonSets(namespace).then(function (daemonSets) {
+              _this3.daemonSets = daemonSets;
+            });
+            this.clusterDS.getReplicationControllers(namespace).then(function (rc) {
+              _this3.replicationControllers = rc;
+            });
+            this.clusterDS.getDeployments(namespace).then(function (deployments) {
+              _this3.deployments = deployments;
+            });
+            this.clusterDS.getPods(namespace).then(function (pods) {
+              _this3.pods = pods;
             });
           }
         }, {
@@ -158,38 +159,9 @@ System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _con
               this.$location.path("plugins/raintank-kubernetes-app/page/pod-info").search({
                 "cluster": this.cluster.id,
                 "namespace": slugify(pod.metadata.namespace),
-                "pod": slugify(pod.metadata.name)
+                "pod": pod.metadata.name
               });
             }
-          }
-        }, {
-          key: 'getResource',
-          value: function getResource(prefix, resource) {
-            if (this.namespace) {
-              resource = "namespaces/" + this.namespace + "/" + resource;
-            }
-
-            return this.clusterAPI.getRawResource(prefix + resource);
-          }
-        }, {
-          key: 'getDaemonSets',
-          value: function getDaemonSets() {
-            return this.getResource("/apis/extensions/v1beta1/", "daemonsets");
-          }
-        }, {
-          key: 'getReplicationControllers',
-          value: function getReplicationControllers() {
-            return this.getResource("/api/v1/", "replicationcontrollers");
-          }
-        }, {
-          key: 'getDeployments',
-          value: function getDeployments() {
-            return this.getResource("/apis/extensions/v1beta1/", "deployments");
-          }
-        }, {
-          key: 'getPods',
-          value: function getPods() {
-            return this.getResource("/api/v1/", "pods");
           }
         }]);
 

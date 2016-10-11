@@ -34,45 +34,47 @@ System.register([], function (_export, _context) {
 
       _export("PodInfoCtrl", PodInfoCtrl = function () {
         /** @ngInject */
-        function PodInfoCtrl($scope, $injector, backendSrv, $q, $location, alertSrv) {
+        function PodInfoCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
           var _this = this;
 
           _classCallCheck(this, PodInfoCtrl);
 
           this.$q = $q;
           this.backendSrv = backendSrv;
+          this.datasourceSrv = datasourceSrv;
           this.$location = $location;
+
           this.pageReady = false;
           this.pod = {};
           if (!("cluster" in $location.search() && "namespace" in $location.search())) {
             alertSrv.set("no cluster or namespace specified.", "no cluster or namespace specified in url", 'error');
             return;
           } else {
-            this.cluster_id = $location.search().cluster;
-            this.namespace = $location.search().namespace;
-          }
+            (function () {
+              _this.cluster_id = $location.search().cluster;
+              _this.namespace = $location.search().namespace;
+              var pod_name = $location.search().pod;
 
-          this.getPod($location.search().namespace, $location.search().pod).then(function () {
-            _this.pageReady = true;
-          });
+              _this.loadDatasource(_this.cluster_id).then(function () {
+                _this.clusterDS.getPod(_this.namespace, pod_name).then(function (pod) {
+                  _this.pod = pod;
+                  _this.pageReady = true;
+                });
+              });
+            })();
+          }
         }
 
         _createClass(PodInfoCtrl, [{
-          key: "k8sApiRequest_GET",
-          value: function k8sApiRequest_GET(api_resource) {
-            return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + this.cluster_id + '/api/v1/' + api_resource,
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
-          }
-        }, {
-          key: "getPod",
-          value: function getPod(namespace, name) {
+          key: "loadDatasource",
+          value: function loadDatasource(id) {
             var _this2 = this;
 
-            return this.k8sApiRequest_GET('namespaces/' + namespace + '/pods/' + name).then(function (pod) {
-              _this2.pod = pod;
+            return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
+              return _this2.datasourceSrv.get(ds.name);
+            }).then(function (clusterDS) {
+              _this2.clusterDS = clusterDS;
+              return clusterDS;
             });
           }
         }, {

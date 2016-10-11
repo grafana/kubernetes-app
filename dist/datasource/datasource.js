@@ -11,6 +11,9 @@ System.register([], function (_export, _context) {
     }
   }
 
+  function addNamespace(namespace) {
+    return namespace ? 'namespaces/' + namespace + '/' : '';
+  }
   return {
     setters: [],
     execute: function () {
@@ -40,6 +43,8 @@ System.register([], function (_export, _context) {
           this.url = instanceSettings.url;
           this.name = instanceSettings.name;
           this.backendSrv = backendSrv;
+
+          this.baseApiUrl = '/api/v1/';
         }
 
         _createClass(K8sDatasource, [{
@@ -53,6 +58,78 @@ System.register([], function (_export, _context) {
                 return { status: "success", message: "Data source is working", title: "Success" };
               }
             });
+          }
+        }, {
+          key: '_get',
+          value: function _get(apiResource) {
+            return this.backendSrv.datasourceRequest({
+              url: this.url + apiResource,
+              method: "GET",
+              headers: { 'Content-Type': 'application/json' }
+            }).then(function (response) {
+              return response.data;
+            }, function (error) {
+              return error;
+            });
+          }
+        }, {
+          key: 'getNodes',
+          value: function getNodes() {
+            return this._get('/api/v1/nodes').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getNode',
+          value: function getNode(name) {
+            return this._get('/api/v1/nodes/' + name);
+          }
+        }, {
+          key: 'getNamespaces',
+          value: function getNamespaces() {
+            return this._get('/api/v1/namespaces').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getComponentStatuses',
+          value: function getComponentStatuses() {
+            return this._get('/api/v1/componentstatuses').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getDaemonSets',
+          value: function getDaemonSets(namespace) {
+            return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getReplicationControllers',
+          value: function getReplicationControllers(namespace) {
+            return this._get('/api/v1/' + addNamespace(namespace) + 'replicationcontrollers').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getDeployments',
+          value: function getDeployments(namespace) {
+            return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getPods',
+          value: function getPods(namespace) {
+            return this._get('/api/v1/' + addNamespace(namespace) + 'pods').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getPod',
+          value: function getPod(namespace, name) {
+            return this._get('/api/v1/' + addNamespace(namespace) + 'pods/' + name);
           }
         }]);
 
