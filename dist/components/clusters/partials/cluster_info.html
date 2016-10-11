@@ -1,0 +1,89 @@
+<h1>Cluster: {{ctrl.cluster.name}}</h1>
+<div class="page-header">
+	<h1>Overview</h1>
+</div>
+<br>
+
+<h2>Namespaces</h2>
+<div class="card-section card-list-layout-grid">
+	<ol class="card-list">
+		<li class="card-item-wrapper"
+			ng-repeat="ns in ctrl.namespaces"
+			ng-click="ctrl.goToWorkloads(ns, $event)">
+			<div class="card-item">
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							{{ns.metadata.name}}
+						</div>
+						<div class="card-item-sub-name">
+							{{ns.status.phase}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</div>
+
+<h2>Component Statuses</h2>
+<div class="card-section card-list-layout-grid">
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="component in ctrl.componentStatuses">
+			<div class="card-item">
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							{{component.metadata.name}}
+						</div>
+						<div class="card-item-sub-name">
+							<i class="icon-gf"
+								ng-class="{
+									'icon-gf-critical alert-state-critical': !ctrl.isComponentHealthy(component),
+									'icon-gf-online alert-state-ok': ctrl.isComponentHealthy(component)
+								}">
+							</i>
+							{{ctrl.componentHealth(component)}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</div>
+
+<h2>Nodes</h2>
+<div class="card-section card-list-layout-list">
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="node in ctrl.nodes">
+			<div class="pointer card-item" ng-click="ctrl.goToNodeInfo(node, $event)">
+				<div class="card-item-header card-item-header-action"
+					style="margin-left: 15px; vertical-align: sub;">
+
+					<div style="display:inline-block; padding-right: 8px;">
+						<i class="icon-gf"
+							ng-class="{
+								'icon-gf-critical alert-state-critical': !ctrl.isNodeHealthy(node),
+								'icon-gf-online alert-state-ok': ctrl.isNodeHealthy(node)
+							}">
+						</i>
+					</div>
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToNodeDashboard(node, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Node dashboard'"></i>
+					</div>
+				</div>
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							{{node.metadata.name}}
+						</div>
+						<div class="card-item-sub-name">
+							{{ctrl.nodeStatus(node)}}
+						</div>
+					</div>
+				</div>
+			</dev>
+		</li>
+	</ol>
+</div>

@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'jquery'], function (_export, _context) {
+System.register(['lodash', 'jquery', './k8sClusterAPI'], function (_export, _context) {
   "use strict";
 
-  var _, $, _createClass, ClusterInfoCtrl;
+  var _, $, K8sClusterAPI, _createClass, ClusterInfoCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -16,16 +16,13 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
     return slug;
   }
 
-  function extractContainerID(str) {
-    var dockerIDPattern = /docker\:\/\/(.{12})/;
-    return dockerIDPattern.exec(str)[1];
-  }
-
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
     }, function (_jquery) {
       $ = _jquery.default;
+    }, function (_k8sClusterAPI) {
+      K8sClusterAPI = _k8sClusterAPI.K8sClusterAPI;
     }],
     execute: function () {
       _createClass = function () {
@@ -49,75 +46,56 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
       _export('ClusterInfoCtrl', ClusterInfoCtrl = function () {
         /** @ngInject */
         function ClusterInfoCtrl($scope, $injector, backendSrv, $q, $location, alertSrv) {
+          var _this = this;
+
           _classCallCheck(this, ClusterInfoCtrl);
 
-          var self = this;
           this.$q = $q;
           this.backendSrv = backendSrv;
           this.$location = $location;
+          this.clusterAPI = {};
+
           this.pageReady = false;
           this.cluster = {};
           this.componentStatuses = [];
           this.namespaces = [];
           this.namespace = "";
           this.nodes = [];
-          this.daemonSets = [];
-          this.replicationControllers = [];
-          this.deployments = [];
-          this.pods = [];
+
           if (!("cluster" in $location.search())) {
             alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
             return;
           }
 
-          self.getCluster($location.search().cluster).then(function () {
-            self.pageReady = true;
-            self.getWorkloads();
+          this.getCluster($location.search().cluster).then(function () {
+            _this.clusterAPI = new K8sClusterAPI(_this.cluster.id, backendSrv);
+            _this.pageReady = true;
+            _this.getWorkloads();
           });
         }
 
         _createClass(ClusterInfoCtrl, [{
           key: 'getWorkloads',
           value: function getWorkloads() {
-            var self = this;
-            this.getComponentStatuses().then(function (stats) {
-              self.componentStatuses = stats.items;
+            var _this2 = this;
+
+            this.clusterAPI.get('componentstatuses').then(function (stats) {
+              _this2.componentStatuses = stats.items;
             });
-            this.getNamespaces().then(function (ns) {
-              self.namespaces = ns.items;
+            this.clusterAPI.get('namespaces').then(function (ns) {
+              _this2.namespaces = ns.items;
             });
-            this.getNodes().then(function (nodes) {
-              self.nodes = nodes.items;
-            });
-            this.getDaemonSets().then(function (ds) {
-              self.daemonSets = ds.items;
-            });
-            this.getReplicationControllers().then(function (rc) {
-              self.replicationControllers = rc.items;
-            });
-            this.getDeployments().then(function (deploy) {
-              self.deployments = deploy.items;
-            });
-            this.getPods().then(function (pod) {
-              self.pods = pod.items;
+            this.clusterAPI.get('nodes').then(function (nodes) {
+              _this2.nodes = nodes.items;
             });
           }
         }, {
           key: 'getCluster',
           value: function getCluster(id) {
-            var self = this;
+            var _this3 = this;
+
             return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
-              self.cluster = ds;
-            });
-          }
-        }, {
-          key: 'getComponentStatuses',
-          value: function getComponentStatuses() {
-            var self = this;
-            return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/componentstatuses',
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
+              _this3.cluster = ds;
             });
           }
         }, {
@@ -132,24 +110,9 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             return health;
           }
         }, {
-          key: 'getNamespaces',
-          value: function getNamespaces() {
-            var self = this;
-            return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces',
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
-          }
-        }, {
-          key: 'getNodes',
-          value: function getNodes() {
-            var self = this;
-            return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/nodes',
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
+          key: 'isComponentHealthy',
+          value: function isComponentHealthy(component) {
+            return this.componentHealth(component) === "healthy";
           }
         }, {
           key: 'nodeStatus',
@@ -163,8 +126,13 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             return health;
           }
         }, {
-          key: 'nodeDashboard',
-          value: function nodeDashboard(node, evt) {
+          key: 'isNodeHealthy',
+          value: function isNodeHealthy(node) {
+            return this.nodeStatus(node) === "healthy";
+          }
+        }, {
+          key: 'goToNodeDashboard',
+          value: function goToNodeDashboard(node, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
             if (clickTargetIsLinkOrHasLinkParents === false) {
               this.$location.path("dashboard/db/kubernetes-node").search({
@@ -175,83 +143,30 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             }
           }
         }, {
-          key: 'podDashboard',
-          value: function podDashboard(pod, evt) {
+          key: 'goToWorkloads',
+          value: function goToWorkloads(ns, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
             if (clickTargetIsLinkOrHasLinkParents === false) {
-              var containerIDs = _.map(pod.status.containerStatuses, function (status) {
-                return extractContainerID(status.containerID);
-              });
-              this.$location.path("dashboard/db/kubernetes-container").search({
-                "var-datasource": this.cluster.jsonData.ds,
-                "var-cluster": this.cluster.name,
-                "var-node": pod.spec.nodeName,
-                "var-container": containerIDs
+              this.$location.path("plugins/raintank-kubernetes-app/page/cluster-workloads").search({
+                "cluster": this.cluster.id,
+                "namespace": slugify(ns.metadata.name)
               });
             }
           }
         }, {
-          key: 'nodeInfo',
-          value: function nodeInfo(node, evt) {
+          key: 'goToNodeInfo',
+          value: function goToNodeInfo(node, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-            var clickTargetClickAttr = _.find(evt.target.attributes, { name: "ng-click" });
-            var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.nodeDashboard(node, $event)" : false;
+            var closestElm = _.head($(evt.target).closest('div'));
+            var clickTargetClickAttr = _.find(closestElm.attributes, { name: "ng-click" });
+            var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
             if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
               this.$location.path("plugins/raintank-kubernetes-app/page/node-info").search({
                 "cluster": this.cluster.id,
                 "node": slugify(node.metadata.name)
               });
             }
-          }
-        }, {
-          key: 'podInfo',
-          value: function podInfo(pod, evt) {
-            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-
-            var clickTargetClickAttr = _.find(evt.target.attributes, { name: "ng-click" });
-            var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.podDashboard(pod, $event)" : false;
-            if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
-              this.$location.path("plugins/raintank-kubernetes-app/page/pod-info").search({
-                "cluster": this.cluster.id,
-                "namespace": pod.metadata.namespace,
-                "pod": pod.metadata.name
-              });
-            }
-          }
-        }, {
-          key: 'getResource',
-          value: function getResource(prefix, resource) {
-            var self = this;
-            if (this.namespace) {
-              resource = "namespaces/" + this.namespace + "/" + resource;
-            }
-
-            return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + prefix + resource,
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
-            });
-          }
-        }, {
-          key: 'getDaemonSets',
-          value: function getDaemonSets() {
-            return this.getResource("/apis/extensions/v1beta1/", "daemonsets");
-          }
-        }, {
-          key: 'getReplicationControllers',
-          value: function getReplicationControllers() {
-            return this.getResource("/api/v1/", "replicationcontrollers");
-          }
-        }, {
-          key: 'getDeployments',
-          value: function getDeployments() {
-            return this.getResource("/apis/extensions/v1beta1/", "deployments");
-          }
-        }, {
-          key: 'getPods',
-          value: function getPods() {
-            return this.getResource("/api/v1/", "pods");
           }
         }]);
 
@@ -260,7 +175,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
 
       _export('ClusterInfoCtrl', ClusterInfoCtrl);
 
-      ClusterInfoCtrl.templateUrl = 'components/clusters/cluster_info.html';
+      ClusterInfoCtrl.templateUrl = 'components/clusters/partials/cluster_info.html';
     }
   };
 });

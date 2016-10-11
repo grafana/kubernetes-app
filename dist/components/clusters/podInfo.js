@@ -90,6 +90,11 @@ System.register([], function (_export, _context) {
               text: status ? "Ok" : "Error"
             };
           }
+        }, {
+          key: "isConditionOk",
+          value: function isConditionOk(condition) {
+            return this.conditionStatus(condition).value;
+          }
         }]);
 
         return PodInfoCtrl;
@@ -97,7 +102,7 @@ System.register([], function (_export, _context) {
 
       _export("PodInfoCtrl", PodInfoCtrl);
 
-      PodInfoCtrl.templateUrl = 'components/clusters/pod_info.html';
+      PodInfoCtrl.templateUrl = 'components/clusters/partials/pod_info.html';
     }
   };
 });

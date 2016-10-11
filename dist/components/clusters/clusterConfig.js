@@ -156,7 +156,7 @@ System.register(["lodash"], function (_export, _context) {
 
       _export("ClusterConfigCtrl", ClusterConfigCtrl);
 
-      ClusterConfigCtrl.templateUrl = 'components/clusters/cluster_config.html';
+      ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
       configMap = {
         "kind": "ConfigMap",

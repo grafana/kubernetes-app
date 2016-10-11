@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['./components/config/config', 'app/plugins/sdk', './components/clusters/clusters', './components/clusters/clusterConfig', './components/clusters/clusterInfo', './components/clusters/nodeInfo', './components/clusters/podInfo'], function (_export, _context) {
+System.register(['./components/config/config', 'app/plugins/sdk', './components/clusters/clusters', './components/clusters/clusterConfig', './components/clusters/clusterInfo', './components/clusters/clusterWorkloads', './components/clusters/nodeInfo', './components/clusters/podInfo'], function (_export, _context) {
   "use strict";
 
-  var ConfigCtrl, loadPluginCss, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, NodeInfoCtrl, PodInfoCtrl;
+  var ConfigCtrl, loadPluginCss, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, ClusterWorkloadsCtrl, NodeInfoCtrl, PodInfoCtrl;
   return {
     setters: [function (_componentsConfigConfig) {
       ConfigCtrl = _componentsConfigConfig.ConfigCtrl;
@@ -15,6 +15,8 @@ System.register(['./components/config/config', 'app/plugins/sdk', './components/
       ClusterConfigCtrl = _componentsClustersClusterConfig.ClusterConfigCtrl;
     }, function (_componentsClustersClusterInfo) {
       ClusterInfoCtrl = _componentsClustersClusterInfo.ClusterInfoCtrl;
+    }, function (_componentsClustersClusterWorkloads) {
+      ClusterWorkloadsCtrl = _componentsClustersClusterWorkloads.ClusterWorkloadsCtrl;
     }, function (_componentsClustersNodeInfo) {
       NodeInfoCtrl = _componentsClustersNodeInfo.NodeInfoCtrl;
     }, function (_componentsClustersPodInfo) {
@@ -34,6 +36,8 @@ System.register(['./components/config/config', 'app/plugins/sdk', './components/
       _export('ClusterConfigCtrl', ClusterConfigCtrl);
 
       _export('ClusterInfoCtrl', ClusterInfoCtrl);
+
+      _export('ClusterWorkloadsCtrl', ClusterWorkloadsCtrl);
 
       _export('NodeInfoCtrl', NodeInfoCtrl);
 

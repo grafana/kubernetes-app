@@ -1,0 +1,58 @@
+<h2>Pod:</h2>
+<h2>{{ctrl.pod.metadata.name}}</h2>
+<br>
+
+<h3 class="page-heading">Labels</h3>
+<div class="gf-form-group">
+	<div class="gf-form" ng-repeat="(k, v) in ctrl.pod.metadata.labels">
+		<span class="btn btn-primary btn-mini btn-inverse">
+			{{k}}: {{v}}
+		</span>
+	</div>
+</div>
+
+<h5><strong>Node: </strong>{{ctrl.pod.spec.nodeName}}</h5>
+<h5><strong>IP: </strong>{{ctrl.pod.status.hostIP}}</h5>
+<br>
+
+<h5><strong>Status: </strong>{{ctrl.pod.status.phase}}</h5>
+<h5><strong>Start time: </strong>{{ctrl.pod.status.startTime}}</h5>
+<br>
+
+<h3 class="page-heading">Conditions</h3>
+<table class="grafana-options-table">
+	<tr ng-repeat="condition in ctrl.pod.status.conditions">
+		<td style="padding-left: 25px;">
+			<i class="icon-gf"
+				ng-class="{
+					'icon-gf-critical alert-state-critical': !ctrl.isConditionOk(condition),
+					'icon-gf-online alert-state-ok': ctrl.isConditionOk(condition)
+				}">
+			</i>
+			{{ctrl.conditionStatus(condition).text}}
+		</td>
+		<td>{{condition.type}}</td>
+		<td>{{condition.message}}</td>
+	</tr>
+</table>
+<br>
+
+<h3 class="page-heading">Containers</h3>
+<div class="card-section card-list-layout-list">
+	<ol class="card-list">
+		<li class="card-item-wrapper" ng-repeat="container in ctrl.pod.spec.containers">
+			<div class="card-item">
+				<div class="card-item-body">
+					<div class="card-item-details">
+						<div class="card-item-name">
+							{{container.name}}
+						</div>
+						<div class="card-item-sub-name">
+							image: {{container.image}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ol>
+</div>

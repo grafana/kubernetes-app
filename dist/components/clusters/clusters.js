@@ -75,7 +75,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
 
       _export('ClustersCtrl', ClustersCtrl);
 
-      ClustersCtrl.templateUrl = 'components/clusters/clusters.html';
+      ClustersCtrl.templateUrl = 'components/clusters/partials/clusters.html';
     }
   };
 });
