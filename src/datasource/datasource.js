@@ -39,6 +39,10 @@ export class K8sDatasource {
       });
   }
 
+  getNode(name) {
+    return this._get('/api/v1/nodes/' + name);
+  }
+
   getNamespaces() {
     return this._get('/api/v1/namespaces')
       .then(result => {
@@ -81,8 +85,8 @@ export class K8sDatasource {
       });
   }
 
-  getNode(name) {
-    return this._get('/api/v1/nodes/' + name);
+  getPod(namespace, name) {
+    return this._get('/api/v1/' + addNamespace(namespace) + 'pods/' + name);
   }
 }
 

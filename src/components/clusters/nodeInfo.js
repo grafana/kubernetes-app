@@ -17,7 +17,7 @@ export class NodeInfoCtrl {
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-      let node_name = $location.search().node;
+      let node_name   = $location.search().node;
 
       this.loadDatasource(this.cluster_id).then(() => {
         this.clusterDS.getNode(node_name).then(node => {
