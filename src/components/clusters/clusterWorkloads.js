@@ -113,7 +113,7 @@ export class ClusterWorkloadsCtrl {
       .search({
         "cluster": this.cluster.id,
         "namespace": slugify(pod.metadata.namespace),
-        "pod": slugify(pod.metadata.name)
+        "pod": pod.metadata.name
       });
     }
   }
