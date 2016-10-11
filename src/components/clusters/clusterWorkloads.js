@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import {K8sClusterAPI} from './k8sClusterAPI';
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
@@ -14,9 +13,10 @@ function extractContainerID(str) {
 
 export class ClusterWorkloadsCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
     this.$q = $q;
     this.backendSrv = backendSrv;
+    this.datasourceSrv = datasourceSrv;
     this.$location = $location;
 
     this.pageReady = false;
@@ -37,34 +37,37 @@ export class ClusterWorkloadsCtrl {
       this.namespace = $location.search().namespace;
     }
 
-    this.getCluster($location.search().cluster).then(() => {
-      this.clusterAPI = new K8sClusterAPI(this.cluster.id, backendSrv);
-      this.pageReady = true;
-      this.getWorkloads();
-    });
-  }
-
-  getWorkloads() {
-    this.clusterAPI.get('namespaces').then(ns => {
-      this.namespaces = ns.items;
-    });
-    this.getDaemonSets().then(ds => {
-      this.daemonSets = ds.items;
-    });
-    this.getReplicationControllers().then(rc => {
-      this.replicationControllers = rc.items;
-    });
-    this.getDeployments().then(deploy => {
-      this.deployments = deploy.items;
-    });
-    this.getPods().then(pod => {
-      this.pods = pod.items;
-    });
+    this.getCluster($location.search().cluster)
+      .then(clusterDS => {
+        this.clusterDS = clusterDS;
+        this.pageReady = true;
+        this.getWorkloads();
+      });
   }
 
   getCluster(id) {
     return this.backendSrv.get('api/datasources/'+id).then(ds => {
       this.cluster = ds;
+      return this.datasourceSrv.get(ds.name);
+    });
+  }
+
+  getWorkloads() {
+    let namespace = this.namespace;
+    this.clusterDS.getNamespaces().then(namespaces => {
+      this.namespaces = namespaces;
+    });
+    this.clusterDS.getDaemonSets(namespace).then(daemonSets => {
+      this.daemonSets = daemonSets;
+    });
+    this.clusterDS.getReplicationControllers(namespace).then(rc => {
+      this.replicationControllers = rc;
+    });
+    this.clusterDS.getDeployments(namespace).then(deployments => {
+      this.deployments = deployments;
+    });
+    this.clusterDS.getPods(namespace).then(pods => {
+      this.pods = pods;
     });
   }
 
@@ -113,30 +116,6 @@ export class ClusterWorkloadsCtrl {
         "pod": slugify(pod.metadata.name)
       });
     }
-  }
-
-  getResource(prefix, resource) {
-    if (this.namespace) {
-      resource = "namespaces/" + this.namespace + "/" + resource;
-    }
-
-    return this.clusterAPI.getRawResource(prefix + resource);
-  }
-
-  getDaemonSets() {
-    return this.getResource("/apis/extensions/v1beta1/", "daemonsets");
-  }
-
-  getReplicationControllers() {
-    return this.getResource("/api/v1/", "replicationcontrollers");
-  }
-
-  getDeployments() {
-    return this.getResource("/apis/extensions/v1beta1/", "deployments");
-  }
-
-  getPods() {
-    return this.getResource("/api/v1/", "pods");
   }
 }
 

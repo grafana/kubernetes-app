@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import $ from 'jquery';
-import {K8sClusterAPI} from './k8sClusterAPI';
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
@@ -9,11 +8,11 @@ function slugify(str) {
 
 export class ClusterInfoCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, $q, $location, alertSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
     this.$q = $q;
     this.backendSrv = backendSrv;
+    this.datasourceSrv = datasourceSrv;
     this.$location = $location;
-    this.clusterAPI = {};
 
     this.pageReady = false;
     this.cluster = {};
@@ -27,28 +26,30 @@ export class ClusterInfoCtrl {
       return;
     }
 
-    this.getCluster($location.search().cluster).then(() => {
-      this.clusterAPI = new K8sClusterAPI(this.cluster.id, backendSrv);
-      this.pageReady = true;
-      this.getWorkloads();
-    });
-  }
-
-  getWorkloads() {
-    this.clusterAPI.get('componentstatuses').then(stats => {
-      this.componentStatuses = stats.items;
-    });
-    this.clusterAPI.get('namespaces').then(ns => {
-      this.namespaces = ns.items;
-    });
-    this.clusterAPI.get('nodes').then(nodes => {
-      this.nodes = nodes.items;
-    });
+    this.getCluster($location.search().cluster)
+      .then(clusterDS => {
+        this.clusterDS = clusterDS;
+        this.pageReady = true;
+        this.getClusterInfo();
+      });
   }
 
   getCluster(id) {
     return this.backendSrv.get('api/datasources/'+id).then(ds => {
       this.cluster = ds;
+      return this.datasourceSrv.get(ds.name);
+    });
+  }
+
+  getClusterInfo() {
+    this.clusterDS.getComponentStatuses().then(stats => {
+      this.componentStatuses = stats;
+    });
+    this.clusterDS.getNamespaces().then(namespaces => {
+      this.namespaces = namespaces;
+    });
+    this.clusterDS.getNodes().then(nodes => {
+      this.nodes = nodes;
     });
   }
 
