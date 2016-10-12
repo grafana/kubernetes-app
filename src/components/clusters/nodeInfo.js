@@ -9,6 +9,7 @@ export class NodeInfoCtrl {
     this.$location = $location;
 
     this.pageReady = false;
+    this.cluster = {};
     this.clusterDS = {};
     this.node = {};
 
@@ -16,10 +17,10 @@ export class NodeInfoCtrl {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
-      this.cluster_id = $location.search().cluster;
-      let node_name   = $location.search().node;
+      let cluster_id = $location.search().cluster;
+      let node_name  = $location.search().node;
 
-      this.loadDatasource(this.cluster_id).then(() => {
+      this.loadDatasource(cluster_id).then(() => {
         this.clusterDS.getNode(node_name).then(node => {
           this.node = node;
           this.pageReady = true;
@@ -31,10 +32,20 @@ export class NodeInfoCtrl {
   loadDatasource(id) {
     return this.backendSrv.get('api/datasources/' + id)
       .then(ds => {
+        this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
       }).then(clusterDS => {
         this.clusterDS = clusterDS;
         return clusterDS;
+      });
+  }
+
+  goToNodeDashboard() {
+    this.$location.path("dashboard/db/kubernetes-node")
+      .search({
+        "var-datasource": this.cluster.jsonData.ds,
+        "var-cluster": this.cluster.name,
+        "var-node": slugify(this.node.metadata.name)
       });
   }
 
@@ -59,6 +70,11 @@ export class NodeInfoCtrl {
   conditionLastTransitionTime(condition) {
     return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
   }
+}
+
+function slugify(str) {
+  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  return slug;
 }
 
 NodeInfoCtrl.templateUrl = 'components/clusters/partials/node_info.html';

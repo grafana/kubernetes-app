@@ -35,7 +35,7 @@ export class ClusterInfoCtrl {
   }
 
   getCluster(id) {
-    return this.backendSrv.get('api/datasources/'+id).then(ds => {
+    return this.backendSrv.get('api/datasources/' + id).then(ds => {
       this.cluster = ds;
       return this.datasourceSrv.get(ds.name);
     });
