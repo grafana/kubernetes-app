@@ -16,6 +16,55 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
     return slug;
   }
 
+  function getComponentHealth(component) {
+    var health = "unhealthy";
+    _.forEach(component.conditions, function (condition) {
+      if (condition.type === "Healthy" && condition.status === "True") {
+        health = "ok";
+      }
+    });
+    return getHealthState(health);
+  }
+
+  function getNodeHealth(node) {
+    var health = "unhealthy";
+    _.forEach(node.status.conditions, function (condition) {
+      if (condition.type === "Ready" && condition.status === "True") {
+        health = "ok";
+      }
+    });
+    return getHealthState(health);
+  }
+
+  function getHealthState(health) {
+    switch (health) {
+      case 'ok':
+        {
+          return {
+            text: 'OK',
+            iconClass: 'icon-gf icon-gf-online',
+            stateClass: 'alert-state-ok'
+          };
+        }
+      case 'unhealthy':
+        {
+          return {
+            text: 'UNHEALTHY',
+            iconClass: 'icon-gf icon-gf-critical',
+            stateClass: 'alert-state-critical'
+          };
+        }
+      case 'warning':
+        {
+          return {
+            text: 'warning',
+            iconClass: "icon-gf icon-gf-critical",
+            stateClass: 'alert-state-warning'
+          };
+        }
+    }
+  }
+
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
@@ -88,46 +137,20 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             var _this3 = this;
 
             this.clusterDS.getComponentStatuses().then(function (stats) {
-              _this3.componentStatuses = stats;
+              _this3.componentStatuses = _.map(stats, function (stat) {
+                stat.healthState = getComponentHealth(stat);
+                return stat;
+              });
             });
             this.clusterDS.getNamespaces().then(function (namespaces) {
               _this3.namespaces = namespaces;
             });
             this.clusterDS.getNodes().then(function (nodes) {
-              _this3.nodes = nodes;
+              _this3.nodes = _.map(nodes, function (node) {
+                node.healthState = getNodeHealth(node);
+                return node;
+              });
             });
-          }
-        }, {
-          key: 'componentHealth',
-          value: function componentHealth(component) {
-            var health = "unhealthy";
-            _.forEach(component.conditions, function (condition) {
-              if (condition.type === "Healthy" && condition.status === "True") {
-                health = "healthy";
-              }
-            });
-            return health;
-          }
-        }, {
-          key: 'isComponentHealthy',
-          value: function isComponentHealthy(component) {
-            return this.componentHealth(component) === "healthy";
-          }
-        }, {
-          key: 'nodeStatus',
-          value: function nodeStatus(node) {
-            var health = "unhealthy";
-            _.forEach(node.status.conditions, function (condition) {
-              if (condition.type === "Ready" && condition.status === "True") {
-                health = "healthy";
-              }
-            });
-            return health;
-          }
-        }, {
-          key: 'isNodeHealthy',
-          value: function isNodeHealthy(node) {
-            return this.nodeStatus(node) === "healthy";
           }
         }, {
           key: 'goToNodeDashboard',

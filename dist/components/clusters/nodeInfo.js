@@ -11,6 +11,11 @@ System.register(["moment"], function (_export, _context) {
     }
   }
 
+  function slugify(str) {
+    var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+    return slug;
+  }
+
   return {
     setters: [function (_moment) {
       moment = _moment.default;
@@ -47,6 +52,7 @@ System.register(["moment"], function (_export, _context) {
           this.$location = $location;
 
           this.pageReady = false;
+          this.cluster = {};
           this.clusterDS = {};
           this.node = {};
 
@@ -55,10 +61,10 @@ System.register(["moment"], function (_export, _context) {
             return;
           } else {
             (function () {
-              _this.cluster_id = $location.search().cluster;
+              var cluster_id = $location.search().cluster;
               var node_name = $location.search().node;
 
-              _this.loadDatasource(_this.cluster_id).then(function () {
+              _this.loadDatasource(cluster_id).then(function () {
                 _this.clusterDS.getNode(node_name).then(function (node) {
                   _this.node = node;
                   _this.pageReady = true;
@@ -74,10 +80,20 @@ System.register(["moment"], function (_export, _context) {
             var _this2 = this;
 
             return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
+              _this2.cluster = ds;
               return _this2.datasourceSrv.get(ds.name);
             }).then(function (clusterDS) {
               _this2.clusterDS = clusterDS;
               return clusterDS;
+            });
+          }
+        }, {
+          key: "goToNodeDashboard",
+          value: function goToNodeDashboard() {
+            this.$location.path("dashboard/db/kubernetes-node").search({
+              "var-datasource": this.cluster.jsonData.ds,
+              "var-cluster": this.cluster.name,
+              "var-node": slugify(this.node.metadata.name)
             });
           }
         }, {
