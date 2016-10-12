@@ -43,42 +43,20 @@ export class ClusterInfoCtrl {
 
   getClusterInfo() {
     this.clusterDS.getComponentStatuses().then(stats => {
-      this.componentStatuses = stats;
+      this.componentStatuses = _.map(stats, stat => {
+        stat.healthState = getComponentHealth(stat);
+        return stat;
+      });
     });
     this.clusterDS.getNamespaces().then(namespaces => {
       this.namespaces = namespaces;
     });
     this.clusterDS.getNodes().then(nodes => {
-      this.nodes = nodes;
+      this.nodes = _.map(nodes, node => {
+        node.healthState = getNodeHealth(node);
+        return node;
+      });
     });
-  }
-
-  componentHealth(component) {
-    var health = "unhealthy";
-    _.forEach(component.conditions, function(condition) {
-      if ((condition.type === "Healthy") && (condition.status === "True")) {
-        health = "healthy";
-      }
-    });
-    return health;
-  }
-
-  isComponentHealthy(component) {
-    return this.componentHealth(component) === "healthy";
-  }
-
-  nodeStatus(node) {
-    var health = "unhealthy";
-    _.forEach(node.status.conditions, function(condition) {
-      if ((condition.type === "Ready") && (condition.status === "True")) {
-        health = "healthy";
-      }
-    });
-    return health;
-  }
-
-  isNodeHealthy(node) {
-    return this.nodeStatus(node) === "healthy";
   }
 
   goToNodeDashboard(node, evt) {
@@ -117,6 +95,54 @@ export class ClusterInfoCtrl {
         "cluster": this.cluster.id,
         "node": slugify(node.metadata.name)
       });
+    }
+  }
+}
+
+function getComponentHealth(component) {
+  let health = "unhealthy";
+  _.forEach(component.conditions, condition => {
+    if (condition.type   === "Healthy" &&
+        condition.status === "True") {
+      health = "ok";
+    }
+  });
+  return getHealthState(health);
+}
+
+function getNodeHealth(node) {
+  let health = "unhealthy";
+  _.forEach(node.status.conditions, condition => {
+    if (condition.type   === "Ready" &&
+        condition.status === "True") {
+      health = "ok";
+    }
+  });
+  return getHealthState(health);
+}
+
+function getHealthState(health) {
+  switch (health) {
+    case 'ok': {
+      return {
+        text: 'OK',
+        iconClass: 'icon-gf icon-gf-online',
+        stateClass: 'alert-state-ok'
+      };
+    }
+    case 'unhealthy': {
+      return {
+        text: 'UNHEALTHY',
+        iconClass: 'icon-gf icon-gf-critical',
+        stateClass: 'alert-state-critical'
+      };
+    }
+    case 'warning': {
+      return {
+        text: 'warning',
+        iconClass: "icon-gf icon-gf-critical",
+        stateClass: 'alert-state-warning'
+      };
     }
   }
 }
