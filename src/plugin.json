@@ -14,8 +14,8 @@
     },
     "keywords": ["raintank", "kubernetes", "snap"],
     "logos": {
-      "small": "img/logo.png",
-      "large": "img/logo.png"
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
     },
     "links": [
       {"name": "raintank", "url": "http://raintank.io"},
