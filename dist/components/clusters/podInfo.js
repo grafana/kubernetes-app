@@ -1,9 +1,9 @@
 "use strict";
 
-System.register([], function (_export, _context) {
+System.register(["moment"], function (_export, _context) {
   "use strict";
 
-  var _createClass, PodInfoCtrl;
+  var moment, _createClass, PodInfoCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -12,7 +12,9 @@ System.register([], function (_export, _context) {
   }
 
   return {
-    setters: [],
+    setters: [function (_moment) {
+      moment = _moment.default;
+    }],
     execute: function () {
       _createClass = function () {
         function defineProperties(target, props) {
@@ -96,6 +98,11 @@ System.register([], function (_export, _context) {
           key: "isConditionOk",
           value: function isConditionOk(condition) {
             return this.conditionStatus(condition).value;
+          }
+        }, {
+          key: "conditionLastTransitionTime",
+          value: function conditionLastTransitionTime(condition) {
+            return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
           }
         }]);
 
