@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export class PodInfoCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
@@ -51,6 +53,10 @@ export class PodInfoCtrl {
 
   isConditionOk(condition) {
     return this.conditionStatus(condition).value;
+  }
+
+  conditionLastTransitionTime(condition) {
+    return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
   }
 }
 
