@@ -62,7 +62,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(removeEmptySeries(snap.$cluster.$node.intel.docker.$container.stats.cgroups.memory_stats.usage.usage), 5)",
+              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$container.stats.cgroups.memory_stats.usage.usage, 0), 5)",
               "textEditor": false
             }
           ],
@@ -243,7 +243,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(removeEmptySeries(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.*), 5, 9)",
+              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.*, 0.0001), 5, 9)",
               "textEditor": false
             }
           ],
