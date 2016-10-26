@@ -1,14 +1,12 @@
 'use strict';
 
-System.register(['./components/config/config', 'app/plugins/sdk', './components/clusters/clusters', './components/clusters/clusterConfig', './components/clusters/clusterInfo', './components/clusters/clusterWorkloads', './components/clusters/nodeInfo', './components/clusters/podInfo'], function (_export, _context) {
+System.register(['./components/config/config', './components/clusters/clusters', './components/clusters/clusterConfig', './components/clusters/clusterInfo', './components/clusters/clusterWorkloads', './components/clusters/nodeInfo', './components/clusters/podInfo'], function (_export, _context) {
   "use strict";
 
-  var ConfigCtrl, loadPluginCss, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, ClusterWorkloadsCtrl, NodeInfoCtrl, PodInfoCtrl;
+  var ConfigCtrl, ClustersCtrl, ClusterConfigCtrl, ClusterInfoCtrl, ClusterWorkloadsCtrl, NodeInfoCtrl, PodInfoCtrl;
   return {
     setters: [function (_componentsConfigConfig) {
       ConfigCtrl = _componentsConfigConfig.ConfigCtrl;
-    }, function (_appPluginsSdk) {
-      loadPluginCss = _appPluginsSdk.loadPluginCss;
     }, function (_componentsClustersClusters) {
       ClustersCtrl = _componentsClustersClusters.ClustersCtrl;
     }, function (_componentsClustersClusterConfig) {
@@ -23,12 +21,6 @@ System.register(['./components/config/config', 'app/plugins/sdk', './components/
       PodInfoCtrl = _componentsClustersPodInfo.PodInfoCtrl;
     }],
     execute: function () {
-
-      loadPluginCss({
-        dark: 'plugins/raintank-kubernetese-app/css/kubernetes.dark.css',
-        light: 'plugins/raintank-kubernetes-app/css/kubernetes.light.css'
-      });
-
       _export('ConfigCtrl', ConfigCtrl);
 
       _export('ClustersCtrl', ClustersCtrl);
