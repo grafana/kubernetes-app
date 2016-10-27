@@ -5,9 +5,6 @@
     			<span class="gf-form-label width-7">Name</span>
     				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="My cluster name" required="" />
     			</div>
-    			<div ng-show="ctrl.isOrgEditor && !ctrl.snapDeployed">
-				  	<button type="submit" class="btn btn-success" ng-click="ctrl.deploySnap()" ng-enabled="clusterform.$valid">Deploy</button>
-				</div>
     		</div>
     	</div>
     </div>
@@ -16,6 +13,7 @@
 		suggest-url="http://localhost:8080">
 	</datasource-http-settings>
 
+  <h3 class="page-heading">Graphite Settings - Read</h3>
 	<div class="gf-form-group">
     	<div class="gf-form-inline">
     		<div class="gf-form">
@@ -25,11 +23,15 @@
     		</div>
     	</div>
     </div>
+    <h3 class="page-heading">Graphite Settings - Write</h3>
     <div class="gf-form-group">
     	<div class="gf-form-inline">
     		<div class="gf-form">
-    			<span class="gf-form-label width-7">Server</span>
+    			<span class="gf-form-label width-7">Carbon Host</span>
     				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.server" placeholder="Carbon host" required="" />
+            <info-popover mode="right-absolute">
+              Specify a url to the Carbon Host. Metrics from Kubernetes are sent to the Carbon host and saved to Graphite.
+            </info-popover>
     			</div>
     		</div>
     		<div class="gf-form">
@@ -42,6 +44,6 @@
 
 </form>
 <div ng-show="ctrl.isOrgEditor">
-  	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
-  	<a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save and Deploy</button>
+  	<a class="btn btn-link" ng-click="ctrl.cancel();">Back to Kubernetes Cluster List</a>
 </div>

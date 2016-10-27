@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import appEvents from 'app/core/app_events';
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
@@ -7,7 +8,7 @@ function slugify(str) {
 
 export class ClusterConfigCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, $q, contextSrv, $location, $window) {
+  constructor($scope, $injector, backendSrv, $q, contextSrv, $location, $window, alertSrv) {
     var self = this;
     this.$q = $q;
     this.backendSrv = backendSrv;
@@ -17,6 +18,8 @@ export class ClusterConfigCtrl {
     this.cluster = {type: 'raintank-kubernetes-datasource'};
     this.pageReady = false;
     this.snapDeployed = false;
+    this.alertSrv = alertSrv;
+
     var promises = [];
     if ("cluster" in $location.search()) {
       promises.push(self.getCluster($location.search().cluster).then(() => {
@@ -66,14 +69,31 @@ export class ClusterConfigCtrl {
   }
 
   save() {
+    var question = !this.snapDeployed ?
+      'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. '
+      + 'Are you sure you want to deploy?'
+      : 'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. '
+      + 'Are you sure you want to deploy?';
+    appEvents.emit('confirm-modal', {
+      title: 'Deploy to Kubernetes Cluster',
+      text: question,
+      yesText: "Deploy",
+      icon: "fa-question",
+      onConfirm: () => {
+        this.saveAndDeploy();
+      }
+    });
+  }
+
+  saveAndDeploy() {
     var self = this;
     if (this.cluster.id) {
       return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster).then(() => {
-        self.$location.path('plugins/raintank-kubernetes-app/page/clusters');
+        return self.deploySnap();
       });
     } else {
       return this.backendSrv.post('/api/datasources', this.cluster).then(() => {
-        self.$location.path('plugins/raintank-kubernetes-app/page/clusters');
+        return self.deploySnap();
       });
     }
   }
@@ -86,20 +106,72 @@ export class ClusterConfigCtrl {
     task.workflow.collect.publish[0].config.server = self.cluster.jsonData.server;
     var cm = _.cloneDeep(configMap);
     cm.data["core.json"] = JSON.stringify(task);
+
+    if (!this.snapDeployed) {
+      return this.createConfigMap(self.cluster.id, cm)
+      .then(() => {
+        return this.createDaemonSet(self.cluster.id, daemonSet);
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      }).then(() => {
+        this.snapDeployed = true;
+        this.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
+      });
+    } else {
+      return self.updateSnapSettings(cm);
+    }
+  }
+
+  createConfigMap(clusterId, cm) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/configmaps',
+      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps',
       method: 'POST',
       data: cm,
       headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  createDaemonSet(clusterId, daemonSet) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
+      method: 'POST',
+      data: daemonSet,
+      headers: {'Content-Type': "application/json"}
+    });
+  }
+
+  deleteConfigMap(clusterId) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps/snap-tasks',
+      method: 'DELETE'
+    });
+  }
+
+  updateSnapSettings(cm) {
+    var self = this;
+    return this.deleteConfigMap(self.cluster.id)
+    .then(() => {
+      return this.createConfigMap(self.cluster.id, cm);
     }).then(() => {
-      return self.backendSrv.request({
-        url: 'api/datasources/proxy/' + self.cluster.id + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
-        method: 'POST',
-        data: daemonSet,
-        headers: {'Content-Type': "application/json"}
-      }).then(() => {
-        this.snapDeployed = true;
+      return this.backendSrv.request({
+        url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
       });
+    }).then(pods => {
+      if (!pods || pods.items.length === 0) {
+        throw "Failed to restart snap pod. No snapd pod found to update.";
+      }
+
+      return this.backendSrv.request({
+        url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pods.items[0].metadata.name,
+        method: 'DELETE',
+      });
+    }).catch(err => {
+      this.alertSrv.set("Error", err, 'error');
+    }).then(() => {
+      this.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
     });
   }
 
