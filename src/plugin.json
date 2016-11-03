@@ -46,7 +46,7 @@
     },
     {
       "type": "dashboard",
-      "name": "Kubernetese Node",
+      "name": "Kubernetes Node",
       "path": "dashboards/kubernetes-node.json",
       "addToNav": false
     },
