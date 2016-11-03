@@ -101,27 +101,33 @@ export class ClusterInfoCtrl {
 
 function getComponentHealth(component) {
   let health = "unhealthy";
+  let message = '';
   _.forEach(component.conditions, condition => {
     if (condition.type   === "Healthy" &&
         condition.status === "True") {
       health = "ok";
+    } else {
+      message = condition.message;
     }
   });
-  return getHealthState(health);
+  return getHealthState(health, message);
 }
 
 function getNodeHealth(node) {
   let health = "unhealthy";
+  let message = '';
   _.forEach(node.status.conditions, condition => {
     if (condition.type   === "Ready" &&
         condition.status === "True") {
       health = "ok";
+    } else {
+      message = condition.message;
     }
   });
-  return getHealthState(health);
+  return getHealthState(health, message);
 }
 
-function getHealthState(health) {
+function getHealthState(health, message) {
   switch (health) {
     case 'ok': {
       return {
@@ -134,14 +140,16 @@ function getHealthState(health) {
       return {
         text: 'UNHEALTHY',
         iconClass: 'icon-gf icon-gf-critical',
-        stateClass: 'alert-state-critical'
+        stateClass: 'alert-state-critical',
+        message: message || ''
       };
     }
     case 'warning': {
       return {
         text: 'warning',
         iconClass: "icon-gf icon-gf-critical",
-        stateClass: 'alert-state-warning'
+        stateClass: 'alert-state-warning',
+        message: message || ''
       };
     }
   }
