@@ -62,7 +62,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$container.stats.cgroups.memory_stats.usage.usage, 0), 5)",
+              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.memory_stats.usage.usage, 0), 6,7)",
               "textEditor": false
             }
           ],
@@ -151,13 +151,13 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.network.*.rx_bytes), 5, 'sum'), '(.*)', '\\1-in')",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.rx_bytes), 6, 'sum'), '(.*)', '\\1-in')",
               "textEditor": false
             },
             {
               "hide": false,
               "refId": "B",
-              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.network.*.tx_bytes), 5, 'sum'), '(.*)', '\\1-out')",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 6, 'sum'), '(.*)', '\\1-out')",
               "textEditor": false
             }
           ],
@@ -243,7 +243,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.*, 0.0001), 5, 9)",
+              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.*, 0.0001), 6,7, 11)",
               "textEditor": false
             }
           ],
@@ -326,7 +326,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(perSecond(snap.$cluster.$node.intel.docker.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 5)",
+              "target": "aliasByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 6,7)",
               "textEditor": false
             }
           ],
@@ -417,7 +417,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$container.stats.filesystem.*.reads_completed), 8), 5)",
+              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.reads_completed), 10), 6,7)",
               "textEditor": false
             }
           ],
@@ -499,7 +499,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$container.stats.filesystem.*.writes_completed), 8), 5)",
+              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.writes_completed), 10), 6, 7)",
               "textEditor": false
             }
           ],
@@ -589,7 +589,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "groupByNode(snap.$cluster.$node.intel.docker.$container.stats.connection.tcp.established, 5, 'sum')",
+              "target": "groupByNode(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.established, 6, 'sum')",
               "textEditor": false
             }
           ],
@@ -703,12 +703,37 @@
         "hide": 0,
         "includeAll": true,
         "multi": true,
-        "name": "container",
+        "name": "namespace",
         "options": [],
         "query": "snap.$cluster.$node.intel.docker.*",
         "refresh": 1,
         "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": "$datasource",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "pod",
+        "options": [],
+        "query": "snap.$cluster.$node.intel.docker.$namespace.*",
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": "$datasource",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "container",
+        "options": [],
+        "query": "snap.$cluster.$node.intel.docker.$namespace.$pod.*",
+        "refresh": 1,
+        "type": "query"
       }
+
     ]
   },
   "annotations": {
@@ -719,5 +744,5 @@
   "version": 4,
   "links": [],
   "gnetId": 482,
-  "description": "Summery metrics about containers running on Kubernetes nodes."
+  "description": "Summary metrics about containers running on Kubernetes nodes."
 }
