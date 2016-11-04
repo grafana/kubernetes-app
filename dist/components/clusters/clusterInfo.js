@@ -12,31 +12,37 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
   }
 
   function slugify(str) {
-    var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+    var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
     return slug;
   }
 
   function getComponentHealth(component) {
     var health = "unhealthy";
+    var message = '';
     _.forEach(component.conditions, function (condition) {
       if (condition.type === "Healthy" && condition.status === "True") {
         health = "ok";
+      } else {
+        message = condition.message;
       }
     });
-    return getHealthState(health);
+    return getHealthState(health, message);
   }
 
   function getNodeHealth(node) {
     var health = "unhealthy";
+    var message = '';
     _.forEach(node.status.conditions, function (condition) {
       if (condition.type === "Ready" && condition.status === "True") {
         health = "ok";
+      } else {
+        message = condition.message;
       }
     });
-    return getHealthState(health);
+    return getHealthState(health, message);
   }
 
-  function getHealthState(health) {
+  function getHealthState(health, message) {
     switch (health) {
       case 'ok':
         {
@@ -51,7 +57,8 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           return {
             text: 'UNHEALTHY',
             iconClass: 'icon-gf icon-gf-critical',
-            stateClass: 'alert-state-critical'
+            stateClass: 'alert-state-critical',
+            message: message || ''
           };
         }
       case 'warning':
@@ -59,7 +66,8 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           return {
             text: 'warning',
             iconClass: "icon-gf icon-gf-critical",
-            stateClass: 'alert-state-warning'
+            stateClass: 'alert-state-warning',
+            message: message || ''
           };
         }
     }

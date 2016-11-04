@@ -59,7 +59,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(averageSeries(snap.$cluster.$node.intel.procfs.cpu.all.system_percentage), 'sytem')",
+              "target": "alias(averageSeries(snap.$cluster.$node.intel.procfs.cpu.all.system_percentage), 'system')",
               "textEditor": false
             },
             {

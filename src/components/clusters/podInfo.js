@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+function slugify(str) {
+  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  return slug;
+}
+
 export class PodInfoCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
@@ -30,6 +35,7 @@ export class PodInfoCtrl {
   loadDatasource(id) {
     return this.backendSrv.get('api/datasources/' + id)
       .then(ds => {
+        this.datasource = ds.jsonData.ds;
         return this.datasourceSrv.get(ds.name);
       }).then(clusterDS => {
         this.clusterDS = clusterDS;
@@ -51,12 +57,23 @@ export class PodInfoCtrl {
     };
   }
 
+  goToPodDashboard(pod) {
+    this.$location.path("dashboard/db/kubernetes-container")
+    .search({
+      "var-datasource": this.datasource,
+      "var-cluster": this.clusterDS.name,
+      "var-node": slugify(pod.spec.nodeName),
+      "var-namespace": pod.metadata.namespace,
+      "var-pod": pod.metadata.name
+    });
+  }
+
   isConditionOk(condition) {
     return this.conditionStatus(condition).value;
   }
 
-  conditionLastTransitionTime(condition) {
-    return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
+  formatTime(time) {
+    return moment(time).format('YYYY-MM-DD HH:mm:ss');
   }
 }
 

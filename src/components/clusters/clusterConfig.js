@@ -302,7 +302,7 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v5",
+            "image": "raintank/snap_k8s:v6",
             "ports": [
               {
                 "name": "snap-api",
@@ -315,6 +315,14 @@ var daemonSet = {
               {
                 "name": "PROCFS_MOUNT",
                 "value": "/proc_host"
+              },
+              {
+                "name": "NODE_NAME",
+                "valueFrom": {
+                  "fieldRef": {
+                    "fieldPath": "spec.nodeName"
+                  }
+                }
               }
             ],
             "resources": {},

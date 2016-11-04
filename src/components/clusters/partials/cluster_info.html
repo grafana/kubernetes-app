@@ -35,6 +35,7 @@
 			<div class="card-item card-item--alert">
 				<div class="card-item-header card-item-header-action">
 					<div style="display:inline-block; font-size: 80%;">
+            <span ng-if="component.healthState.text !== 'OK'">{{component.healthState.message}}</span>
 						<span class="alert-list-item-state {{component.healthState.stateClass}}">
 							<i class="{{component.healthState.iconClass}}"></i>
 							{{component.healthState.text}}
@@ -73,6 +74,7 @@
 							<span class="small">{{node.metadata.name}}</span>
 						</div>
 						<div class="card-item-sub-name">
+              <span ng-if="node.healthState.text !== 'OK'">{{node.healthState.message}}</span>
 							<span class="alert-list-item-state {{node.healthState.stateClass}}">
 								<i class="{{node.healthState.iconClass}}"></i>
 								{{node.healthState.text}}

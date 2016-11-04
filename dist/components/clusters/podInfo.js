@@ -11,6 +11,11 @@ System.register(["moment"], function (_export, _context) {
     }
   }
 
+  function slugify(str) {
+    var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+    return slug;
+  }
+
   return {
     setters: [function (_moment) {
       moment = _moment.default;
@@ -73,6 +78,7 @@ System.register(["moment"], function (_export, _context) {
             var _this2 = this;
 
             return this.backendSrv.get('api/datasources/' + id).then(function (ds) {
+              _this2.datasource = ds.jsonData.ds;
               return _this2.datasourceSrv.get(ds.name);
             }).then(function (clusterDS) {
               _this2.clusterDS = clusterDS;
@@ -95,14 +101,25 @@ System.register(["moment"], function (_export, _context) {
             };
           }
         }, {
+          key: "goToPodDashboard",
+          value: function goToPodDashboard(pod) {
+            this.$location.path("dashboard/db/kubernetes-container").search({
+              "var-datasource": this.datasource,
+              "var-cluster": this.clusterDS.name,
+              "var-node": slugify(pod.spec.nodeName),
+              "var-namespace": pod.metadata.namespace,
+              "var-pod": pod.metadata.name
+            });
+          }
+        }, {
           key: "isConditionOk",
           value: function isConditionOk(condition) {
             return this.conditionStatus(condition).value;
           }
         }, {
-          key: "conditionLastTransitionTime",
-          value: function conditionLastTransitionTime(condition) {
-            return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
+          key: "formatTime",
+          value: function formatTime(time) {
+            return moment(time).format('YYYY-MM-DD HH:mm:ss');
           }
         }]);
 
