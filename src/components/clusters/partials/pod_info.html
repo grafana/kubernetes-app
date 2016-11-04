@@ -3,7 +3,7 @@
 	</h1>
 	<div style="float: right; padding-top: 1em; font-style: italic;">
 		<h5>
-			<a ng-click="ctrl.goToPodDashboard()">
+			<a ng-click="ctrl.goToPodDashboard(ctrl.pod)">
 				<i ng-class="icon" class="icon-gf icon-gf-dashboard"></i> Pod Dashboard
 			</a>
 		</h5>
@@ -33,7 +33,7 @@
 		</div>
 		<div class="gf-form">
 			<span class="muted">
-				Start time: {{ctrl.conditionLastTransitionTime(ctrl.pod.status.startTime)}}
+				Start time: {{ctrl.formatTime(ctrl.pod.status.startTime)}}
 			</span>
 		</div>
 	</div>
@@ -60,7 +60,7 @@
 					{{ctrl.conditionStatus(condition).text}}
 				</td>
 				<td>{{condition.type}}</td>
-				<td>{{ctrl.conditionLastTransitionTime(condition)}}</td>
+				<td>{{ctrl.formatTime(condition.lastTransitionTime)}}</td>
 			</tr>
 		</table>
 	</div>
