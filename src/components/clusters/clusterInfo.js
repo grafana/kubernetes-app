@@ -2,7 +2,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 
 function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
   return slug;
 }
 
