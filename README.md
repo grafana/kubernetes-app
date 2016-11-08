@@ -4,9 +4,14 @@
 
 The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance.
 
+![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/container-dashboard-screenshot.png)
+
+![Node Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/node-dashboard-screenshot.png)
+
 ### Requirements
 
 1. Currently only saves metrics to Graphite.
+
 2. Basic Auth needs to be set up for accessing your Kubernetes cluster.
 
 ### Node Metrics
@@ -36,6 +41,8 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 #### Connecting to your Cluster
 
 1. Go to the Cluster List page via the Kubernetes app menu
+
+  ![Cluster List](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/app-menu-screenshot.png)
 
 2. Click the `New Cluster` button.
 
