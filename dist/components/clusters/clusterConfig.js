@@ -344,7 +344,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
               }],
               "containers": [{
                 "name": "snap",
-                "image": "raintank/snap_k8s:v9",
+                "image": "raintank/snap_k8s:v10",
                 "ports": [{
                   "name": "snap-api",
                   "hostPort": 8181,

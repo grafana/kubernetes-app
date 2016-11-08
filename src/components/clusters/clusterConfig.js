@@ -307,7 +307,7 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v9",
+            "image": "raintank/snap_k8s:v10",
             "ports": [
               {
                 "name": "snap-api",
