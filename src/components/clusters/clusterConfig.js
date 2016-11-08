@@ -99,6 +99,11 @@ export class ClusterConfigCtrl {
   }
 
   deploySnap() {
+    if(!this.cluster || !this.cluster.id) {
+      this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
+      return;
+    }
+
     var self = this;
     var task = _.cloneDeep(snapTask);
     task.workflow.collect.publish[0].config.prefix = "snap."+slugify(self.cluster.name) + ".<%NODE%>";

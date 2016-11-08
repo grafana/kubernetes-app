@@ -141,6 +141,11 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
           value: function deploySnap() {
             var _this2 = this;
 
+            if (!this.cluster || !this.cluster.id) {
+              this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
+              return;
+            }
+
             var self = this;
             var task = _.cloneDeep(snapTask);
             task.workflow.collect.publish[0].config.prefix = "snap." + slugify(self.cluster.name) + ".<%NODE%>";
