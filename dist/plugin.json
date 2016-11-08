@@ -23,11 +23,11 @@
       {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
     ],
     "screenshots": [
-      {"name": "Container Dashboard", "path": "src/img/container-dashboard-screenshot.png"},
-      {"name": "Node Dashboard", "path": "src/img/node-dashboard-screenshot.png"},
-      {"name": "Overview Page", "path": "src/img/overview-screenshot.png"},
-      {"name": "Pod Details Page", "path": "src/img/pod-details-screenshot.png"},
-      {"name": "Namespace Details Page", "path": "src/img/namespace-details-screenshot.png"}
+      {"name": "Container Dashboard", "path": "img/container-dashboard-screenshot.png"},
+      {"name": "Node Dashboard", "path": "img/node-dashboard-screenshot.png"},
+      {"name": "Overview Page", "path": "img/overview-screenshot.png"},
+      {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
+      {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
     "version": "0.0.1",
     "updated": "2016-09-26"

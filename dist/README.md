@@ -4,9 +4,9 @@
 
 The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance.
 
-![Container Dashboard](https://github.com/raintank/kubernetes-app/raw/master/src/img/container-dashboard-screenshot.png)
+![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/container-dashboard-screenshot.png)
 
-![Node Dashboard](https://github.com/raintank/kubernetes-app/raw/master/src/img/node-dashboard-screenshot.png)
+![Node Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/node-dashboard-screenshot.png)
 
 ### Requirements
 
