@@ -170,7 +170,11 @@ export class ClusterConfigCtrl {
         return this.deleteDaemonSet(self.cluster.id);
       })
       .then(() => {
+        return this.deletePods();
+      })
+      .then(() => {
         this.snapDeployed = false;
+        this.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
       });
   }
 
@@ -206,20 +210,15 @@ export class ClusterConfigCtrl {
     });
   }
 
-  updateSnapSettings(cm) {
+  deletePods() {
     var self = this;
-    return this.deleteConfigMap(self.cluster.id)
-    .then(() => {
-      return this.createConfigMap(self.cluster.id, cm);
-    }).then(() => {
-      return this.backendSrv.request({
-        url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      });
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
     }).then(pods => {
       if (!pods || pods.items.length === 0) {
-        throw "Failed to restart snap pod. No snapd pod found to update.";
+        throw "No snapd pod found to update.";
       }
 
       var promises = [];
@@ -232,6 +231,16 @@ export class ClusterConfigCtrl {
       });
 
       return this.$q.all(promises);
+    });
+  }
+
+  updateSnapSettings(cm) {
+    var self = this;
+    return this.deleteConfigMap(self.cluster.id)
+    .then(() => {
+      return this.createConfigMap(self.cluster.id, cm);
+    }).then(() => {
+      return this.deletePods();
     }).catch(err => {
       this.alertSrv.set("Error", err, 'error');
     }).then(() => {

@@ -216,7 +216,10 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             return this.deleteConfigMap(self.cluster.id).then(function () {
               return _this6.deleteDaemonSet(self.cluster.id);
             }).then(function () {
+              return _this6.deletePods();
+            }).then(function () {
               _this6.snapDeployed = false;
+              _this6.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
             });
           }
         }, {
@@ -256,22 +259,18 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             });
           }
         }, {
-          key: 'updateSnapSettings',
-          value: function updateSnapSettings(cm) {
+          key: 'deletePods',
+          value: function deletePods() {
             var _this7 = this;
 
             var self = this;
-            return this.deleteConfigMap(self.cluster.id).then(function () {
-              return _this7.createConfigMap(self.cluster.id, cm);
-            }).then(function () {
-              return _this7.backendSrv.request({
-                url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-              });
+            return this.backendSrv.request({
+              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
             }).then(function (pods) {
               if (!pods || pods.items.length === 0) {
-                throw "Failed to restart snap pod. No snapd pod found to update.";
+                throw "No snapd pod found to update.";
               }
 
               var promises = [];
@@ -284,10 +283,22 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
               });
 
               return _this7.$q.all(promises);
-            }).catch(function (err) {
-              _this7.alertSrv.set("Error", err, 'error');
+            });
+          }
+        }, {
+          key: 'updateSnapSettings',
+          value: function updateSnapSettings(cm) {
+            var _this8 = this;
+
+            var self = this;
+            return this.deleteConfigMap(self.cluster.id).then(function () {
+              return _this8.createConfigMap(self.cluster.id, cm);
             }).then(function () {
-              _this7.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
+              return _this8.deletePods();
+            }).catch(function (err) {
+              _this8.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              _this8.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
             });
           }
         }, {
