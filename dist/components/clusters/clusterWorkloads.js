@@ -16,11 +16,6 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
     return slug;
   }
 
-  function extractContainerID(str) {
-    var dockerIDPattern = /docker\:\/\/(.{12})/;
-    return dockerIDPattern.exec(str)[1];
-  }
-
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
@@ -133,19 +128,14 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           }
         }, {
           key: 'goToPodDashboard',
-          value: function goToPodDashboard(pod, evt) {
-            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-            if (clickTargetIsLinkOrHasLinkParents === false) {
-              var containerIDs = _.map(pod.status.containerStatuses, function (status) {
-                return extractContainerID(status.containerID);
-              });
-              this.$location.path("dashboard/db/kubernetes-container").search({
-                "var-datasource": this.cluster.jsonData.ds,
-                "var-cluster": this.cluster.name,
-                "var-node": slugify(pod.spec.nodeName),
-                "var-container": containerIDs
-              });
-            }
+          value: function goToPodDashboard(pod) {
+            this.$location.path("dashboard/db/kubernetes-container").search({
+              "var-datasource": this.cluster.jsonData.ds,
+              "var-cluster": this.cluster.name,
+              "var-node": slugify(pod.spec.nodeName),
+              "var-namespace": pod.metadata.namespace,
+              "var-pod": pod.metadata.name
+            });
           }
         }, {
           key: 'goToPodInfo',

@@ -6,11 +6,6 @@ function slugify(str) {
   return slug;
 }
 
-function extractContainerID(str) {
-  var dockerIDPattern = /docker\:\/\/(.{12})/;
-  return dockerIDPattern.exec(str)[1];
-}
-
 export class ClusterWorkloadsCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
@@ -85,20 +80,15 @@ export class ClusterWorkloadsCtrl {
     return this.componentHealth(component) === "healthy";
   }
 
-  goToPodDashboard(pod, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-    if (clickTargetIsLinkOrHasLinkParents === false) {
-      var containerIDs = _.map(pod.status.containerStatuses, (status) => {
-        return extractContainerID(status.containerID);
-      });
-      this.$location.path("dashboard/db/kubernetes-container")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": slugify(pod.spec.nodeName),
-        "var-container": containerIDs
-      });
-    }
+  goToPodDashboard(pod) {
+    this.$location.path("dashboard/db/kubernetes-container")
+    .search({
+      "var-datasource": this.cluster.jsonData.ds,
+      "var-cluster": this.cluster.name,
+      "var-node": slugify(pod.spec.nodeName),
+      "var-namespace": pod.metadata.namespace,
+      "var-pod": pod.metadata.name
+    });
   }
 
   goToPodInfo(pod, evt) {
