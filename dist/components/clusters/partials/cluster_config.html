@@ -44,6 +44,8 @@
 
 </form>
 <div ng-show="ctrl.isOrgEditor">
-  	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save and Deploy</button>
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.snapDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.undeploy()" ng-show="ctrl.snapDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
   	<a class="btn btn-link" ng-click="ctrl.cancel();">Back to Kubernetes Cluster List</a>
 </div>

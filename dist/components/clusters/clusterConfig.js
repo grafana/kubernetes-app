@@ -57,27 +57,33 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
           this.snapDeployed = false;
           this.alertSrv = alertSrv;
 
-          var promises = [];
-          if ("cluster" in $location.search()) {
-            promises.push(self.getCluster($location.search().cluster).then(function () {
-              return self.getDaemonSets().then(function (ds) {
-                _.forEach(ds.items, function (daemonSet) {
-                  if (daemonSet.metadata.name === "snap") {
-                    self.snapDeployed = true;
-                  }
-                });
-              });
-            }));
-          }
-
-          promises.push(self.getGraphiteDatasources());
-
-          $q.all(promises).then(function () {
+          this.getDatasources().then(function () {
             self.pageReady = true;
           });
         }
 
         _createClass(ClusterConfigCtrl, [{
+          key: 'getDatasources',
+          value: function getDatasources() {
+            var self = this;
+            var promises = [];
+            if ("cluster" in self.$location.search()) {
+              promises.push(self.getCluster(this.$location.search().cluster).then(function () {
+                return self.getDaemonSets().then(function (ds) {
+                  _.forEach(ds.items, function (daemonSet) {
+                    if (daemonSet.metadata.name === "snap") {
+                      self.snapDeployed = true;
+                    }
+                  });
+                });
+              }));
+            }
+
+            promises.push(self.getGraphiteDatasources());
+
+            return this.$q.all(promises);
+          }
+        }, {
           key: 'getCluster',
           value: function getCluster(id) {
             var self = this;
@@ -111,6 +117,19 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
           value: function save() {
             var _this = this;
 
+            return this.saveDatasource().then(function () {
+              return _this.getDatasources();
+            }).then(function () {
+              _this.alertSrv.set("Saved", "Saved and successfully connected to " + _this.cluster.name, 'success', 3000);
+            }).catch(function (err) {
+              _this.alertSrv.set("Saved", "Saved but failed to connect to " + _this.cluster.name + '. Error: ' + err, 'error', 5000);
+            });
+          }
+        }, {
+          key: 'deploy',
+          value: function deploy() {
+            var _this2 = this;
+
             var question = !this.snapDeployed ? 'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. ' + 'Are you sure you want to deploy?' : 'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
             appEvents.emit('confirm-modal', {
               title: 'Deploy to Kubernetes Cluster',
@@ -118,28 +137,49 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
               yesText: "Deploy",
               icon: "fa-question",
               onConfirm: function onConfirm() {
-                _this.saveAndDeploy();
+                _this2.saveAndDeploy();
               }
             });
           }
         }, {
+          key: 'undeploy',
+          value: function undeploy() {
+            var _this3 = this;
+
+            var question = 'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. ' + 'Are you sure you want to remove it?';
+
+            appEvents.emit('confirm-modal', {
+              title: 'Remove Daemonset Collector',
+              text: question,
+              yesText: "Remove",
+              icon: "fa-question",
+              onConfirm: function onConfirm() {
+                _this3.undeploySnap();
+              }
+            });
+          }
+        }, {
+          key: 'saveDatasource',
+          value: function saveDatasource() {
+            if (this.cluster.id) {
+              return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster);
+            } else {
+              return this.backendSrv.post('/api/datasources', this.cluster);
+            }
+          }
+        }, {
           key: 'saveAndDeploy',
           value: function saveAndDeploy() {
-            var self = this;
-            if (this.cluster.id) {
-              return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster).then(function () {
-                return self.deploySnap();
-              });
-            } else {
-              return this.backendSrv.post('/api/datasources', this.cluster).then(function () {
-                return self.deploySnap();
-              });
-            }
+            var _this4 = this;
+
+            return this.saveDatasource().then(function () {
+              return _this4.deploySnap();
+            });
           }
         }, {
           key: 'deploySnap',
           value: function deploySnap() {
-            var _this2 = this;
+            var _this5 = this;
 
             if (!this.cluster || !this.cluster.id) {
               this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
@@ -156,16 +196,28 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
 
             if (!this.snapDeployed) {
               return this.createConfigMap(self.cluster.id, cm).then(function () {
-                return _this2.createDaemonSet(self.cluster.id, daemonSet);
+                return _this5.createDaemonSet(self.cluster.id, daemonSet);
               }).catch(function (err) {
-                _this2.alertSrv.set("Error", err, 'error');
+                _this5.alertSrv.set("Error", err, 'error');
               }).then(function () {
-                _this2.snapDeployed = true;
-                _this2.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
+                _this5.snapDeployed = true;
+                _this5.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
               });
             } else {
               return self.updateSnapSettings(cm);
             }
+          }
+        }, {
+          key: 'undeploySnap',
+          value: function undeploySnap() {
+            var _this6 = this;
+
+            var self = this;
+            return this.deleteConfigMap(self.cluster.id).then(function () {
+              return _this6.deleteDaemonSet(self.cluster.id);
+            }).then(function () {
+              _this6.snapDeployed = false;
+            });
           }
         }, {
           key: 'createConfigMap',
@@ -188,6 +240,14 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             });
           }
         }, {
+          key: 'deleteDaemonSet',
+          value: function deleteDaemonSet(clusterId) {
+            return this.backendSrv.request({
+              url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/snap',
+              method: 'DELETE'
+            });
+          }
+        }, {
           key: 'deleteConfigMap',
           value: function deleteConfigMap(clusterId) {
             return this.backendSrv.request({
@@ -198,13 +258,13 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
         }, {
           key: 'updateSnapSettings',
           value: function updateSnapSettings(cm) {
-            var _this3 = this;
+            var _this7 = this;
 
             var self = this;
             return this.deleteConfigMap(self.cluster.id).then(function () {
-              return _this3.createConfigMap(self.cluster.id, cm);
+              return _this7.createConfigMap(self.cluster.id, cm);
             }).then(function () {
-              return _this3.backendSrv.request({
+              return _this7.backendSrv.request({
                 url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
@@ -214,14 +274,20 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
                 throw "Failed to restart snap pod. No snapd pod found to update.";
               }
 
-              return _this3.backendSrv.request({
-                url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pods.items[0].metadata.name,
-                method: 'DELETE'
+              var promises = [];
+
+              _.forEach(pods.items, function (pod) {
+                promises.push(_this7.backendSrv.request({
+                  url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pod.metadata.name,
+                  method: 'DELETE'
+                }));
               });
+
+              return _this7.$q.all(promises);
             }).catch(function (err) {
-              _this3.alertSrv.set("Error", err, 'error');
+              _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
-              _this3.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
+              _this7.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
             });
           }
         }, {
@@ -344,7 +410,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
               }],
               "containers": [{
                 "name": "snap",
-                "image": "raintank/snap_k8s:v10",
+                "image": "raintank/snap_k8s:v11",
                 "ports": [{
                   "name": "snap-api",
                   "hostPort": 8181,

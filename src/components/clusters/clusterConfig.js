@@ -20,9 +20,16 @@ export class ClusterConfigCtrl {
     this.snapDeployed = false;
     this.alertSrv = alertSrv;
 
+    this.getDatasources().then(() => {
+      self.pageReady = true;
+    });
+  }
+
+  getDatasources() {
+    var self = this;
     var promises = [];
-    if ("cluster" in $location.search()) {
-      promises.push(self.getCluster($location.search().cluster).then(() => {
+    if ("cluster" in self.$location.search()) {
+      promises.push(self.getCluster(this.$location.search().cluster).then(() => {
         return self.getDaemonSets().then(ds => {
           _.forEach(ds.items, function(daemonSet) {
             if (daemonSet.metadata.name === "snap") {
@@ -35,9 +42,7 @@ export class ClusterConfigCtrl {
 
     promises.push(self.getGraphiteDatasources());
 
-    $q.all(promises).then(() => {
-      self.pageReady = true;
-    });
+    return this.$q.all(promises);
   }
 
   getCluster(id) {
@@ -69,6 +74,19 @@ export class ClusterConfigCtrl {
   }
 
   save() {
+    return this.saveDatasource()
+      .then(() => {
+        return this.getDatasources();
+      })
+      .then(() => {
+        this.alertSrv.set("Saved", "Saved and successfully connected to " + this.cluster.name, 'success', 3000);
+      })
+      .catch(err => {
+        this.alertSrv.set("Saved", "Saved but failed to connect to " + this.cluster.name + '. Error: ' + err, 'error', 5000);
+      });
+  }
+
+  deploy() {
     var question = !this.snapDeployed ?
       'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. '
       + 'Are you sure you want to deploy?'
@@ -85,17 +103,34 @@ export class ClusterConfigCtrl {
     });
   }
 
-  saveAndDeploy() {
-    var self = this;
+  undeploy() {
+    var question = 'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. '
+      + 'Are you sure you want to remove it?';
+
+    appEvents.emit('confirm-modal', {
+      title: 'Remove Daemonset Collector',
+      text: question,
+      yesText: "Remove",
+      icon: "fa-question",
+      onConfirm: () => {
+        this.undeploySnap();
+      }
+    });
+  }
+
+  saveDatasource() {
     if (this.cluster.id) {
-      return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster).then(() => {
-        return self.deploySnap();
-      });
+      return this.backendSrv.put('/api/datasources/' + this.cluster.id, this.cluster);
     } else {
-      return this.backendSrv.post('/api/datasources', this.cluster).then(() => {
-        return self.deploySnap();
-      });
+      return this.backendSrv.post('/api/datasources', this.cluster);
     }
+  }
+
+  saveAndDeploy() {
+    return this.saveDatasource()
+      .then(() => {
+        return this.deploySnap();
+      });
   }
 
   deploySnap() {
@@ -128,6 +163,17 @@ export class ClusterConfigCtrl {
     }
   }
 
+  undeploySnap() {
+    var self = this;
+    return this.deleteConfigMap(self.cluster.id)
+      .then(() => {
+        return this.deleteDaemonSet(self.cluster.id);
+      })
+      .then(() => {
+        this.snapDeployed = false;
+      });
+  }
+
   createConfigMap(clusterId, cm) {
     return this.backendSrv.request({
       url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps',
@@ -143,6 +189,13 @@ export class ClusterConfigCtrl {
       method: 'POST',
       data: daemonSet,
       headers: {'Content-Type': "application/json"}
+    });
+  }
+
+  deleteDaemonSet(clusterId) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/snap',
+      method: 'DELETE',
     });
   }
 
@@ -169,10 +222,16 @@ export class ClusterConfigCtrl {
         throw "Failed to restart snap pod. No snapd pod found to update.";
       }
 
-      return this.backendSrv.request({
-        url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pods.items[0].metadata.name,
-        method: 'DELETE',
+      var promises = [];
+
+      _.forEach(pods.items, pod => {
+        promises.push(this.backendSrv.request({
+          url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pod.metadata.name,
+          method: 'DELETE',
+        }));
       });
+
+      return this.$q.all(promises);
     }).catch(err => {
       this.alertSrv.set("Error", err, 'error');
     }).then(() => {
@@ -307,7 +366,7 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v10",
+            "image": "raintank/snap_k8s:v11",
             "ports": [
               {
                 "name": "snap-api",
