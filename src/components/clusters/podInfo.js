@@ -1,7 +1,7 @@
 import moment from 'moment';
 
 function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
   return slug;
 }
 

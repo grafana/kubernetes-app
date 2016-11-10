@@ -2,7 +2,7 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 
 function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(".", "_").replace("/\W+/", "");
+  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
   return slug;
 }
 
