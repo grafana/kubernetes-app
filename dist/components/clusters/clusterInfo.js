@@ -194,7 +194,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
               this.$location.path("plugins/raintank-kubernetes-app/page/node-info").search({
                 "cluster": this.cluster.id,
-                "node": slugify(node.metadata.name)
+                "node": node.metadata.name
               });
             }
           }

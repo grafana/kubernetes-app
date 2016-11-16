@@ -93,7 +93,7 @@ export class ClusterInfoCtrl {
       this.$location.path("plugins/raintank-kubernetes-app/page/node-info")
       .search({
         "cluster": this.cluster.id,
-        "node": slugify(node.metadata.name)
+        "node": node.metadata.name
       });
     }
   }
