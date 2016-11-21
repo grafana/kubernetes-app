@@ -43,9 +43,32 @@
     </div>
 
 </form>
-<div ng-show="ctrl.isOrgEditor">
+<div class="gf-form-group" ng-show="ctrl.isOrgEditor">
   	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
   	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.snapDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
-  	<button type="submit" class="btn btn-success" ng-click="ctrl.undeploy()" ng-show="ctrl.snapDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
+  	<button type="submit" class="btn btn-secondary" ng-click="ctrl.undeploy()" ng-show="ctrl.snapDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
   	<a class="btn btn-link" ng-click="ctrl.cancel();">Back to Kubernetes Cluster List</a>
+</div>
+
+<span class="gf-form-label width-14">
+  <i class="fa fa-info-circle"></i>
+  <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click to show instructions and download links'" data-placement="bottom">
+    Manual Deploy Instructions
+  </a>
+</span>
+
+<div class="grafana-info-box span10" ng-if="ctrl.showHelp">
+  <h5>Manual Deploy</h5>
+  <p>If you want to deploy manually or to automate the deployment, the following two files are needed:</p>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveConfigMapToFile()">Download ConfigMap</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveDaemonSetToFile()">Download Daemonset</button>
+
+  <p>(The ConfigMap is generated from the settings so remember to save your settings before downloading.)</p>
+  <p>To deploy the Config Map and Daemon Set, execute the following:</p>
+  <p><code>kubectl create -f snap-configmap.json</code></p>
+  <p><code>kubectl create -f snap-daemonset.json</code></p>
+  <h5>Removing the Daemon Set and Config Map</h5>
+  <p><code>kubectl delete daemonsets -n kube-system snap</code></p>
+  <p><code>kubectl delete configmaps -n kube-system snap-tasks</code></p>
+
 </div>

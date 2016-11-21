@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import appEvents from 'app/core/app_events';
+import angular from 'angular';
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
@@ -19,10 +20,15 @@ export class ClusterConfigCtrl {
     this.pageReady = false;
     this.snapDeployed = false;
     this.alertSrv = alertSrv;
+    this.showHelp = false;
 
     this.getDatasources().then(() => {
       self.pageReady = true;
     });
+  }
+
+  toggleHelp() {
+    this.showHelp = !this.showHelp;
   }
 
   getDatasources() {
@@ -86,6 +92,21 @@ export class ClusterConfigCtrl {
       });
   }
 
+  saveConfigMapToFile() {
+    const cm = this.generateConfigMap();
+    this.saveToFile('snap-configmap', cm);
+  }
+
+  saveDaemonSetToFile() {
+    this.saveToFile('snap-daemonset', daemonSet);
+  }
+
+  saveToFile(filename, json) {
+    const blob = new Blob([angular.toJson(json, true)], { type: "application/json;charset=utf-8" });
+    const wnd = window;
+    wnd.saveAs(blob, filename + '.json');
+  }
+
   deploy() {
     var question = !this.snapDeployed ?
       'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. '
@@ -133,6 +154,16 @@ export class ClusterConfigCtrl {
       });
   }
 
+  generateConfigMap() {
+    var task = _.cloneDeep(snapTask);
+    task.workflow.collect.publish[0].config.prefix = "snap."+slugify(this.cluster.name) + ".<%NODE%>";
+    task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
+    task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
+    var cm = _.cloneDeep(configMap);
+    cm.data["core.json"] = JSON.stringify(task);
+    return cm;
+  }
+
   deploySnap() {
     if(!this.cluster || !this.cluster.id) {
       this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
@@ -140,12 +171,7 @@ export class ClusterConfigCtrl {
     }
 
     var self = this;
-    var task = _.cloneDeep(snapTask);
-    task.workflow.collect.publish[0].config.prefix = "snap."+slugify(self.cluster.name) + ".<%NODE%>";
-    task.workflow.collect.publish[0].config.port = self.cluster.jsonData.port;
-    task.workflow.collect.publish[0].config.server = self.cluster.jsonData.server;
-    var cm = _.cloneDeep(configMap);
-    cm.data["core.json"] = JSON.stringify(task);
+    var cm = this.generateConfigMap();
 
     if (!this.snapDeployed) {
       return this.createConfigMap(self.cluster.id, cm)

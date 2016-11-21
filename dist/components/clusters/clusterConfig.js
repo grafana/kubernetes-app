@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'app/core/app_events'], function (_export, _context) {
+System.register(['lodash', 'app/core/app_events', 'angular'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, _createClass, ClusterConfigCtrl, configMap, snapTask, daemonSet;
+  var _, appEvents, angular, _createClass, ClusterConfigCtrl, configMap, snapTask, daemonSet;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -21,6 +21,8 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
       _ = _lodash.default;
     }, function (_appCoreApp_events) {
       appEvents = _appCoreApp_events.default;
+    }, function (_angular) {
+      angular = _angular.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -56,6 +58,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
           this.pageReady = false;
           this.snapDeployed = false;
           this.alertSrv = alertSrv;
+          this.showHelp = false;
 
           this.getDatasources().then(function () {
             self.pageReady = true;
@@ -63,6 +66,11 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
         }
 
         _createClass(ClusterConfigCtrl, [{
+          key: 'toggleHelp',
+          value: function toggleHelp() {
+            this.showHelp = !this.showHelp;
+          }
+        }, {
           key: 'getDatasources',
           value: function getDatasources() {
             var self = this;
@@ -126,6 +134,24 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             });
           }
         }, {
+          key: 'saveConfigMapToFile',
+          value: function saveConfigMapToFile() {
+            var cm = this.generateConfigMap();
+            this.saveToFile('snap-configmap', cm);
+          }
+        }, {
+          key: 'saveDaemonSetToFile',
+          value: function saveDaemonSetToFile() {
+            this.saveToFile('snap-daemonset', daemonSet);
+          }
+        }, {
+          key: 'saveToFile',
+          value: function saveToFile(filename, json) {
+            var blob = new Blob([angular.toJson(json, true)], { type: "application/json;charset=utf-8" });
+            var wnd = window;
+            wnd.saveAs(blob, filename + '.json');
+          }
+        }, {
           key: 'deploy',
           value: function deploy() {
             var _this2 = this;
@@ -177,6 +203,17 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             });
           }
         }, {
+          key: 'generateConfigMap',
+          value: function generateConfigMap() {
+            var task = _.cloneDeep(snapTask);
+            task.workflow.collect.publish[0].config.prefix = "snap." + slugify(this.cluster.name) + ".<%NODE%>";
+            task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
+            task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
+            var cm = _.cloneDeep(configMap);
+            cm.data["core.json"] = JSON.stringify(task);
+            return cm;
+          }
+        }, {
           key: 'deploySnap',
           value: function deploySnap() {
             var _this5 = this;
@@ -187,12 +224,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
             }
 
             var self = this;
-            var task = _.cloneDeep(snapTask);
-            task.workflow.collect.publish[0].config.prefix = "snap." + slugify(self.cluster.name) + ".<%NODE%>";
-            task.workflow.collect.publish[0].config.port = self.cluster.jsonData.port;
-            task.workflow.collect.publish[0].config.server = self.cluster.jsonData.server;
-            var cm = _.cloneDeep(configMap);
-            cm.data["core.json"] = JSON.stringify(task);
+            var cm = this.generateConfigMap();
 
             if (!this.snapDeployed) {
               return this.createConfigMap(self.cluster.id, cm).then(function () {
