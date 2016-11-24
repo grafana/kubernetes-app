@@ -308,7 +308,8 @@ var snapTask = {
         "/intel/procfs/meminfo/*": {},
         "/intel/procfs/iface/*": {},
         "/intel/linux/iostat/*": {},
-        "/intel/procfs/load/*": {}
+        "/intel/procfs/load/*": {},
+        "/grafanalabs/kubestate/*":{}
       },
       "config": {
         "/intel/procfs": {
@@ -401,7 +402,7 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v13",
+            "image": "raintank/snap_k8s:v14",
             "ports": [
               {
                 "name": "snap-api",

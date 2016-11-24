@@ -372,7 +372,8 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               "/intel/procfs/meminfo/*": {},
               "/intel/procfs/iface/*": {},
               "/intel/linux/iostat/*": {},
-              "/intel/procfs/load/*": {}
+              "/intel/procfs/load/*": {},
+              "/grafanalabs/kubestate/*": {}
             },
             "config": {
               "/intel/procfs": {
@@ -453,7 +454,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               }],
               "containers": [{
                 "name": "snap",
-                "image": "raintank/snap_k8s:v13",
+                "image": "raintank/snap_k8s:v14",
                 "ports": [{
                   "name": "snap-api",
                   "hostPort": 8181,
