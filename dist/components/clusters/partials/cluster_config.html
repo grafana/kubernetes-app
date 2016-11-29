@@ -60,17 +60,26 @@
 <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
   <h5>Manual Deploy</h5>
   <p>The Deploy button will deploy the <a class="pointer highlight-word" href="https://hub.docker.com/r/raintank/snap_k8s/">Snap Kubernetes Docker image</a> that provides summary performance and availability metrics of a Kubernetes Node and its containers.</p>
-  <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following two files are needed:</p>
-  <button type="button" class="btn btn-success" ng-click="ctrl.saveConfigMapToFile()">Download ConfigMap</button>
+  <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
+  <p>
+    <button type="button" class="btn btn-success" ng-click="ctrl.saveConfigMapToFile()">Download Daemonset ConfigMap</button>
+    <button type="button" class="btn btn-success" ng-click="ctrl.saveKubestateConfigMapToFile()">Download Kubestate ConfigMap</button>
+  </p>
   <button type="button" class="btn btn-success" ng-click="ctrl.saveDaemonSetToFile()">Download Daemonset</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveDeploymentToFile()">Download Kubestate Deployment</button>
+
 
   <p class="small">(The ConfigMap is generated from the settings so remember to save your settings before downloading.)</p>
   <p>To deploy the Config Map and Daemon Set, execute the following:</p>
   <p><code>kubectl create -f snap-configmap.json</code></p>
+  <p><code>kubectl create -f snap-kubestate-configmap.json</code></p>
   <p><code>kubectl create -f snap-daemonset.json</code></p>
+  <p><code>kubectl create -f snap-kubestate.json</code></p>
   <br />
   <h5>Removing the Daemon Set and Config Map</h5>
   <p><code>kubectl delete daemonsets -n kube-system snap</code></p>
+  <p><code>kubectl delete deployments -n kube-system snap-kubestate-deployment</code></p>
   <p><code>kubectl delete configmaps -n kube-system snap-tasks</code></p>
+  <p><code>kubectl delete configmaps -n kube-system snap-tasks-kubestate</code></p>
 
 </div>

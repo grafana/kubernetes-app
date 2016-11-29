@@ -97,8 +97,17 @@ export class ClusterConfigCtrl {
     this.saveToFile('snap-configmap', cm);
   }
 
+  saveKubestateConfigMapToFile() {
+    const cm = this.generateKubestateConfigMap();
+    this.saveToFile('snap-kubestate-configmap', cm);
+  }
+
   saveDaemonSetToFile() {
     this.saveToFile('snap-daemonset', daemonSet);
+  }
+
+  saveDeploymentToFile() {
+    this.saveToFile('snap-kubestate', kubestate);
   }
 
   saveToFile(filename, json) {
@@ -164,6 +173,16 @@ export class ClusterConfigCtrl {
     return cm;
   }
 
+  generateKubestateConfigMap() {
+    var task = _.cloneDeep(kubestateSnapTask);
+    task.workflow.collect.publish[0].config.prefix = "snap."+slugify(this.cluster.name);
+    task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
+    task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
+    var cm = _.cloneDeep(kubestateConfigMap);
+    cm.data["core.json"] = JSON.stringify(task);
+    return cm;
+  }
+
   deploySnap() {
     if(!this.cluster || !this.cluster.id) {
       this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
@@ -172,11 +191,18 @@ export class ClusterConfigCtrl {
 
     var self = this;
     var cm = this.generateConfigMap();
+    var kubestateCm = this.generateKubestateConfigMap();
 
     if (!this.snapDeployed) {
       return this.createConfigMap(self.cluster.id, cm)
       .then(() => {
+        return this.createConfigMap(self.cluster.id, kubestateCm);
+      })
+      .then(() => {
         return this.createDaemonSet(self.cluster.id, daemonSet);
+      })
+      .then(() => {
+        return this.createDeployment(self.cluster.id, kubestate);
       })
       .catch(err => {
         this.alertSrv.set("Error", err, 'error');
@@ -185,15 +211,21 @@ export class ClusterConfigCtrl {
         this.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
       });
     } else {
-      return self.updateSnapSettings(cm);
+      return self.updateSnapSettings(cm, kubestateCm);
     }
   }
 
   undeploySnap() {
     var self = this;
-    return this.deleteConfigMap(self.cluster.id)
+    return this.deleteConfigMap(self.cluster.id, 'snap-tasks')
+      .then(() => {
+        return this.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
+      })
       .then(() => {
         return this.deleteDaemonSet(self.cluster.id);
+      })
+      .then(() => {
+        return this.deleteDeployment(self.cluster.id, 'snap-kubestate-deployment');
       })
       .then(() => {
         return this.deletePods();
@@ -229,9 +261,31 @@ export class ClusterConfigCtrl {
     });
   }
 
-  deleteConfigMap(clusterId) {
+  createDeployment(clusterId, deployment) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps/snap-tasks',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/deployments',
+      method: 'POST',
+      data: deployment,
+      headers: {'Content-Type': "application/json"}
+    });
+  }
+
+  deleteDeployment(clusterId, deploymentName) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
+      method: 'DELETE'
+    }).then(() => {
+      return this.backendSrv.request({
+        url: 'api/datasources/proxy/' + clusterId +
+        '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=app%3Dsnap-collector',
+        method: 'DELETE'
+      });
+    });
+  }
+
+  deleteConfigMap(clusterId, cmName) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps/' + cmName,
       method: 'DELETE'
     });
   }
@@ -239,7 +293,8 @@ export class ClusterConfigCtrl {
   deletePods() {
     var self = this;
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=daemon%3Dsnapd',
+      url: 'api/datasources/proxy/' + self.cluster.id
+      + '/api/v1/namespaces/kube-system/pods?labelSelector=app%3Dsnap-collector',
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     }).then(pods => {
@@ -260,11 +315,15 @@ export class ClusterConfigCtrl {
     });
   }
 
-  updateSnapSettings(cm) {
+  updateSnapSettings(cm, kubestateCm) {
     var self = this;
-    return this.deleteConfigMap(self.cluster.id)
+    return this.deleteConfigMap(self.cluster.id, 'snap-tasks')
     .then(() => {
       return this.createConfigMap(self.cluster.id, cm);
+    }).then(() => {
+      return this.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
+    }).then(() => {
+      return this.createConfigMap(self.cluster.id, kubestateCm);
     }).then(() => {
       return this.deletePods();
     }).catch(err => {
@@ -294,6 +353,18 @@ var configMap = {
   }
 };
 
+var kubestateConfigMap = {
+  "kind": "ConfigMap",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "snap-tasks-kubestate",
+    "namespace": "kube-system"
+  },
+  "data": {
+    "core.json": ""
+  }
+};
+
 var snapTask = {
   "version": 1,
   "schedule": {
@@ -309,12 +380,37 @@ var snapTask = {
         "/intel/procfs/iface/*": {},
         "/intel/linux/iostat/*": {},
         "/intel/procfs/load/*": {},
-        "/grafanalabs/kubestate/*":{}
       },
       "config": {
         "/intel/procfs": {
           "proc_path": "/proc_host"
         }
+      },
+      "process": null,
+      "publish": [
+        {
+          "plugin_name": "graphite",
+          "config": {
+            "prefix": "",
+            "server": "",
+            "port": 2003
+          }
+        }
+      ]
+    }
+  }
+};
+
+var kubestateSnapTask = {
+  "version": 1,
+  "schedule": {
+    "type": "simple",
+    "interval": "10s"
+  },
+  "workflow": {
+    "collect": {
+      "metrics": {
+        "/grafanalabs/kubestate/*":{}
       },
       "process": null,
       "publish": [
@@ -351,7 +447,8 @@ var daemonSet = {
       "metadata": {
         "name": "snap",
         "labels": {
-          "daemon": "snapd"
+          "daemon": "snapd",
+          "app": "snap-collector"
         }
       },
       "spec": {
@@ -402,12 +499,12 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v14",
+            "image": "raintank/snap_k8s:v15",
             "ports": [
               {
                 "name": "snap-api",
-                "hostPort": 8181,
-                "containerPort": 8181,
+                "hostPort": 8282,
+                "containerPort": 8282,
                 "protocol": "TCP"
               }
             ],
@@ -461,6 +558,58 @@ var daemonSet = {
         "restartPolicy": "Always",
         "hostNetwork": true,
         "hostPID": true
+      }
+    }
+  }
+};
+
+const kubestate = {
+  "kind": "Deployment",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "name": "snap-kubestate-deployment",
+    "namespace": "kube-system",
+  },
+  "spec": {
+    "replicas": 1,
+    "template": {
+      "metadata": {
+        labels: {
+          "app": "snap-collector"
+        }
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "snap-tasks",
+            "configMap": {
+              "name": "snap-tasks-kubestate"
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "snap",
+            "image": "raintank/snap_k8s:v15",
+            "ports": [
+              {
+                "name": "snap-api",
+                "hostPort": 8383,
+                "containerPort": 8383,
+                "protocol": "TCP"
+              }
+            ],
+            "resources": {},
+            "volumeMounts": [
+              {
+                "name": "snap-tasks",
+                "mountPath": "/opt/snap/tasks"
+              }
+            ],
+            "imagePullPolicy": "IfNotPresent",
+          }
+        ],
+        "restartPolicy": "Always",
       }
     }
   }
