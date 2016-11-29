@@ -567,7 +567,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                   }
                 }, {
                   "name": "LISTEN_PORT",
-                  "value": 8282
+                  "value": "8282"
                 }],
                 "resources": {},
                 "volumeMounts": [{
@@ -634,7 +634,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                 }],
                 "env": [{
                   "name": "LISTEN_PORT",
-                  "value": 8383
+                  "value": "8383"
                 }],
                 "resources": {},
                 "volumeMounts": [{

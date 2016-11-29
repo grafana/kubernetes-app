@@ -523,7 +523,7 @@ var daemonSet = {
               },
               {
                 "name": "LISTEN_PORT",
-                "value": 8282
+                "value": "8282"
               }
             ],
             "resources": {},
@@ -606,7 +606,7 @@ const kubestate = {
             "env": [
               {
                 "name": "LISTEN_PORT",
-                "value": 8383
+                "value": "8383"
               }
             ],
             "resources": {},
