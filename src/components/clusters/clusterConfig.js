@@ -520,6 +520,10 @@ var daemonSet = {
                     "fieldPath": "spec.nodeName"
                   }
                 }
+              },
+              {
+                "name": "LISTEN_PORT",
+                "value": 8282
               }
             ],
             "resources": {},
@@ -597,6 +601,12 @@ const kubestate = {
                 "hostPort": 8383,
                 "containerPort": 8383,
                 "protocol": "TCP"
+              }
+            ],
+            "env": [
+              {
+                "name": "LISTEN_PORT",
+                "value": 8383
               }
             ],
             "resources": {},

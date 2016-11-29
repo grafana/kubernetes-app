@@ -565,6 +565,9 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                       "fieldPath": "spec.nodeName"
                     }
                   }
+                }, {
+                  "name": "LISTEN_PORT",
+                  "value": 8282
                 }],
                 "resources": {},
                 "volumeMounts": [{
@@ -628,6 +631,10 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                   "hostPort": 8383,
                   "containerPort": 8383,
                   "protocol": "TCP"
+                }],
+                "env": [{
+                  "name": "LISTEN_PORT",
+                  "value": 8383
                 }],
                 "resources": {},
                 "volumeMounts": [{
