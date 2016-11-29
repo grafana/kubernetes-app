@@ -16,14 +16,6 @@
       "height": "600px",
       "panels": [
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -100,14 +92,6 @@
           ]
         },
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -195,14 +179,6 @@
           ]
         },
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -281,14 +257,6 @@
           ]
         },
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -372,14 +340,6 @@
       "height": "250px",
       "panels": [
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -455,14 +415,6 @@
           ]
         },
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -545,14 +497,6 @@
       "height": "250px",
       "panels": [
         {
-          "alert": {
-            "crit": {
-              "op": ">"
-            },
-            "warn": {
-              "op": ">"
-            }
-          },
           "alerting": {},
           "aliasColors": {},
           "bars": false,
