@@ -161,6 +161,14 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             });
           }
         }, {
+          key: 'goToClusterDashboard',
+          value: function goToClusterDashboard() {
+            this.$location.path("dashboard/db/kubernetes-cluster").search({
+              "var-datasource": this.cluster.jsonData.ds,
+              "var-cluster": this.cluster.name
+            });
+          }
+        }, {
           key: 'goToNodeDashboard',
           value: function goToNodeDashboard(node, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;

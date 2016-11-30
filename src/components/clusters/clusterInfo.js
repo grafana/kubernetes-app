@@ -59,6 +59,14 @@ export class ClusterInfoCtrl {
     });
   }
 
+  goToClusterDashboard() {
+    this.$location.path("dashboard/db/kubernetes-cluster")
+      .search({
+        "var-datasource": this.cluster.jsonData.ds,
+        "var-cluster": this.cluster.name
+      });
+  }
+
   goToNodeDashboard(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {

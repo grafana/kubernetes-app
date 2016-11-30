@@ -55,6 +55,12 @@
       "name": "Kubernetes Container",
       "path": "dashboards/kubernetes-container.json",
       "addToNav": false
+    },
+    {
+      "type": "dashboard",
+      "name": "Kubernetes Cluster",
+      "path": "dashboards/kubernetes-cluster.json",
+      "addToNav": false
     }
   ],
 
