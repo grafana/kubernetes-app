@@ -3,7 +3,7 @@
 System.register(['lodash', 'app/core/app_events', 'angular'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, angular, _createClass, ClusterConfigCtrl, configMap, kubestateConfigMap, snapTask, kubestateSnapTask, daemonSet, kubestate;
+  var _, appEvents, angular, _createClass, ClusterConfigCtrl, raintankSnapImage, configMap, kubestateConfigMap, snapTask, kubestateSnapTask, daemonSet, kubestate;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -407,6 +407,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
+      raintankSnapImage = 'raintank/snap_k8s:v16';
       configMap = {
         "kind": "ConfigMap",
         "apiVersion": "v1",
@@ -548,7 +549,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               }],
               "containers": [{
                 "name": "snap",
-                "image": "raintank/snap_k8s:v16",
+                "image": raintankSnapImage,
                 "ports": [{
                   "name": "snap-api",
                   "hostPort": 8282,
@@ -625,7 +626,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               }],
               "containers": [{
                 "name": "snap",
-                "image": "raintank/snap_k8s:v15",
+                "image": raintankSnapImage,
                 "ports": [{
                   "name": "snap-api",
                   "hostPort": 8383,

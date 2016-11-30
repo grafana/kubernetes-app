@@ -341,6 +341,8 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
+const raintankSnapImage = 'raintank/snap_k8s:v16';
+
 var configMap = {
   "kind": "ConfigMap",
   "apiVersion": "v1",
@@ -499,7 +501,7 @@ var daemonSet = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v16",
+            "image": raintankSnapImage,
             "ports": [
               {
                 "name": "snap-api",
@@ -594,7 +596,7 @@ const kubestate = {
         "containers": [
           {
             "name": "snap",
-            "image": "raintank/snap_k8s:v15",
+            "image": raintankSnapImage,
             "ports": [
               {
                 "name": "snap-api",
