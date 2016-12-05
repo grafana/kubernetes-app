@@ -341,7 +341,7 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-const raintankSnapImage = 'raintank/snap_k8s:v16';
+const raintankSnapImage = 'raintank/snap_k8s:v17';
 
 var configMap = {
   "kind": "ConfigMap",
@@ -373,6 +373,7 @@ var snapTask = {
     "type": "simple",
     "interval": "10s"
   },
+  "max-failures": -1,
   "workflow": {
     "collect": {
       "metrics": {
@@ -393,6 +394,7 @@ var snapTask = {
         {
           "plugin_name": "graphite",
           "config": {
+            "prefix_tags": "",
             "prefix": "",
             "server": "",
             "port": 2003
@@ -409,6 +411,7 @@ var kubestateSnapTask = {
     "type": "simple",
     "interval": "10s"
   },
+  "max-failures": -1,
   "workflow": {
     "collect": {
       "metrics": {
@@ -419,6 +422,7 @@ var kubestateSnapTask = {
         {
           "plugin_name": "graphite",
           "config": {
+            "prefix_tags": "",
             "prefix": "",
             "server": "",
             "port": 2003
@@ -526,6 +530,14 @@ var daemonSet = {
               {
                 "name": "LISTEN_PORT",
                 "value": "8282"
+              },
+              {
+                "name": "SNAP_URL",
+                "value": "http://localhost:8282"
+              },
+              {
+                "name": "SNAP_LOG_LEVEL",
+                "value": "3"
               }
             ],
             "resources": {},
@@ -609,6 +621,14 @@ const kubestate = {
               {
                 "name": "LISTEN_PORT",
                 "value": "8383"
+              },
+              {
+                "name": "SNAP_URL",
+                "value": "http://localhost:8383"
+              },
+              {
+                "name": "SNAP_LOG_LEVEL",
+                "value": "3"
               }
             ],
             "resources": {},

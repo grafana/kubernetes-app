@@ -407,7 +407,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-      raintankSnapImage = 'raintank/snap_k8s:v16';
+      raintankSnapImage = 'danielraintank/snap_k8s:v22';
       configMap = {
         "kind": "ConfigMap",
         "apiVersion": "v1",
@@ -436,6 +436,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           "type": "simple",
           "interval": "10s"
         },
+        "max-failures": -1,
         "workflow": {
           "collect": {
             "metrics": {
@@ -455,6 +456,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             "publish": [{
               "plugin_name": "graphite",
               "config": {
+                "prefix_tags": "",
                 "prefix": "",
                 "server": "",
                 "port": 2003
@@ -469,6 +471,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           "type": "simple",
           "interval": "10s"
         },
+        "max-failures": -1,
         "workflow": {
           "collect": {
             "metrics": {
@@ -478,6 +481,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             "publish": [{
               "plugin_name": "graphite",
               "config": {
+                "prefix_tags": "",
                 "prefix": "",
                 "server": "",
                 "port": 2003
@@ -569,6 +573,12 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                 }, {
                   "name": "LISTEN_PORT",
                   "value": "8282"
+                }, {
+                  "name": "SNAP_URL",
+                  "value": "http://localhost:8282"
+                }, {
+                  "name": "SNAP_LOG_LEVEL",
+                  "value": "3"
                 }],
                 "resources": {},
                 "volumeMounts": [{
@@ -636,6 +646,12 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                 "env": [{
                   "name": "LISTEN_PORT",
                   "value": "8383"
+                }, {
+                  "name": "SNAP_URL",
+                  "value": "http://localhost:8383"
+                }, {
+                  "name": "SNAP_LOG_LEVEL",
+                  "value": "3"
                 }],
                 "resources": {},
                 "volumeMounts": [{
