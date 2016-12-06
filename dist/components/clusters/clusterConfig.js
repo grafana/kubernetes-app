@@ -407,7 +407,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-      raintankSnapImage = 'raintank/snap_k8s:v17';
+      raintankSnapImage = 'danielraintank/snap_k8s:v22';
       configMap = {
         "kind": "ConfigMap",
         "apiVersion": "v1",
@@ -436,7 +436,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           "type": "simple",
           "interval": "10s"
         },
-        "max-failures": 10,
+        "max-failures": -1,
         "workflow": {
           "collect": {
             "metrics": {
@@ -471,7 +471,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           "type": "simple",
           "interval": "10s"
         },
-        "max-failures": 10,
+        "max-failures": -1,
         "workflow": {
           "collect": {
             "metrics": {
@@ -560,12 +560,6 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                   "containerPort": 8282,
                   "protocol": "TCP"
                 }],
-                "livenessProbe": {
-                  "exec": {
-                    "command": ["/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"]
-                  },
-                  initialDelaySeconds: 60
-                },
                 "env": [{
                   "name": "PROCFS_MOUNT",
                   "value": "/proc_host"
@@ -649,12 +643,6 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                   "containerPort": 8383,
                   "protocol": "TCP"
                 }],
-                "livenessProbe": {
-                  "exec": {
-                    "command": ["/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"]
-                  },
-                  initialDelaySeconds: 60
-                },
                 "env": [{
                   "name": "LISTEN_PORT",
                   "value": "8383"
