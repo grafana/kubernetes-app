@@ -2,13 +2,26 @@
   "id": null,
   "title": "Kubernetes Node",
   "tags": [
-    "kubernetes"
+    "kubernetes",
+    "kubernetes-app"
   ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
   "sharedCrosshair": true,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "tags": [
+        "kubernetes-app"
+      ],
+      "title": "Dashboards",
+      "type": "dashboards"
+    }
+  ],
   "rows": [
     {
       "collapse": false,
@@ -842,6 +855,5 @@
   "refresh": false,
   "schemaVersion": 13,
   "version": 1,
-  "links": [],
-  "gnetId": null
+  "gnetId": 470
 }

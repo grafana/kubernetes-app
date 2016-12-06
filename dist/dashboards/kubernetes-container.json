@@ -2,13 +2,26 @@
   "id": null,
   "title": "Kubernetes Container",
   "tags": [
-    "kubernetes"
+    "kubernetes",
+    "kubernetes-app"
   ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
   "hideControls": false,
   "sharedCrosshair": true,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "tags": [
+        "kubernetes-app"
+      ],
+      "title": "Dashboards",
+      "type": "dashboards"
+    }
+  ],
   "rows": [
     {
       "collapse": false,
@@ -686,7 +699,6 @@
   "refresh": "10s",
   "schemaVersion": 13,
   "version": 4,
-  "links": [],
   "gnetId": 482,
   "description": "Summary metrics about containers running on Kubernetes nodes."
 }
