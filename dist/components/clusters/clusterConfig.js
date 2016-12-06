@@ -503,7 +503,8 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
         "spec": {
           "selector": {
             "matchLabels": {
-              "daemon": "snapd"
+              "daemon": "snapd",
+              "app": "snap-collector"
             }
           },
           "template": {

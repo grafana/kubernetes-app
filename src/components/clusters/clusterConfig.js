@@ -446,7 +446,8 @@ var daemonSet = {
   "spec": {
     "selector": {
       "matchLabels": {
-        "daemon": "snapd"
+        "daemon": "snapd",
+        "app": "snap-collector"
       }
     },
     "template": {
