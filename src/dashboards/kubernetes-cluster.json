@@ -636,7 +636,7 @@
       "repeat": null,
       "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": true
+      "collapse": false
     },
     {
       "title": "Deployments",
