@@ -373,7 +373,7 @@ var snapTask = {
     "type": "simple",
     "interval": "10s"
   },
-  "max-failures": -1,
+  "max-failures": 10,
   "workflow": {
     "collect": {
       "metrics": {
@@ -411,7 +411,7 @@ var kubestateSnapTask = {
     "type": "simple",
     "interval": "10s"
   },
-  "max-failures": -1,
+  "max-failures": 10,
   "workflow": {
     "collect": {
       "metrics": {
@@ -514,6 +514,16 @@ var daemonSet = {
                 "protocol": "TCP"
               }
             ],
+            "livenessProbe": {
+              "exec": {
+                "command": [
+                  "/bin/bash",
+                  "-c",
+                  "/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"
+                ]
+              },
+              initialDelaySeconds: 60
+            },
             "env": [
               {
                 "name": "PROCFS_MOUNT",
@@ -617,6 +627,16 @@ const kubestate = {
                 "protocol": "TCP"
               }
             ],
+            "livenessProbe": {
+              "exec": {
+                "command": [
+                  "/bin/bash",
+                  "-c",
+                  "/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"
+                ]
+              },
+              initialDelaySeconds: 60
+            },
             "env": [
               {
                 "name": "LISTEN_PORT",
