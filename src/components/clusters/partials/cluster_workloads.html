@@ -61,7 +61,14 @@
 	</h3>
 	<ol class="card-list">
 		<li class="card-item-wrapper" ng-repeat="deploy in ctrl.deployments">
-			<div class="card-item card-item--alert">
+			<div class="card-item card-item--alert pointer">
+        <div class="card-item-header card-item-header-action">
+					<div style="display:inline-block;"
+						ng-click="ctrl.goToDeploymentDashboard(deploy, $event)">
+						<i ng-class="icon" class="icon-gf icon-gf-dashboard" bs-tooltip="'Deployments dashboard'"></i>
+						<span class="muted">Deployment Stats</span>
+					</div>
+				</div>
 				<div class="card-item-body">
 					<div class="card-item-details">
 						<div class="card-item-name">

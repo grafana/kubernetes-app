@@ -138,6 +138,16 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             });
           }
         }, {
+          key: 'goToDeploymentDashboard',
+          value: function goToDeploymentDashboard(deploy) {
+            this.$location.path("dashboard/db/kubernetes-deployments").search({
+              "var-datasource": this.cluster.jsonData.ds,
+              "var-cluster": this.cluster.name,
+              "var-namespace": deploy.metadata.namespace,
+              "var-deployment": deploy.metadata.name
+            });
+          }
+        }, {
           key: 'goToPodInfo',
           value: function goToPodInfo(pod, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;

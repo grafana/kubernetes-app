@@ -61,6 +61,12 @@
       "name": "Kubernetes Cluster",
       "path": "dashboards/kubernetes-cluster.json",
       "addToNav": false
+    },
+    {
+      "type": "dashboard",
+      "name": "Kubernetes Deployments",
+      "path": "dashboards/kubernetes-deployments.json",
+      "addToNav": false
     }
   ],
 

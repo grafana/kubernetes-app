@@ -91,6 +91,16 @@ export class ClusterWorkloadsCtrl {
     });
   }
 
+  goToDeploymentDashboard(deploy) {
+    this.$location.path("dashboard/db/kubernetes-deployments")
+    .search({
+      "var-datasource": this.cluster.jsonData.ds,
+      "var-cluster": this.cluster.name,
+      "var-namespace": deploy.metadata.namespace,
+      "var-deployment": deploy.metadata.name
+    });
+  }
+
   goToPodInfo(pod, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
