@@ -650,7 +650,7 @@
         "multi": true,
         "name": "node",
         "options": [],
-        "query": "snap.$cluster.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.node.*",
         "refresh": 1,
         "type": "query"
       },
@@ -662,7 +662,7 @@
         "multi": true,
         "name": "namespace",
         "options": [],
-        "query": "snap.$cluster.$node.intel.docker.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.pod.container.*",
         "refresh": 1,
         "type": "query"
       },

@@ -837,7 +837,7 @@
         "multiFormat": "glob",
         "name": "node",
         "options": [],
-        "query": "snap.$cluster.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.node.*",
         "refresh": 1,
         "refresh_on_load": false,
         "regex": "",
