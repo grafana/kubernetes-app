@@ -1,4 +1,36 @@
 {
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "4.0.0-beta1"
+    },
+    {
+      "type": "datasource",
+      "id": "graphite",
+      "name": "Graphite",
+      "version": "1.0.0"
+    }
+  ],
   "id": null,
   "title": "Kubernetes Cluster",
   "description": "Summary metrics about containers running on Kubernetes nodes.",
@@ -81,7 +113,7 @@
         "multi": true,
         "name": "node",
         "options": [],
-        "query": "snap.$cluster.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.node.*",
         "refresh": 1,
         "regex": "",
         "sort": 0,
@@ -99,7 +131,7 @@
         "multi": true,
         "name": "namespace",
         "options": [],
-        "query": "snap.$cluster.$node.intel.docker.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.pod.container.*",
         "refresh": 1,
         "regex": "",
         "sort": 0,
@@ -114,7 +146,7 @@
   },
   "refresh": "30s",
   "schemaVersion": 13,
-  "version": 2,
+  "version": 1,
   "links": [
     {
       "asDropdown": true,
@@ -131,23 +163,24 @@
   "gnetId": null,
   "rows": [
     {
-      "title": "Cluster Capacity",
+      "collapse": false,
+      "height": 236,
       "panels": [
         {
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(50, 172, 45, 0.97)",
+            "rgba(245, 54, 54, 0.9)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
+            "rgba(50, 172, 45, 0.97)"
           ],
           "datasource": "$datasource",
           "editable": true,
           "error": false,
           "format": "percentunit",
           "gauge": {
-            "maxValue": 100,
+            "maxValue": 1,
             "minValue": 0,
             "show": true,
             "thresholdLabels": false,
@@ -220,16 +253,16 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(50, 172, 45, 0.97)",
+            "rgba(245, 54, 54, 0.9)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
+            "rgba(50, 172, 45, 0.97)"
           ],
           "datasource": "$datasource",
           "editable": true,
           "error": false,
           "format": "percentunit",
           "gauge": {
-            "maxValue": 100,
+            "maxValue": 1,
             "minValue": 0,
             "show": true,
             "thresholdLabels": false,
@@ -302,16 +335,16 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(50, 172, 45, 0.97)",
+            "rgba(245, 54, 54, 0.9)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(245, 54, 54, 0.9)"
+            "rgba(50, 172, 45, 0.97)"
           ],
           "datasource": "$datasource",
           "editable": true,
           "error": false,
           "format": "percentunit",
           "gauge": {
-            "maxValue": 100,
+            "maxValue": 1,
             "minValue": 0,
             "show": true,
             "thresholdLabels": false,
@@ -415,7 +448,7 @@
             {
               "refId": "A",
               "target": "alias(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods), 'Capacity')",
-              "textEditor": true
+              "textEditor": false
             },
             {
               "refId": "B",
@@ -630,16 +663,17 @@
           ]
         }
       ],
-      "showTitle": true,
-      "titleSize": "h3",
-      "height": 236,
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Cluster Capacity",
+      "titleSize": "h3",
+      "isNew": false
     },
     {
-      "title": "Deployments",
+      "collapse": false,
+      "height": "175",
       "panels": [
         {
           "columns": [
@@ -759,7 +793,7 @@
           "thresholds": "",
           "title": "Deployment Replicas - Desired",
           "type": "singlestat",
-          "valueFontSize": "100%",
+          "valueFontSize": "80%",
           "valueMaps": [
             {
               "op": "=",
@@ -918,16 +952,17 @@
           "valueName": "avg"
         }
       ],
-      "showTitle": true,
-      "titleSize": "h3",
-      "height": "175",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Deployments",
+      "titleSize": "h3",
+      "isNew": false
     },
     {
-      "title": "Nodes",
+      "collapse": false,
+      "height": "120",
       "panels": [
         {
           "cacheTimeout": null,
@@ -988,7 +1023,8 @@
           "targets": [
             {
               "refId": "A",
-              "target": "countSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk)"
+              "target": "countSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk)",
+              "textEditor": false
             }
           ],
           "thresholds": "",
@@ -1155,16 +1191,17 @@
           "valueName": "current"
         }
       ],
-      "showTitle": true,
-      "titleSize": "h3",
-      "height": "120",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Nodes",
+      "titleSize": "h3",
+      "isNew": false
     },
     {
-      "title": "Pods",
+      "collapse": false,
+      "height": "120",
       "panels": [
         {
           "cacheTimeout": null,
@@ -1395,16 +1432,17 @@
           "valueName": "current"
         }
       ],
-      "showTitle": true,
-      "titleSize": "h3",
-      "height": "120",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Pods",
+      "titleSize": "h3",
+      "isNew": false
     },
     {
-      "title": "Containers",
+      "collapse": false,
+      "height": "125",
       "panels": [
         {
           "cacheTimeout": null,
@@ -1465,7 +1503,8 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.running), 'max')"
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.running), 'max')",
+              "textEditor": false
             }
           ],
           "thresholds": "",
@@ -1858,13 +1897,13 @@
           "valueName": "current"
         }
       ],
-      "showTitle": true,
-      "titleSize": "h3",
-      "height": "125",
       "repeat": null,
-      "repeatRowId": null,
       "repeatIteration": null,
-      "collapse": false
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Containers",
+      "titleSize": "h3",
+      "isNew": false
     }
   ]
 }
