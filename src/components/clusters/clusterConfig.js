@@ -341,7 +341,7 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-const raintankSnapImage = 'raintank/snap_k8s:v17';
+const raintankSnapImage = 'raintank/snap_k8s:v18';
 
 var configMap = {
   "kind": "ConfigMap",
