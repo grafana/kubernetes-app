@@ -8,6 +8,7 @@ export class ClustersCtrl {
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.backendSrv = backendSrv;
     this.$location = $location;
+    document.title = 'Grafana Kubernetes App';
     this.clusters = {};
     this.pageReady = false;
     this.getClusters().then(() => {

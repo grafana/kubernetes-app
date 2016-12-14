@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-System.register(["moment"], function (_export, _context) {
+System.register(['moment'], function (_export, _context) {
   "use strict";
 
   var moment, _createClass, NodeInfoCtrl;
@@ -39,7 +39,7 @@ System.register(["moment"], function (_export, _context) {
         };
       }();
 
-      _export("NodeInfoCtrl", NodeInfoCtrl = function () {
+      _export('NodeInfoCtrl', NodeInfoCtrl = function () {
         /** @ngInject */
         function NodeInfoCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
           var _this = this;
@@ -50,6 +50,7 @@ System.register(["moment"], function (_export, _context) {
           this.backendSrv = backendSrv;
           this.datasourceSrv = datasourceSrv;
           this.$location = $location;
+          document.title = 'Grafana Kubernetes App';
 
           this.pageReady = false;
           this.cluster = {};
@@ -75,7 +76,7 @@ System.register(["moment"], function (_export, _context) {
         }
 
         _createClass(NodeInfoCtrl, [{
-          key: "loadDatasource",
+          key: 'loadDatasource',
           value: function loadDatasource(id) {
             var _this2 = this;
 
@@ -88,7 +89,7 @@ System.register(["moment"], function (_export, _context) {
             });
           }
         }, {
-          key: "goToNodeDashboard",
+          key: 'goToNodeDashboard',
           value: function goToNodeDashboard() {
             this.$location.path("dashboard/db/kubernetes-node").search({
               "var-datasource": this.cluster.jsonData.ds,
@@ -97,7 +98,7 @@ System.register(["moment"], function (_export, _context) {
             });
           }
         }, {
-          key: "conditionStatus",
+          key: 'conditionStatus',
           value: function conditionStatus(condition) {
             var status;
             if (condition.type === "Ready") {
@@ -112,12 +113,12 @@ System.register(["moment"], function (_export, _context) {
             };
           }
         }, {
-          key: "isConditionOk",
+          key: 'isConditionOk',
           value: function isConditionOk(condition) {
             return this.conditionStatus(condition).value;
           }
         }, {
-          key: "conditionLastTransitionTime",
+          key: 'conditionLastTransitionTime',
           value: function conditionLastTransitionTime(condition) {
             return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
           }
@@ -126,7 +127,7 @@ System.register(["moment"], function (_export, _context) {
         return NodeInfoCtrl;
       }());
 
-      _export("NodeInfoCtrl", NodeInfoCtrl);
+      _export('NodeInfoCtrl', NodeInfoCtrl);
 
       NodeInfoCtrl.templateUrl = 'components/clusters/partials/node_info.html';
     }

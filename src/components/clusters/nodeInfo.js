@@ -7,6 +7,7 @@ export class NodeInfoCtrl {
     this.backendSrv = backendSrv;
     this.datasourceSrv = datasourceSrv;
     this.$location = $location;
+    document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
     this.cluster = {};

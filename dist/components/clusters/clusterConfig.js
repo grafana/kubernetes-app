@@ -59,6 +59,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           this.snapDeployed = false;
           this.alertSrv = alertSrv;
           this.showHelp = false;
+          document.title = 'Grafana Kubernetes App';
 
           this.getDatasources().then(function () {
             self.pageReady = true;

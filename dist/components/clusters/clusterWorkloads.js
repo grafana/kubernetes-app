@@ -52,6 +52,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           this.backendSrv = backendSrv;
           this.datasourceSrv = datasourceSrv;
           this.$location = $location;
+          document.title = 'Grafana Kubernetes App';
 
           this.pageReady = false;
           this.cluster = {};

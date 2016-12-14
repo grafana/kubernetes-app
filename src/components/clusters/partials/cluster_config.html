@@ -27,15 +27,15 @@
     <div class="gf-form-group">
     	<div class="gf-form-inline">
     		<div class="gf-form">
-    			<span class="gf-form-label width-7">Carbon Host</span>
+    			<span class="gf-form-label width-8">Carbon Host</span>
     				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.server" placeholder="Carbon host" required="" />
             <info-popover mode="right-absolute">
-              Specify a url to the Carbon Host. Metrics from Kubernetes are sent to the Carbon host and saved to Graphite.
+              Specify a url to the Carbon Host. Metrics from Kubernetes are sent to the Carbon host and saved to Graphite. This url must be available from inside the Kubernetes cluster.
             </info-popover>
     			</div>
     		</div>
     		<div class="gf-form">
-    			<span class="gf-form-label width-7">Port</span>
+    			<span class="gf-form-label width-8">Port</span>
     				<input class="gf-form-input max-width-21" type="number" ng-model="ctrl.cluster.jsonData.port" placeholder="2003" required="" />
     			</div>
     		</div>

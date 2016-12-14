@@ -21,6 +21,7 @@ export class ClusterConfigCtrl {
     this.snapDeployed = false;
     this.alertSrv = alertSrv;
     this.showHelp = false;
+    document.title = 'Grafana Kubernetes App';
 
     this.getDatasources().then(() => {
       self.pageReady = true;
