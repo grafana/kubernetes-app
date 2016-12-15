@@ -1252,7 +1252,7 @@
               "to": "null"
             }
           ],
-          "span": 4,
+          "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
             "full": false,
@@ -1328,7 +1328,7 @@
               "to": "null"
             }
           ],
-          "span": 4,
+          "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
             "full": false,
@@ -1414,12 +1414,164 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Failed), 'max'), 0)",
               "textEditor": false
             }
           ],
           "thresholds": "",
-          "title": "Pods Pending",
+          "title": "Pods Failed",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(187, 194, 208, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 34,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 4,
+          "sparkline": {
+            "fillColor": "rgba(31, 189, 41, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 200, 32)",
+            "show": true
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Succeeded), 'max'), 0)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": "",
+          "title": "Pods Succeeded",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(187, 194, 208, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "decimals": 0,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 35,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 4,
+          "sparkline": {
+            "fillColor": "rgba(31, 189, 41, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 200, 32)",
+            "show": true
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Unknown), 'max'), 0)",
+              "textEditor": false
+            }
+          ],
+          "thresholds": "",
+          "title": "Pods - Status Unknown",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -1437,8 +1589,7 @@
       "repeatRowId": null,
       "showTitle": true,
       "title": "Pods",
-      "titleSize": "h3",
-      "isNew": false
+      "titleSize": "h3"
     },
     {
       "collapse": false,
