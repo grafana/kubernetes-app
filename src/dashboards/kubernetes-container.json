@@ -25,8 +25,7 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
-      "height": "600px",
+      "height": 209,
       "panels": [
         {
           "alerting": {},
@@ -38,14 +37,14 @@
           "fill": 1,
           "grid": {},
           "id": 1,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": true,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "sort": "current",
             "sortDesc": true,
@@ -61,20 +60,20 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 3,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.memory_stats.usage.usage, 0), 6,7)",
+              "target": "groupByNode(exclude(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.memory_stats.usage.usage, 0), 'POD'), 7, 'sum')",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Memory Usage",
+          "title": "Total Memory Usage",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -83,7 +82,10 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -113,20 +115,100 @@
           "error": false,
           "fill": 1,
           "grid": {},
-          "id": 2,
-          "isNew": true,
+          "id": 6,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "sort": "current",
             "sortDesc": true,
             "total": false,
-            "values": true,
-            "hideEmpty": true
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 6,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 'POD'), 7, 'sum')",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CPU Usage",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ns",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "alerting": {},
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "id": 2,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -142,17 +224,17 @@
               "transform": "negative-Y"
             }
           ],
-          "span": 3,
-          "stack": false,
+          "span": 4,
+          "stack": true,
           "steppedLine": false,
           "targets": [
             {
               "refId": "A",
-              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.rx_bytes), 6, 'sum'), '(.*)', '\\1-in')",
+              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.rx_bytes), 'POD'), 7, 'sum')",
               "textEditor": false
             },
             {
-              "hide": false,
+              "hide": true,
               "refId": "B",
               "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 6, 'sum'), '(.*)', '\\1-out')",
               "textEditor": false
@@ -161,7 +243,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Traffic",
+          "title": "Network Traffic (Inbound)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -170,7 +252,100 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "bps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "alerting": {},
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "$datasource",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {},
+          "id": 8,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": true,
+            "hideEmpty": true,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sort": "current",
+            "sortDesc": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [
+            {
+              "alias": "/.*-out/",
+              "transform": "negative-Y"
+            }
+          ],
+          "span": 4,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "refId": "A",
+              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 'POD'), 7, 'sum')",
+              "textEditor": false
+            },
+            {
+              "hide": true,
+              "refId": "B",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 6, 'sum'), '(.*)', '\\1-out')",
+              "textEditor": false
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Network Traffic (Inbound)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 2,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -201,21 +376,20 @@
           "fill": 0,
           "grid": {},
           "id": 3,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
+            "hideEmpty": true,
+            "hideZero": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "sort": "current",
             "sortDesc": true,
             "total": false,
-            "values": true,
-            "rightSide": false,
-            "hideZero": false,
-            "hideEmpty": true
+            "values": true
           },
           "lines": true,
           "linewidth": 2,
@@ -226,13 +400,13 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 3,
-          "stack": false,
+          "span": 4,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.*, 0.0001), 6,7, 11)",
+              "target": "groupByNode(exclude(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.*, 0.0001), 'POD'), 7, 'sum')",
               "textEditor": false
             }
           ],
@@ -248,86 +422,14 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "alerting": {},
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "$datasource",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 6,
-          "isNew": true,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": false,
-            "max": false,
-            "min": false,
+            "mode": "time",
+            "name": null,
             "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 3,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "aliasByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 6,7)",
-              "textEditor": false
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "CPU Usage",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
+            "values": []
           },
           "yaxes": [
             {
-              "format": "ns",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -345,12 +447,16 @@
           ]
         }
       ],
-      "title": "Row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Row",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
-      "height": "250px",
+      "height": 214,
       "panels": [
         {
           "alerting": {},
@@ -362,15 +468,15 @@
           "fill": 1,
           "grid": {},
           "id": 4,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": true,
             "hideZero": false,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": true
@@ -390,7 +496,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.reads_completed), 10), 6,7)",
+              "target": "groupByNode(exclude(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.reads_completed), 10), 'POD'), 7, 'sum')",
               "textEditor": false
             }
           ],
@@ -406,7 +512,10 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
           },
           "yaxes": [
             {
@@ -437,14 +546,14 @@
           "fill": 1,
           "grid": {},
           "id": 5,
-          "isNew": true,
           "legend": {
             "alignAsTable": true,
-            "avg": true,
+            "avg": false,
             "current": true,
             "hideEmpty": true,
             "max": false,
             "min": false,
+            "rightSide": true,
             "show": true,
             "total": false,
             "values": true
@@ -464,7 +573,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.writes_completed), 10), 6, 7)",
+              "target": "groupByNode(exclude(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.writes_completed), 10), 'POD'), 7, 'sum')",
               "textEditor": false
             }
           ],
@@ -480,89 +589,10 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "New row"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "alerting": {},
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "$datasource",
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {},
-          "id": 7,
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "hideEmpty": true,
-            "hideZero": false,
-            "max": false,
-            "min": false,
+            "mode": "time",
+            "name": null,
             "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.established, 6, 'sum')",
-              "textEditor": false
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "ALL ESTABLISHED TCP CONN",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 0,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
+            "values": []
           },
           "yaxes": [
             {
@@ -570,7 +600,7 @@
               "label": null,
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             },
             {
@@ -584,7 +614,12 @@
           ]
         }
       ],
-      "title": "New row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "New row",
+      "titleSize": "h6"
     }
   ],
   "time": {
@@ -623,7 +658,7 @@
         "hide": 0,
         "label": "",
         "name": "datasource",
-        "options": [ ],
+        "options": [],
         "query": "graphite",
         "refresh": 1,
         "regex": "",
@@ -690,7 +725,6 @@
         "refresh": 1,
         "type": "query"
       }
-
     ]
   },
   "annotations": {
