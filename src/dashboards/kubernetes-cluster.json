@@ -131,7 +131,7 @@
         "multi": true,
         "name": "namespace",
         "options": [],
-        "query": "snap.$cluster.grafanalabs.kubestate.pod.container.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.container.*",
         "refresh": 1,
         "regex": "",
         "sort": 0,
@@ -230,8 +230,8 @@
             },
             {
               "refId": "B",
-              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running.value), 'max'), #A)",
-              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running.value), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods))",
+              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), #A)",
+              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods))",
               "textEditor": false
             }
           ],
@@ -312,8 +312,8 @@
             },
             {
               "refId": "B",
-              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), #A)",
-              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.cpu.cores))",
+              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), #A)",
+              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.cpu.cores))",
               "textEditor": false
             }
           ],
@@ -394,8 +394,8 @@
             },
             {
               "refId": "B",
-              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), #A)",
-              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.memory.bytes))",
+              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), #A)",
+              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.memory.bytes))",
               "textEditor": false
             }
           ],
@@ -456,7 +456,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running.value), 'max'), 0), 'Requested')",
+              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), 0), 'Requested')",
               "textEditor": false
             }
           ],
@@ -539,7 +539,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), 0), 'Requested')",
+              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max'), 0), 'Requested')",
               "textEditor": false
             }
           ],
@@ -622,7 +622,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), 0), 'Requested')",
+              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max'), 0), 'Requested')",
               "textEditor": false
             }
           ],
@@ -1262,7 +1262,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running.value), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max')",
               "textEditor": false
             }
           ],
@@ -1338,7 +1338,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending.value), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1414,7 +1414,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending.value), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1503,7 +1503,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.running), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.running), 'max')",
               "textEditor": false
             }
           ],
@@ -1578,7 +1578,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.waiting), 'max')"
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.waiting), 'max')"
             }
           ],
           "thresholds": "",
@@ -1653,7 +1653,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.terminated), 'max')"
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.terminated), 'max')"
             }
           ],
           "thresholds": "",
@@ -1728,7 +1728,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.*.*.status.restarts))"
+              "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.restarts))"
             }
           ],
           "thresholds": "",
@@ -1803,7 +1803,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.cpu.cores), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max')",
               "textEditor": false
             }
           ],
@@ -1879,7 +1879,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.container.$namespace.$node.*.*.requested.memory.bytes), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max')",
               "textEditor": false
             }
           ],

@@ -125,7 +125,7 @@
         "multi": true,
         "name": "namespace",
         "options": [],
-        "query": "snap.$cluster.grafanalabs.kubestate.pod.container.*",
+        "query": "snap.$cluster.grafanalabs.kubestate.container.*",
         "refresh": 1,
         "regex": "",
         "sort": 0,
