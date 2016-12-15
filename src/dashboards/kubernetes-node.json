@@ -25,17 +25,18 @@
   "rows": [
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
           "alerting": {},
-          "aliasColors": {},
+          "aliasColors": {
+            "steal": "#BF1B00"
+          },
           "bars": false,
           "datasource": "$datasource",
           "editable": true,
           "error": false,
-          "fill": 2,
+          "fill": 5,
           "grid": {},
           "id": 1,
           "legend": {
@@ -50,7 +51,7 @@
             "values": true
           },
           "lines": true,
-          "linewidth": 2,
+          "linewidth": 0,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
@@ -95,16 +96,16 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "percent",
               "logBase": 1,
-              "max": null,
+              "max": "100",
               "min": null,
               "show": true
             },
@@ -184,9 +185,9 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
@@ -228,7 +229,6 @@
           },
           "id": 23,
           "interval": null,
-          "isNew": true,
           "links": [],
           "mappingType": 1,
           "mappingTypes": [
@@ -257,10 +257,10 @@
           ],
           "span": 2,
           "sparkline": {
-            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "fillColor": "rgba(255, 255, 255, 0)",
             "full": false,
-            "lineColor": "rgb(31, 120, 193)",
-            "show": false
+            "lineColor": "rgb(255, 255, 255)",
+            "show": true
           },
           "targets": [
             {
@@ -283,11 +283,15 @@
           "valueName": "avg"
         }
       ],
-      "title": "New row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "New row",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
@@ -324,14 +328,19 @@
           "targets": [
             {
               "refId": "A",
-              "target": "sumSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.r_per_sec)",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.r_per_sec), 'rIOPS')",
+              "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.w_per_sec), 'wIOPS')",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Read IOPS",
+          "title": "Disk IOPS",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -340,9 +349,9 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
@@ -396,14 +405,19 @@
           "targets": [
             {
               "refId": "A",
-              "target": "sumSeries(snap.$cluster.$node.intel.linux.iostat.device.*.w_per_sec)",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.*.rkB_per_sec), 'Read Bps')",
+              "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.*.wkB_per_sec), 'Write Bps')",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Write IOPS",
+          "title": "Disk Throughput",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -412,14 +426,14 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "Kbits",
               "logBase": 1,
               "max": null,
               "min": null,
@@ -441,7 +455,7 @@
           "datasource": "$datasource",
           "editable": true,
           "error": false,
-          "fill": 1,
+          "fill": 0,
           "grid": {},
           "id": 16,
           "legend": {
@@ -453,13 +467,13 @@
             "total": false,
             "values": false
           },
-          "lines": false,
-          "linewidth": 2,
+          "lines": true,
+          "linewidth": 1,
           "links": [],
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 1,
-          "points": true,
+          "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 4,
@@ -468,14 +482,14 @@
           "targets": [
             {
               "refId": "A",
-              "target": "averageSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.%util)",
+              "target": "aliasByNode(snap.$cluster.$node.intel.linux.iostat.device.*.%util, 2, 7)",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "%Util",
+          "title": "Disk Utilization",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -484,16 +498,16 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
             {
               "format": "percent",
               "logBase": 1,
-              "max": null,
+              "max": "100",
               "min": null,
               "show": true
             },
@@ -507,11 +521,15 @@
           ]
         }
       ],
-      "title": "New row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "New row",
+      "titleSize": "h6"
     },
     {
       "collapse": false,
-      "editable": true,
       "height": "250px",
       "panels": [
         {
@@ -574,9 +592,9 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
@@ -656,9 +674,9 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
@@ -738,9 +756,9 @@
           },
           "type": "graph",
           "xaxis": {
-            "show": true,
             "mode": "time",
             "name": null,
+            "show": true,
             "values": []
           },
           "yaxes": [
@@ -761,7 +779,12 @@
           ]
         }
       ],
-      "title": "New row"
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "New row",
+      "titleSize": "h6"
     }
   ],
   "time": {
@@ -801,7 +824,7 @@
         "hide": 0,
         "label": "",
         "name": "datasource",
-        "options": [ ],
+        "options": [],
         "query": "graphite",
         "refresh": 1,
         "regex": "",
