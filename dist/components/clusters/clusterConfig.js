@@ -408,7 +408,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-      raintankSnapImage = 'raintank/snap_k8s:v19';
+      raintankSnapImage = 'raintank/snap_k8s:v20';
       configMap = {
         "kind": "ConfigMap",
         "apiVersion": "v1",

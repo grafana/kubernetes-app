@@ -230,8 +230,8 @@
             },
             {
               "refId": "B",
-              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), #A)",
-              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods))",
+              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max'), #A)",
+              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods))",
               "textEditor": false
             }
           ],
@@ -456,7 +456,7 @@
             },
             {
               "refId": "C",
-              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max'), 0), 'Requested')",
+              "target": "alias(transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max'), 0), 'Requested')",
               "textEditor": false
             }
           ],
@@ -1262,7 +1262,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Running), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max')",
               "textEditor": false
             }
           ],
@@ -1338,7 +1338,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Pending), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Pending), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1414,7 +1414,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Failed), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Failed), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1490,7 +1490,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Succeeded), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Succeeded), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1566,7 +1566,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.*.status.phase.Unknown), 'max'), 0)",
+              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Unknown), 'max'), 0)",
               "textEditor": false
             }
           ],
@@ -1654,7 +1654,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.running), 'max')",
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.running), 'max')",
               "textEditor": false
             }
           ],
@@ -1729,7 +1729,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.waiting), 'max')"
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.waiting), 'max')"
             }
           ],
           "thresholds": "",
@@ -1804,7 +1804,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.terminated), 'max')"
+              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.terminated), 'max')"
             }
           ],
           "thresholds": "",
@@ -1879,7 +1879,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.*.*.status.restarts))"
+              "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.restarts))"
             }
           ],
           "thresholds": "",
