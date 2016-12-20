@@ -383,7 +383,7 @@ var snapTask = {
         "/intel/procfs/meminfo/*": {},
         "/intel/procfs/iface/*": {},
         "/intel/linux/iostat/*": {},
-        "/intel/procfs/load/*": {},
+        "/intel/procfs/load/*": {}
       },
       "config": {
         "/intel/procfs": {
