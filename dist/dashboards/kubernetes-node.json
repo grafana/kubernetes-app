@@ -328,17 +328,17 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.capacity, 2, 'maxSeries')), 'capacity')",
+              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.capacity, 10, 'maxSeries')), 'capacity')",
               "textEditor": false
             },
             {
               "refId": "C",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.available, 2, 'maxSeries')), 'available')",
+              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.available, 10, 'maxSeries')), 'available')",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage, 2, 'maxSeries')), 'used')",
+              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage, 10, 'maxSeries')), 'used')",
               "textEditor": false
             }
           ],
