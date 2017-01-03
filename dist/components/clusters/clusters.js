@@ -69,13 +69,6 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
               this.$location.path("plugins/raintank-kubernetes-app/page/cluster-info").search({ "cluster": cluster.id });
             }
           }
-        }, {
-          key: 'generateSingleStatSrc',
-          value: function generateSingleStatSrc(cluster, panelNr) {
-            var toNow = Date.now();
-            var from3hrsAgo = toNow - 3 * 60 * 60;
-            return 'render/dashboard-solo/db/kubernetes-cluster?var-datasource=' + cluster.jsonData.ds + '&var-cluster=' + cluster.name + '&from=' + from3hrsAgo + '&to=' + toNow + '&var-node=All&var-namespace=All&panelId=' + panelNr + '&width=200&height=100';
-          }
         }]);
 
         return ClustersCtrl;

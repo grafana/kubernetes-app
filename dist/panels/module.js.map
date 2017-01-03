@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/panels/module.js"],"names":["NodeDataCtrl"],"mappings":";;;;;;;;AACQA,kB,aAAAA,Y;;;2BAGNA,Y","file":"module.js","sourcesContent":["\nimport {NodeDataCtrl} from './nodeData';\n\nexport  {\n  NodeDataCtrl as PanelCtrl\n};\n"]}

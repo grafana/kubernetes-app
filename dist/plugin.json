@@ -67,6 +67,10 @@
       "name": "Kubernetes Deployments",
       "path": "dashboards/kubernetes-deployments.json",
       "addToNav": false
+    },
+    {
+      "type": "panel",
+      "name": "Kubernetes Node Info"
     }
   ],
 

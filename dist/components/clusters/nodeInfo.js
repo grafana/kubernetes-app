@@ -62,7 +62,7 @@ System.register(['moment'], function (_export, _context) {
             return;
           } else {
             (function () {
-              var cluster_id = $location.search().cluster;
+              var cluster_id = 22; //$location.search().cluster;
               var node_name = $location.search().node;
 
               _this.loadDatasource(cluster_id).then(function () {

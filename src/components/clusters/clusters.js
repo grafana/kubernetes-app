@@ -30,17 +30,6 @@ export class ClustersCtrl {
       this.$location.path("plugins/raintank-kubernetes-app/page/cluster-info").search({"cluster": cluster.id});
     }
   }
-
-  generateSingleStatSrc(cluster, panelNr) {
-    const toNow = Date.now();
-    const from3hrsAgo = toNow - (3 * 60 * 60);
-    return 'render/dashboard-solo/db/kubernetes-cluster?var-datasource=' + cluster.jsonData.ds
-      + '&var-cluster=' + cluster.name
-      + '&from=' + from3hrsAgo
-      + '&to=' + toNow
-      + '&var-node=All&var-namespace=All&panelId=' + panelNr
-      + '&width=200&height=100';
-  }
 }
 
 ClustersCtrl.templateUrl = 'components/clusters/partials/clusters.html';
