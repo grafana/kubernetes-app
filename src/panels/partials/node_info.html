@@ -3,18 +3,35 @@
     <h6 class="dashlist-section-header" ng-show="ctrl.panel.headings">
         {{group.header}}
     </h6>
-    <div class="dashlist-item" ng-repeat="node in ctrl.nodes">
-      <a class="dashlist-link" ng-click="ctrl.goToNodeDashboard(node, $event)">
-        <span class="dashlist-title">
-          {{node.metadata.name}}
-          <span ng-if="node.healthState.text !== 'OK'">{{node.healthState.message}}</span>
-          <span class="alert-list-item-state {{node.healthState.stateClass}}">
+    <table class="filter-table">
+      <thead>
+        <tr>
+          <th>Node Name</th>
+          <th style="width: 20%">Health</th>
+          <th>Pods</th>
+          <th>%</th>
+          <th>CPU requests (cores)</th>
+          <th>%</th>
+          <th>Memory requests (bytes)</th>
+          <th>%</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="dashlist-item" ng-repeat="node in ctrl.nodes" ng-click="ctrl.goToNodeDashboard(node, $event)">
+          <td>{{node.metadata.name}}</td>
+          <td><span ng-if="node.healthState.text !== 'OK'">{{node.healthState.message}}</span><span class="alert-list-item-state {{node.healthState.stateClass}}">
             <i class="{{node.healthState.iconClass}}"></i>
             {{node.healthState.text}}
-          </span>
-        </span>
-      </a>
-    </div>
+          </span></td>
+          <td>{{(node.podsUsed || '?') + ' / ' + node.status.capacity.pods}}</td>
+          <td>{{node.podsUsedPerc || '?%'}}</td>
+          <td>{{(node.cpuUsage || '?') + ' / ' + node.status.capacity.cpu}}</td>
+          <td>{{node.cpuUsagePerc || '?%'}}</td>
+          <td>{{(node.memoryUsage || '?') + ' / ' + node.status.capacity.memory}}</td>
+          <td>{{node.memoryUsagePerc || '?%'}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 

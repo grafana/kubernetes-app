@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['moment', 'app/plugins/sdk', 'lodash'], function (_export, _context) {
+System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function (_export, _context) {
   "use strict";
 
-  var moment, PanelCtrl, _, _createClass, panelDefaults, NodeDataCtrl;
+  var moment, PanelCtrl, _, NodeStatsDatasource, _createClass, panelDefaults, NodeDataCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -47,6 +47,8 @@ System.register(['moment', 'app/plugins/sdk', 'lodash'], function (_export, _con
       PanelCtrl = _appPluginsSdk.PanelCtrl;
     }, function (_lodash) {
       _ = _lodash.default;
+    }, function (_nodeStats) {
+      NodeStatsDatasource = _nodeStats.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -73,7 +75,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash'], function (_export, _con
         _inherits(NodeDataCtrl, _PanelCtrl);
 
         /** @ngInject */
-        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
+        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv) {
           _classCallCheck(this, NodeDataCtrl);
 
           var _this = _possibleConstructorReturn(this, (NodeDataCtrl.__proto__ || Object.getPrototypeOf(NodeDataCtrl)).call(this, $scope, $injector));
@@ -85,6 +87,8 @@ System.register(['moment', 'app/plugins/sdk', 'lodash'], function (_export, _con
           _this.datasourceSrv = datasourceSrv;
           _this.$location = $location;
           _this.alertSrv = alertSrv;
+          _this.timeSrv = timeSrv;
+          _this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
           document.title = 'Grafana Kubernetes App';
 
           _this.pageReady = false;
@@ -111,13 +115,18 @@ System.register(['moment', 'app/plugins/sdk', 'lodash'], function (_export, _con
               (function () {
                 var cluster_id = _this2.$location.search()['var-cluster'];
                 var node_name = _this2.$location.search()['var-node'];
+                var graphiteDs = _this2.$location.search()['var-datasource'];
 
                 _this2.loadDatasource(cluster_id).then(function () {
+                  return _this2.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
+                }).then(function (nodeStats) {
                   if (node_name === 'All') {
                     _this2.isInListMode = true;
                     _this2.clusterDS.getNodes().then(function (nodes) {
                       _this2.nodes = _.map(nodes, function (node) {
                         node.healthState = _this2.getNodeHealth(node);
+                        _this2.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
+
                         return node;
                       });
                     });

@@ -1,13 +1,14 @@
 import moment from 'moment';
 import {PanelCtrl} from 'app/plugins/sdk';
 import _ from 'lodash';
+import NodeStatsDatasource from './nodeStats';
 
 const panelDefaults = {
 };
 
 export class NodeDataCtrl extends PanelCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
@@ -16,6 +17,8 @@ export class NodeDataCtrl extends PanelCtrl {
     this.datasourceSrv = datasourceSrv;
     this.$location = $location;
     this.alertSrv = alertSrv;
+    this.timeSrv = timeSrv;
+    this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
@@ -34,15 +37,20 @@ export class NodeDataCtrl extends PanelCtrl {
       this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
-      let cluster_id = this.$location.search()['var-cluster'];
-      let node_name  = this.$location.search()['var-node'];
+      const cluster_id = this.$location.search()['var-cluster'];
+      const node_name  = this.$location.search()['var-node'];
+      const graphiteDs  = this.$location.search()['var-datasource'];
 
       this.loadDatasource(cluster_id).then(() => {
+        return this.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
+      }).then(nodeStats => {
         if (node_name === 'All') {
           this.isInListMode = true;
           this.clusterDS.getNodes().then(nodes => {
             this.nodes = _.map(nodes, node => {
               node.healthState = this.getNodeHealth(node);
+              this.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
+
               return node;
             });
           });
