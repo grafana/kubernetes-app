@@ -8,7 +8,7 @@ const panelDefaults = {
 
 export class NodeDataCtrl extends PanelCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv, $window) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
@@ -18,6 +18,7 @@ export class NodeDataCtrl extends PanelCtrl {
     this.$location = $location;
     this.alertSrv = alertSrv;
     this.timeSrv = timeSrv;
+    this.$window = $window;
     this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
     document.title = 'Grafana Kubernetes App';
 
@@ -126,12 +127,15 @@ export class NodeDataCtrl extends PanelCtrl {
   }
 
   goToNodeDashboard(node) {
-    this.$location.path("dashboard/db/kubernetes-node")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": slugify(node.metadata.name)
-      });
+    const querystring = this.$location.path("dashboard/db/kubernetes-node").search();
+    querystring['var-node'] = node === 'All' ? 'All' : slugify(node.metadata.name);
+    this.$window.location.href = this.$location.path() + '?' + this.objectToQueryString(querystring);
+  }
+
+  objectToQueryString(obj) {
+    return _.reduce(obj, (result, value, key) => {
+      return (!_.isNull(value) && !_.isUndefined(value)) ? (result += key + '=' + value + '&') : result;
+    }, '').slice(0, -1);
   }
 
   conditionStatus(condition) {

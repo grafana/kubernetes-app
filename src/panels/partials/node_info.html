@@ -38,8 +38,8 @@
 <div ng-if="!ctrl.isInListMode">
 
   <div class="page-header">
-    <h1>{{ctrl.node.metadata.name}}
-    </h1>
+    <h1>{{ctrl.node.metadata.name}}</h1>
+    <a href="#" ng-click="ctrl.goToNodeDashboard('All', $event)"><h2><< Back to list</h2></a>
   </div>
 
   <div class="row">

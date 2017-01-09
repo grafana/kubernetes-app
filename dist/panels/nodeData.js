@@ -75,7 +75,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
         _inherits(NodeDataCtrl, _PanelCtrl);
 
         /** @ngInject */
-        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv) {
+        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv, $window) {
           _classCallCheck(this, NodeDataCtrl);
 
           var _this = _possibleConstructorReturn(this, (NodeDataCtrl.__proto__ || Object.getPrototypeOf(NodeDataCtrl)).call(this, $scope, $injector));
@@ -88,6 +88,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
           _this.$location = $location;
           _this.alertSrv = alertSrv;
           _this.timeSrv = timeSrv;
+          _this.$window = $window;
           _this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
           document.title = 'Grafana Kubernetes App';
 
@@ -210,11 +211,16 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
         }, {
           key: 'goToNodeDashboard',
           value: function goToNodeDashboard(node) {
-            this.$location.path("dashboard/db/kubernetes-node").search({
-              "var-datasource": this.cluster.jsonData.ds,
-              "var-cluster": this.cluster.name,
-              "var-node": slugify(node.metadata.name)
-            });
+            var querystring = this.$location.path("dashboard/db/kubernetes-node").search();
+            querystring['var-node'] = node === 'All' ? 'All' : slugify(node.metadata.name);
+            this.$window.location.href = this.$location.path() + '?' + this.objectToQueryString(querystring);
+          }
+        }, {
+          key: 'objectToQueryString',
+          value: function objectToQueryString(obj) {
+            return _.reduce(obj, function (result, value, key) {
+              return !_.isNull(value) && !_.isUndefined(value) ? result += key + '=' + value + '&' : result;
+            }, '').slice(0, -1);
           }
         }, {
           key: 'conditionStatus',
