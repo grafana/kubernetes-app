@@ -25,9 +25,9 @@
           </span></td>
           <td>{{(node.podsUsed || '?') + ' / ' + node.status.capacity.pods}}</td>
           <td>{{node.podsUsedPerc || '?%'}}</td>
-          <td>{{(node.cpuUsage || '?') + ' / ' + node.status.capacity.cpu}}</td>
+          <td>{{(node.cpuUsageFormatted || '?') + ' / ' + node.status.capacity.cpu}}</td>
           <td>{{node.cpuUsagePerc || '?%'}}</td>
-          <td>{{(node.memoryUsage || '?') + ' / ' + node.status.capacity.memory}}</td>
+          <td>{{(node.memUsageFormatted || '?') + ' / ' + node.memCapacityFormatted}}</td>
           <td>{{node.memoryUsagePerc || '?%'}}</td>
         </tr>
       </tbody>

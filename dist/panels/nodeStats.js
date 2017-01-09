@@ -113,14 +113,17 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
             var cpuData = _.find(nodeStats.cpuPerNode, { 'target': node.metadata.name });
             if (cpuData) {
               node.cpuUsage = _.last(cpuData.datapoints)[0];
+              node.cpuUsageFormatted = kbn.valueFormats['none'](node.cpuUsage, 2, null);
               node.cpuUsagePerc = formatFunc(node.cpuUsage / node.status.capacity.cpu, 2, 5);
             }
 
             var memData = _.find(nodeStats.memoryPerNode, { 'target': node.metadata.name });
             if (memData) {
               node.memoryUsage = _.last(memData.datapoints)[0];
-              var memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2);
-              node.memoryUsagePerc = formatFunc(node.memoryUsage / 1000 / memCapacity, 2, 5);
+              var memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2) * 1000;
+              node.memUsageFormatted = kbn.valueFormats['kbytes'](node.memoryUsage, 3, null);
+              node.memCapacityFormatted = kbn.valueFormats['kbytes'](memCapacity, 3, null);
+              node.memoryUsagePerc = formatFunc(node.memoryUsage / memCapacity, 2, 5);
             }
 
             return node;
