@@ -1,3 +1,4 @@
 tr.dashlist-item:hover {
   background-color: #333;
+    cursor: pointer;
 }

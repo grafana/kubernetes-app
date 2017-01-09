@@ -25,6 +25,25 @@
   "rows": [
     {
       "collapse": false,
+      "height": "120",
+      "panels": [
+        {
+          "id": 25,
+          "links": [],
+          "span": 10,
+          "title": "Node Info",
+          "type": "raintank-kubernetes-nodeinfo-panel"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
       "height": "250px",
       "panels": [
         {
