@@ -75,7 +75,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
         _inherits(NodeDataCtrl, _PanelCtrl);
 
         /** @ngInject */
-        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv, $window) {
+        function NodeDataCtrl($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv, $window, variableSrv) {
           _classCallCheck(this, NodeDataCtrl);
 
           var _this = _possibleConstructorReturn(this, (NodeDataCtrl.__proto__ || Object.getPrototypeOf(NodeDataCtrl)).call(this, $scope, $injector));
@@ -89,6 +89,8 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
           _this.alertSrv = alertSrv;
           _this.timeSrv = timeSrv;
           _this.$window = $window;
+          _this.variableSrv = variableSrv;
+          _this.templateVariables = _this.variableSrv.variables;
           _this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
           document.title = 'Grafana Kubernetes App';
 
@@ -211,16 +213,16 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
         }, {
           key: 'goToNodeDashboard',
           value: function goToNodeDashboard(node) {
-            var querystring = this.$location.path("dashboard/db/kubernetes-node").search();
-            querystring['var-node'] = node === 'All' ? 'All' : slugify(node.metadata.name);
-            this.$window.location.href = this.$location.path() + '?' + this.objectToQueryString(querystring);
-          }
-        }, {
-          key: 'objectToQueryString',
-          value: function objectToQueryString(obj) {
-            return _.reduce(obj, function (result, value, key) {
-              return !_.isNull(value) && !_.isUndefined(value) ? result += key + '=' + value + '&' : result;
-            }, '').slice(0, -1);
+            var _this4 = this;
+
+            var variable = _.find(this.templateVariables, { 'name': 'node' });
+            variable.current.text = node === 'All' ? 'All' : slugify(node.metadata.name);
+            variable.current.value = node === 'All' ? '$__all' : slugify(node.metadata.name);
+
+            this.variableSrv.variableUpdated(variable).then(function () {
+              _this4.$scope.$emit('template-variable-value-updated');
+              _this4.$scope.$broadcast('refresh');
+            });
           }
         }, {
           key: 'conditionStatus',
