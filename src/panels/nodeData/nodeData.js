@@ -8,17 +8,15 @@ const panelDefaults = {
 
 export class NodeDataCtrl extends PanelCtrl {
   /** @ngInject */
-  constructor($scope, $injector, backendSrv, datasourceSrv, $q, $location, alertSrv, timeSrv, $window, variableSrv) {
+  constructor($scope, $injector, backendSrv, datasourceSrv, $location, alertSrv, timeSrv, variableSrv) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
-    this.$q = $q;
     this.backendSrv = backendSrv;
     this.datasourceSrv = datasourceSrv;
     this.$location = $location;
     this.alertSrv = alertSrv;
     this.timeSrv = timeSrv;
-    this.$window = $window;
     this.variableSrv = variableSrv;
     this.templateVariables = this.variableSrv.variables;
     this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
@@ -167,4 +165,4 @@ function slugify(str) {
   return slug;
 }
 
-NodeDataCtrl.templateUrl = 'panels/partials/node_info.html';
+NodeDataCtrl.templateUrl = 'panels/nodeData/partials/node_info.html';

@@ -71,6 +71,10 @@
     {
       "type": "panel",
       "name": "Kubernetes Node Info"
+    },
+    {
+      "type": "panel",
+      "name": "Kubernetes Pod Nav"
     }
   ],
 
