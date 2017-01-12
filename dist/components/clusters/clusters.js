@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'jquery'], function (_export, _context) {
+System.register(['lodash', 'app/core/app_events'], function (_export, _context) {
   "use strict";
 
-  var _, $, _createClass, ClustersCtrl;
+  var _, appEvents, _createClass, ClustersCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -14,8 +14,8 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
-    }, function (_jquery) {
-      $ = _jquery.default;
+    }, function (_appCoreApp_events) {
+      appEvents = _appCoreApp_events.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -62,12 +62,33 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             });
           }
         }, {
+          key: 'confirmDelete',
+          value: function confirmDelete(id) {
+            var _this = this;
+
+            this.backendSrv.delete('/api/datasources/' + id).then(function () {
+              _this.getClusters();
+            });
+          }
+        }, {
+          key: 'deleteCluster',
+          value: function deleteCluster(cluster) {
+            var _this2 = this;
+
+            appEvents.emit('confirm-modal', {
+              title: 'Delete',
+              text: 'Are you sure you want to delete this datasource?',
+              yesText: "Delete",
+              icon: "fa-trash",
+              onConfirm: function onConfirm() {
+                _this2.confirmDelete(cluster.id);
+              }
+            });
+          }
+        }, {
           key: 'clusterInfo',
-          value: function clusterInfo(cluster, evt) {
-            var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
-            if (clickTargetIsLinkOrHasLinkParents === false) {
-              this.$location.path("plugins/raintank-kubernetes-app/page/cluster-info").search({ "cluster": cluster.id });
-            }
+          value: function clusterInfo(cluster) {
+            this.$location.path("plugins/raintank-kubernetes-app/page/cluster-info").search({ "cluster": cluster.id });
           }
         }]);
 

@@ -22,24 +22,26 @@
 		</div>
 	</div>
 
-	<section ng-if="ctrl.clusters.length > 0" class="card-section card-list-layout-list" layout-mode>
-		<ol class="card-list" >
-			<li class="card-item-wrapper" ng-repeat="cluster in ctrl.clusters">
-				<div class="card-item pointer" ng-click="ctrl.clusterInfo(cluster, $event)">
-					<div class="card-item-header card-item-header-action">
-						<a style="margin-left: 15px; vertical-align: sub;" href="plugins/raintank-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
-							<i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Cluster Config'"></i> Cluster Config
-						</a>
-					</div>
-					<div class="card-item-body">
-						<div class="card-item-details">
-							<div class="card-item-name">
-								{{cluster.name}} Overview
-							</div>
-						</div>
-					</div>
-				</div>
-			</li>
-		</ol>
-	</section>
+  <table class="filter-table form-inline">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="dashlist-item" ng-repeat="cluster in ctrl.clusters">
+        <td style="font-size: 1.3rem"><a href="#" ng-click="ctrl.clusterInfo(cluster)">{{cluster.name}} Overview</a></td>
+        <td class="text-right">
+          <a style="margin-left: 15px; vertical-align: sub;" href="plugins/raintank-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
+            <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Cluster Config'"></i> Cluster Config
+          </a>
+          &nbsp;&nbsp;
+          <a ng-click="ctrl.deleteCluster(cluster)" class="btn btn-danger btn-mini">
+            <i class="fa fa-remove"></i>
+          </a>
+        </td>
+      </tr>
+		</tbody>
+	</table>
 </div>
