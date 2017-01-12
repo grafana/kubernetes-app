@@ -222,14 +222,26 @@ export class ClusterConfigCtrl {
       .then(() => {
         return this.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.deleteDaemonSet(self.cluster.id);
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'snap-kubestate-deployment');
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.deletePods();
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         this.snapDeployed = false;

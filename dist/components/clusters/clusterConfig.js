@@ -275,12 +275,20 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var self = this;
             return this.deleteConfigMap(self.cluster.id, 'snap-tasks').then(function () {
               return _this6.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
+            }).catch(function (err) {
+              _this6.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this6.deleteDaemonSet(self.cluster.id);
+            }).catch(function (err) {
+              _this6.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this6.deleteDeployment(self.cluster.id, 'snap-kubestate-deployment');
+            }).catch(function (err) {
+              _this6.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this6.deletePods();
+            }).catch(function (err) {
+              _this6.alertSrv.set("Error", err, 'error');
             }).then(function () {
               _this6.snapDeployed = false;
               _this6.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
