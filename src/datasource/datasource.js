@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export class K8sDatasource {
   constructor(instanceSettings, backendSrv) {
     this.type = instanceSettings.type;
@@ -85,6 +87,13 @@ export class K8sDatasource {
       });
   }
 
+  getPodsByLabel(namespace, labels) {
+    return this._get('/api/v1/' + addNamespace(namespace) + 'pods?labelSelector=' + addLabels(labels))
+      .then(result => {
+        return result.items;
+      });
+  }
+
   getPod(namespace, name) {
     return this._get('/api/v1/' + addNamespace(namespace) + 'pods/' + name);
   }
@@ -92,4 +101,12 @@ export class K8sDatasource {
 
 function addNamespace(namespace) {
   return namespace ? 'namespaces/' + namespace + '/' : '';
+}
+
+function addLabels(labels) {
+  let querystring = '';
+  _.forEach(labels, (value, label) => {
+    querystring += label + '%3D' + value + '%2C';
+  });
+  return _.trimEnd(querystring, '%2C');
 }

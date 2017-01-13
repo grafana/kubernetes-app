@@ -1,9 +1,9 @@
 'use strict';
 
-System.register([], function (_export, _context) {
+System.register(['lodash'], function (_export, _context) {
   "use strict";
 
-  var _createClass, K8sDatasource;
+  var _, _createClass, K8sDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -14,8 +14,18 @@ System.register([], function (_export, _context) {
   function addNamespace(namespace) {
     return namespace ? 'namespaces/' + namespace + '/' : '';
   }
+
+  function addLabels(labels) {
+    var querystring = '';
+    _.forEach(labels, function (value, label) {
+      querystring += label + '%3D' + value + '%2C';
+    });
+    return _.trimEnd(querystring, '%2C');
+  }
   return {
-    setters: [],
+    setters: [function (_lodash) {
+      _ = _lodash.default;
+    }],
     execute: function () {
       _createClass = function () {
         function defineProperties(target, props) {
@@ -123,6 +133,13 @@ System.register([], function (_export, _context) {
           key: 'getPods',
           value: function getPods(namespace) {
             return this._get('/api/v1/' + addNamespace(namespace) + 'pods').then(function (result) {
+              return result.items;
+            });
+          }
+        }, {
+          key: 'getPodsByLabel',
+          value: function getPodsByLabel(namespace, labels) {
+            return this._get('/api/v1/' + addNamespace(namespace) + 'pods?labelSelector=' + addLabels(labels)).then(function (result) {
               return result.items;
             });
           }
