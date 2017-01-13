@@ -195,7 +195,10 @@ export class ClusterConfigCtrl {
     var kubestateCm = this.generateKubestateConfigMap();
 
     if (!this.snapDeployed) {
-      return this.createConfigMap(self.cluster.id, cm)
+      return this.checkApiVersion(self.cluster.id)
+      .then(() => {
+        return this.createConfigMap(self.cluster.id, cm);
+      })
       .then(() => {
         return this.createConfigMap(self.cluster.id, kubestateCm);
       })
@@ -247,6 +250,19 @@ export class ClusterConfigCtrl {
         this.snapDeployed = false;
         this.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
       });
+  }
+
+  checkApiVersion(clusterId) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(result => {
+      if (!result.resources || result.resources.length === 0) {
+        throw "This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " +
+        "You can install manually using the instructions at the bottom of the page.";
+      }
+    });
   }
 
   createConfigMap(clusterId, cm) {
