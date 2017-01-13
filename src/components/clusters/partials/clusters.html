@@ -25,13 +25,17 @@
   <table class="filter-table form-inline">
 		<thead>
 			<tr>
-				<th>Name</th>
+				<th style="width: 80%">Name</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr class="dashlist-item" ng-repeat="cluster in ctrl.clusters">
-        <td style="font-size: 1.3rem"><a href="#" ng-click="ctrl.clusterInfo(cluster)">{{cluster.name}} Overview</a></td>
+        <td style="font-size: 1.3rem; padding: 0">
+          <a style="display: block; padding: 15px; height: 100%;" href="#" ng-click="ctrl.clusterInfo(cluster)">
+            {{cluster.name}} Overview
+          </a>
+        </td>
         <td class="text-right">
           <a style="margin-left: 15px; vertical-align: sub;" href="plugins/raintank-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
             <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Cluster Config'"></i> Cluster Config
