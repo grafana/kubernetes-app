@@ -2,7 +2,7 @@
 
 [Kubernetes](http://kubernetes.io/) is an open-source system for automating deployment, scaling, and management of containerized applications.
 
-The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It also comes with collectors that are deployed to your cluster to collect health metrics. These these high-level cluster and node stats all the way down to the container level. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
+The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It also comes with [Intel Snap](http://snap-telemetry.io/) collectors that are deployed to your cluster to collect health metrics. The metrics collected are high-level cluster and node stats as well as lower level pod and container stats. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
 
 ![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/cluster-dashboard-screenshot.png)
 
@@ -16,12 +16,22 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 2. For automatic deployment of the collectors, then Kubernetes 1.4 or higher is required.
 3. Grafana 4 is required if using TLS Client Auth (rather than Basic Auth).
 
+### Features
+
+- The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clusters tend to have a lot of pods and a lot of pod metrics. The Pod/Container dashboard leverages the pod tags so you can easily find the relevant pod or pods.
+
+- Easy installation of collectors, either a one click deploy from Grafana or detailed instructions to deploy them manually them with kubectl (also quite easy!)
+
+- Cluster level metrics that are not available in Heapster, like CPU Capacity vs CPU Usage.
+
+- Pod and Container status metrics. See the [Snap Kubestate Collector](https://github.com/raintank/snap-plugin-collector-kubestate) for more details.
+
 ### Cluster Metrics
 
-- Pod Capacity
-- Memory Capacity
-- CPU Capacity
-- Disk Capacity (measures each container's /var/lib/docker)
+- Pod Capacity/Usage
+- Memory Capacity/Usage
+- CPU Capacity/Usage
+- Disk Capacity/Usage (measurements from each container's /var/lib/docker)
 - Overview of Nodes, Pods and Containers
 
 ### Node Metrics
@@ -66,15 +76,15 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 If you do not want to deploy the collector DaemonSet and pod automatically, then it can be deployed manually with kubectl. If using an older version of Kubernetes than 1.4, you will have to adapt the json files, particularly for the daemonset, and remove some newer features. Please create an issue if you want support for older versions of Kubernetes.
 
-The manual deployment instructions and files needed can be downloaded from the Cluster Config page. At the bottom, there is a help section with instructions and links to all the json files needed.
+The manual deployment instructions and files needed, can be downloaded from the Cluster Config page. At the bottom of the page, there is a help section with instructions and links to all the json files needed.
 
-#### Uninstalling the App and DaemonSet
+#### Uninstalling the Collectors (DaemonSet and Pod)
 
-There is an Undeploy button on the Cluster Config page as well as manual instructions for kubectl at the bottom of the page.
+There is an Undeploy button on the Cluster Config page as well as manual instructions for undeploying with kubectl at the bottom of the page.
 
 #### Technical Details
 
-Metrics are collected by the [Intel Snap](http://snap-telemetry.io/) collector using the [Docker plugin](https://github.com/intelsdi-x/snap-plugin-collector-docker/blob/master/METRICS.md).  A DaemonSet with Snap is deployed to your Kubernetes cluster when you add a new cluster in the app. The [snap_k8s](https://github.com/raintank/snap_k8s) docker image used for this is based off of Intel's Snap docker image.
+Metrics are collected by the [Intel Snap](http://snap-telemetry.io/) collector using the [Docker plugin](https://github.com/intelsdi-x/snap-plugin-collector-docker/blob/master/METRICS.md).  A DaemonSet with Snap is deployed to your Kubernetes cluster when you add a new cluster in the app. For cluster level metrics, one Snap pod is also deployed to the cluster. The [snap_k8s](https://github.com/raintank/snap_k8s) docker image used for this is based off of Intel's Snap docker image.
 
 The following Snap plugins are used to collect metrics:
 
@@ -84,7 +94,7 @@ The following Snap plugins are used to collect metrics:
 - [IOStat Collector](https://github.com/intelsdi-x/snap-plugin-collector-iostat)
 - [Load Collector](https://github.com/intelsdi-x/snap-plugin-collector-load#collected-metrics)
 - [MemInfo Collector](https://github.com/intelsdi-x/snap-plugin-collector-meminfo/blob/master/METRICS.md)
-- [Kubestats Collector](https://github.com/raintank/snap-plugin-collector-kubestate)
+- [Kubestate Collector](https://github.com/raintank/snap-plugin-collector-kubestate)
 
 ### Feedback and Questions
 
