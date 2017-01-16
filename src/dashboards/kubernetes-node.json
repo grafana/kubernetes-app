@@ -25,22 +25,23 @@
   "rows": [
     {
       "collapse": false,
-      "height": "120",
+      "height": 122,
       "panels": [
         {
           "id": 25,
           "links": [],
-          "span": 10,
-          "title": "Node Info",
+          "span": 12,
+          "title": "",
+          "transparent": true,
           "type": "raintank-kubernetes-nodeinfo-panel"
         }
       ],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
+      "showTitle": true,
+      "title": "Filter by Node",
+      "titleSize": "h5"
     },
     {
       "collapse": false,
@@ -957,7 +958,7 @@
         "allFormat": "glob",
         "current": {},
         "datasource": "$datasource",
-        "hide": 0,
+        "hide": 2,
         "includeAll": true,
         "multi": false,
         "multiFormat": "glob",
@@ -980,6 +981,5 @@
   },
   "refresh": false,
   "schemaVersion": 13,
-  "version": 1,
   "gnetId": 470
 }
