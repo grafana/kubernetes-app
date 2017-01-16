@@ -170,6 +170,17 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             });
           }
         }, {
+          key: 'goToPodDashboard',
+          value: function goToPodDashboard() {
+            this.$location.path("dashboard/db/kubernetes-container").search({
+              "var-datasource": this.cluster.jsonData.ds,
+              "var-cluster": this.cluster.name,
+              "var-node": 'All',
+              "var-namespace": 'All',
+              "var-pod": 'All'
+            });
+          }
+        }, {
           key: 'goToNodeDashboard',
           value: function goToNodeDashboard(node, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
@@ -177,7 +188,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
               this.$location.path("dashboard/db/kubernetes-node").search({
                 "var-datasource": this.cluster.jsonData.ds,
                 "var-cluster": this.cluster.name,
-                "var-node": slugify(node.metadata.name)
+                "var-node": node === 'All' ? 'All' : slugify(node.metadata.name)
               });
             }
           }

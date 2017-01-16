@@ -68,6 +68,17 @@ export class ClusterInfoCtrl {
       });
   }
 
+  goToPodDashboard() {
+    this.$location.path("dashboard/db/kubernetes-container")
+    .search({
+      "var-datasource": this.cluster.jsonData.ds,
+      "var-cluster": this.cluster.name,
+      "var-node": 'All',
+      "var-namespace": 'All',
+      "var-pod": 'All'
+    });
+  }
+
   goToNodeDashboard(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
@@ -75,7 +86,7 @@ export class ClusterInfoCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": slugify(node.metadata.name)
+        "var-node": node === 'All' ? 'All': slugify(node.metadata.name)
       });
     }
   }

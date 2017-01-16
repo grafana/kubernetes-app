@@ -3,6 +3,7 @@ tr.dashlist-item:hover {
   cursor: pointer;
 }
 
+/* pod nav panel */
 .podnav-wrapper {
   display: flex;
   flex-direction: row;
@@ -64,4 +65,25 @@ tr.dashlist-item:hover {
   font-size: 24px;
   text-decoration: none;
   vertical-align: sub;
+}
+
+/* plugin config */
+
+.pluginconfig-message {
+  margin: 20px;
+}
+
+.k8s-icon-success {
+  color: #10a345;
+  font-size: 24px;
+  text-decoration: none;
+  vertical-align: sub;
+}
+
+/* cluster info */
+.main-dash-links {
+  margin-bottom: 40px;
+}
+.card-item--main-dash-link {
+  padding: 20px;
 }

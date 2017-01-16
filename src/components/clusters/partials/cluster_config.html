@@ -69,6 +69,7 @@
     </div>
   </div>
 </form>
+<p>The Deploy button will deploy the <a class="pointer highlight-word" href="https://hub.docker.com/r/raintank/snap_k8s/">Snap Kubernetes Docker image</a> with two metrics collectors that provides summary performance and availability metrics of a Kubernetes Node and its containers. (The manual deployment instructions are at the bottom of the page.)</p>
 <div class="gf-form-group" ng-show="ctrl.isOrgEditor">
   	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
   	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.snapDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
@@ -84,7 +85,6 @@
 
 <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
   <h5>Manual Deploy</h5>
-  <p>The Deploy button will deploy the <a class="pointer highlight-word" href="https://hub.docker.com/r/raintank/snap_k8s/">Snap Kubernetes Docker image</a> that provides summary performance and availability metrics of a Kubernetes Node and its containers.</p>
   <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
   <p>
     <button type="button" class="btn btn-success" ng-click="ctrl.saveConfigMapToFile()">Download Daemonset ConfigMap</button>
