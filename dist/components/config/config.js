@@ -38,16 +38,20 @@ System.register([], function (_export, _context) {
           _classCallCheck(this, ConfigCtrl);
 
           this.$q = $q;
+          this.enabled = false;
           this.appEditCtrl.setPostUpdateHook(this.postUpdate.bind(this));
         }
 
         _createClass(ConfigCtrl, [{
           key: "postUpdate",
           value: function postUpdate() {
+            var _this = this;
+
             if (!this.appModel.enabled) {
               return this.$q.resolve();
             }
             return this.appEditCtrl.importDashboards().then(function () {
+              _this.enabled = true;
               return {
                 url: "plugins/raintank-kubernetes-app/page/clusters",
                 message: "Kubernetes App enabled!"

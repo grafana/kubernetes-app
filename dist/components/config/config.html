@@ -1,2 +1,5 @@
 <h3 class="page-heading">Kubernetes App</h3>
 This app integrates the data collected from <a href="https://hub.docker.com/r/raintank/snap_k8s/" target="_blank">Snap running in Kubernetes</a> with data available via the Kubernetes API.
+<div class="pluginconfig-message" ng-if="ctrl.appModel.enabled">
+  <i class="icon-gf icon-gf-check k8s-icon-success"></i> Dashboards imported. <strong>Next up: </strong><a href="plugins/raintank-kubernetes-app/page/cluster-config" class="external-link">Connect to your Kubernetes Cluster and deploy metric collectors</a>
+</div>
