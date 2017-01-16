@@ -219,7 +219,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
 
             this.variableSrv.variableUpdated(variable).then(function () {
               _this4.$scope.$emit('template-variable-value-updated');
-              _this4.$scope.$broadcast('refresh');
+              _this4.$scope.$root.$broadcast('refresh');
             });
           }
         }, {

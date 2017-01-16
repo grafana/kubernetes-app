@@ -54,17 +54,16 @@ System.register(["moment"], function (_export, _context) {
 
           this.pageReady = false;
           this.pod = {};
-          if (!("cluster" in $location.search() && "namespace" in $location.search())) {
-            alertSrv.set("no cluster or namespace specified.", "no cluster or namespace specified in url", 'error');
+          if (!("cluster" in $location.search())) {
+            alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
             return;
           } else {
             (function () {
               _this.cluster_id = $location.search().cluster;
-              _this.namespace = $location.search().namespace;
               var pod_name = $location.search().pod;
 
               _this.loadDatasource(_this.cluster_id).then(function () {
-                _this.clusterDS.getPod(_this.namespace, pod_name).then(function (pod) {
+                _this.clusterDS.getPod(pod_name).then(function (pod) {
                   _this.pod = pod;
                   _this.pageReady = true;
                 });

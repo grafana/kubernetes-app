@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
 export class K8sDatasource {
-  constructor(instanceSettings, backendSrv) {
+  constructor(instanceSettings, backendSrv, $q) {
     this.type = instanceSettings.type;
     this.url = instanceSettings.url;
     this.name = instanceSettings.name;
     this.backendSrv = backendSrv;
+    this.$q = $q;
 
     this.baseApiUrl = '/api/v1/';
   }
@@ -94,8 +95,30 @@ export class K8sDatasource {
       });
   }
 
-  getPod(namespace, name) {
-    return this._get('/api/v1/' + addNamespace(namespace) + 'pods/' + name);
+  getPod(name) {
+    return this._get('/api/v1/pods/?fieldSelector=metadata.name%3D' + name)
+    .then(result => {
+      if (result.items && result.items.length === 1) {
+        return result.items[0];
+      } else {
+        return result.items;
+      }
+    });
+  }
+
+  getPodsByName(names) {
+    const promises = [];
+    if (Array.isArray(names)) {
+      _.forEach(names, name => {
+        promises.push(this.getPod(name));
+      });
+      return this.$q.all(promises);
+    } else {
+      return this.getPod(names)
+      .then(pod => {
+        return [pod];
+      });
+    }
   }
 }
 

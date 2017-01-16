@@ -46,13 +46,14 @@ System.register(['lodash'], function (_export, _context) {
       }();
 
       _export('K8sDatasource', K8sDatasource = function () {
-        function K8sDatasource(instanceSettings, backendSrv) {
+        function K8sDatasource(instanceSettings, backendSrv, $q) {
           _classCallCheck(this, K8sDatasource);
 
           this.type = instanceSettings.type;
           this.url = instanceSettings.url;
           this.name = instanceSettings.name;
           this.backendSrv = backendSrv;
+          this.$q = $q;
 
           this.baseApiUrl = '/api/v1/';
         }
@@ -145,8 +146,31 @@ System.register(['lodash'], function (_export, _context) {
           }
         }, {
           key: 'getPod',
-          value: function getPod(namespace, name) {
-            return this._get('/api/v1/' + addNamespace(namespace) + 'pods/' + name);
+          value: function getPod(name) {
+            return this._get('/api/v1/pods/?fieldSelector=metadata.name%3D' + name).then(function (result) {
+              if (result.items && result.items.length === 1) {
+                return result.items[0];
+              } else {
+                return result.items;
+              }
+            });
+          }
+        }, {
+          key: 'getPodsByName',
+          value: function getPodsByName(names) {
+            var _this = this;
+
+            var promises = [];
+            if (Array.isArray(names)) {
+              _.forEach(names, function (name) {
+                promises.push(_this.getPod(name));
+              });
+              return this.$q.all(promises);
+            } else {
+              return this.getPod(names).then(function (pod) {
+                return [pod];
+              });
+            }
           }
         }]);
 

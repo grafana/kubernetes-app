@@ -133,7 +133,7 @@ export class NodeDataCtrl extends PanelCtrl {
 
     this.variableSrv.variableUpdated(variable).then(() => {
       this.$scope.$emit('template-variable-value-updated');
-      this.$scope.$broadcast('refresh');
+      this.$scope.$root.$broadcast('refresh');
     });
   }
 

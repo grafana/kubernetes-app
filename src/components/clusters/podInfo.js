@@ -16,16 +16,15 @@ export class PodInfoCtrl {
 
     this.pageReady = false;
     this.pod = {};
-    if (!("cluster" in $location.search() && "namespace" in $location.search())) {
-      alertSrv.set("no cluster or namespace specified.", "no cluster or namespace specified in url", 'error');
+    if (!("cluster" in $location.search())) {
+      alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-      this.namespace  = $location.search().namespace;
       let pod_name    = $location.search().pod;
 
       this.loadDatasource(this.cluster_id).then(() => {
-        this.clusterDS.getPod(this.namespace, pod_name).then(pod => {
+        this.clusterDS.getPod(pod_name).then(pod => {
           this.pod = pod;
           this.pageReady = true;
         });
