@@ -1,59 +1,84 @@
+<div class="page-header">
+  <h1>Add a new cluster</h1>
+</div>
+
 <form name="clusterForm">
-    <div class="gf-form-group">
-    	<div class="gf-form-inline">
-    		<div class="gf-form">
-    			<span class="gf-form-label width-7">Name</span>
-    				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="My cluster name" required="" />
-    			</div>
-    		</div>
-    	</div>
-    </div>
+  <div class="gf-form-group">
+  	<div class="gf-form-inline">
+  		<div class="gf-form">
+  			<span class="gf-form-label width-7">Name</span>
+  			<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.name" placeholder="My cluster name" required="" />
+  		</div>
+  	</div>
+  </div>
 	<datasource-http-settings
 		current="ctrl.cluster"
 		suggest-url="http://localhost:8001">
 	</datasource-http-settings>
-
-  <h3 class="page-heading">Graphite Settings - Read</h3>
-	<div class="gf-form-group">
-    	<div class="gf-form-inline">
-    		<div class="gf-form">
-    			<span class="gf-form-label width-7">Datasource</span>
-    				<select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.datasources" required></select>
-    			</div>
-    		</div>
-    	</div>
+  <div class="row">
+    <div class="col-lg-8">
+      <h3 class="page-headering playlist-column-header">Data Source Settings</h3>
     </div>
-    <h3 class="page-heading">Graphite Settings - Write</h3>
-    <div class="gf-form-group">
-    	<div class="gf-form-inline">
-    		<div class="gf-form">
-    			<span class="gf-form-label width-8">Carbon Host</span>
+  </div>
+  <div class="row">
+    <div class="col-lg-8">
+      <section class="card-section card-list-layout-grid">
+            <a class="card-item" target="_blank" href="https://grafana.net/hosted-metrics/preview">
+              <div class="card-item-body">
+                <figure class="card-item-figure" style="height:2.6rem;">
+                  <img ng-src="https://grafana.net/img/icon_hosted_metrics.svg" height="48">
+                </figure>
+                <div class="card-item-details">
+                  <div class="card-item-sub-name">
+                    Grafana Labs is now offering stealth access to our 100% Graphite compatible hosted metrics to select customers.
+                    <span class="pluginlist-message--enable">Learn More</span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        </ol>
+      </section>
+      <h4 class="page-heading">Graphite Read</h4>
+    	<div class="gf-form-group">
+      	<div class="gf-form-inline">
+      		<div class="gf-form">
+      			<span class="gf-form-label width-7">Datasource</span>
+      			<select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.datasources" required></select>
+      		</div>
+      	</div>
+      </div>
+      <h4 class="page-heading">Graphite Write</h4>
+      <div class="gf-form-group">
+      	<div class="gf-form-inline">
+      		<div class="gf-form">
+      			<span class="gf-form-label width-8">Carbon Host</span>
     				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.server" placeholder="Carbon host" required="" />
             <info-popover mode="right-absolute">
               Specify a url to the Carbon Host. Metrics from Kubernetes are sent to the Carbon host and saved to Graphite. This url must be available from inside the Kubernetes cluster.
             </info-popover>
-    			</div>
-    		</div>
-    		<div class="gf-form">
-    			<span class="gf-form-label width-8">Port</span>
-    				<input class="gf-form-input max-width-21" type="number" ng-model="ctrl.cluster.jsonData.port" placeholder="2003" required="" />
-    			</div>
-    		</div>
-    	</div>
+      		</div>
+      		<div class="gf-form">
+      			<span class="gf-form-label width-5">Port</span>
+      				<input class="gf-form-input max-width-6" type="number" ng-model="ctrl.cluster.jsonData.port" placeholder="2003" required="" />
+      		</div>
+      	</div>
+      </div>
     </div>
-
+    <div class="col-lg-4 offset-lg-1">
+    </div>
+  </div>
 </form>
 <div class="gf-form-group" ng-show="ctrl.isOrgEditor">
   	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
   	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.snapDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
   	<button type="submit" class="btn btn-secondary" ng-click="ctrl.undeploy()" ng-show="ctrl.snapDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
-  	<a class="btn btn-link" ng-click="ctrl.cancel();">Back to Kubernetes Cluster List</a>
+  	<a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
 </div>
 
-<span class="gf-form-label width-14">
-  <i class="fa fa-info-circle"></i>
+<span class="gf-form-label width-16">
   <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click to show instructions and download links'" data-placement="bottom">
-    Manual Deploy Instructions
+    <i class="fa fa-info-circle"></i> Manual Deploy Instructions
   </a>
 </span>
 
@@ -81,5 +106,4 @@
   <p><code>kubectl delete deployments -n kube-system snap-kubestate-deployment</code></p>
   <p><code>kubectl delete configmaps -n kube-system snap-tasks</code></p>
   <p><code>kubectl delete configmaps -n kube-system snap-tasks-kubestate</code></p>
-
 </div>
