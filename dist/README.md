@@ -2,7 +2,9 @@
 
 [Kubernetes](http://kubernetes.io/) is an open-source system for automating deployment, scaling, and management of containerized applications.
 
-The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance.
+The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It also comes with collectors that are deployed to your cluster to collect health metrics. These these high-level cluster and node stats all the way down to the container level. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
+
+![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/cluster-dashboard-screenshot.png)
 
 ![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/container-dashboard-screenshot.png)
 
@@ -10,9 +12,17 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 ### Requirements
 
-1. Currently only saves metrics to Graphite.
+1. Currently only has support for **Graphite**.
+2. For automatic deployment of the collectors, then Kubernetes 1.4 or higher is required.
+3. Grafana 4 is required if using TLS Client Auth (rather than Basic Auth).
 
-2. Basic Auth needs to be set up for accessing your Kubernetes cluster.
+### Cluster Metrics
+
+- Pod Capacity
+- Memory Capacity
+- CPU Capacity
+- Disk Capacity (measures each container's /var/lib/docker)
+- Overview of Nodes, Pods and Containers
 
 ### Node Metrics
 
@@ -26,7 +36,7 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 - Network Packets/second
 - Network Errors/second
 
-### Container Metrics
+### Pod/Container Metrics
 
 - Memory Usage
 - Network Traffic
@@ -40,26 +50,27 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 #### Connecting to your Cluster
 
-1. Go to the Cluster List page via the Kubernetes app menu
-
-  ![Cluster List](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/app-menu-screenshot.png)
+1. Go to the Cluster List page via the Kubernetes app menu.
 
 2. Click the `New Cluster` button.
 
-3. Fill in the Basic Auth details for your cluster
+3. Fill in the Auth details for your cluster.
 
-4. Choose the Graphite datasource that is used for the dashboards.
+4. Choose the Graphite datasource that will be used for reading data in the dashboards.
 
-5. Fill in the details for the Carbon host that is used to write to Graphite.
+5. Fill in the details for the Carbon host that is used to write to Graphite. This url has to be available from inside the cluster.
 
-6. Click `Save and Deploy`.
+6. Click `Deploy`. This will deploy a DaemonSet, to collect health metrics for every node, and a pod that collects cluster metrics.
+
+#### Manual Deployment
+
+If you do not want to deploy the collector DaemonSet and pod automatically, then it can be deployed manually with kubectl. If using an older version of Kubernetes than 1.4, you will have to adapt the json files, particularly for the daemonset, and remove some newer features. Please create an issue if you want support for older versions of Kubernetes.
+
+The manual deployment instructions and files needed can be downloaded from the Cluster Config page. At the bottom, there is a help section with instructions and links to all the json files needed.
 
 #### Uninstalling the App and DaemonSet
 
-``` bash
-kubectl delete daemonsets -n kube-system snap
-kubectl delete configmaps -n kube-system snap-tasks
-```
+There is an Undeploy button on the Cluster Config page as well as manual instructions for kubectl at the bottom of the page.
 
 #### Technical Details
 
@@ -73,6 +84,7 @@ The following Snap plugins are used to collect metrics:
 - [IOStat Collector](https://github.com/intelsdi-x/snap-plugin-collector-iostat)
 - [Load Collector](https://github.com/intelsdi-x/snap-plugin-collector-load#collected-metrics)
 - [MemInfo Collector](https://github.com/intelsdi-x/snap-plugin-collector-meminfo/blob/master/METRICS.md)
+- [Kubestats Collector](https://github.com/raintank/snap-plugin-collector-kubestate)
 
 ### Feedback and Questions
 

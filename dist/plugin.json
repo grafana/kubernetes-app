@@ -23,6 +23,7 @@
       {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
     ],
     "screenshots": [
+      {"name": "Cluster Dashboard", "path": "img/cluster-dashboard-screenshot.png"},
       {"name": "Container Dashboard", "path": "img/container-dashboard-screenshot.png"},
       {"name": "Node Dashboard", "path": "img/node-dashboard-screenshot.png"},
       {"name": "Overview Page", "path": "img/overview-screenshot.png"},
