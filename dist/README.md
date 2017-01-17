@@ -58,9 +58,23 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 ### Documentation
 
+#### Installation
+
+1. Use the grafana-cli tool to install kubernetes from the commandline:
+
+```
+grafana-cli plugins install raintank-kubernetes-app
+```
+
+2. Restart your Grafana server.
+
+3. Log into your Grafana instance. Navigate to the Plugins section, found in the Grafana main menu. Click the Apps tabs in the Plugins section and select the newly installed Kubernetes app. To enable the app, click the Config tab and click on the Enable button.
+
 #### Connecting to your Cluster
 
 1. Go to the Cluster List page via the Kubernetes app menu.
+
+   ![Cluster List in main menu](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/app-menu-screenshot.png)
 
 2. Click the `New Cluster` button.
 
@@ -72,9 +86,9 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 6. Click `Deploy`. This will deploy a DaemonSet, to collect health metrics for every node, and a pod that collects cluster metrics.
 
-#### Manual Deployment
+#### Manual Deployment of Collectors
 
-If you do not want to deploy the collector DaemonSet and pod automatically, then it can be deployed manually with kubectl. If using an older version of Kubernetes than 1.4, you will have to adapt the json files, particularly for the daemonset, and remove some newer features. Please create an issue if you want support for older versions of Kubernetes.
+If you do not want to deploy the collector DaemonSet and pod automatically, then it can be deployed manually with kubectl. If using an older version of Kubernetes than 1.4, you will have to adapt the json files, particularly for the daemonset, and remove some newer features. Please create an issue if you need support for older versions of Kubernetes built in to the app.
 
 The manual deployment instructions and files needed, can be downloaded from the Cluster Config page. At the bottom of the page, there is a help section with instructions and links to all the json files needed.
 
