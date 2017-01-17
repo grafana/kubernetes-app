@@ -77,7 +77,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
 
             appEvents.emit('confirm-modal', {
               title: 'Delete',
-              text: 'Are you sure you want to delete this datasource?',
+              text: 'Are you sure you want to delete this data source? ' + 'If you need to undeploy the collectors, then do that before deleting the data source.',
               yesText: "Delete",
               icon: "fa-trash",
               onConfirm: function onConfirm() {
