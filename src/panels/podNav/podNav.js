@@ -27,6 +27,34 @@ export class PodNavCtrl extends PanelCtrl {
     this.chosenTags = {};
   }
 
+  refresh() {
+    if (this.needsRefresh()) {
+      this.currentTags = {};
+      this.currentPods = [];
+      this.chosenTags = {};
+      this.selectedPods = [];
+
+      this.setDefaults();
+      this.loadTags();
+    }
+  }
+
+  needsRefresh() {
+    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
+    const ns = _.find(this.templateVariables, {'name': 'namespace'});
+
+    if (this.clusterName !== cluster.current.value) { return true; }
+
+    if ((ns.current.value === '$__all' || ns.current.value[0] === '$__all')
+      && (this.namespace === ns.current.value || this.namespace === '')) {
+      return false;
+    }
+
+    if (ns.current.value !== this.namespace) { return true; }
+
+    return false;
+  }
+
   loadTags() {
     this.getCluster().then(() => {
       return this.getPods().then(pods => {
@@ -43,7 +71,7 @@ export class PodNavCtrl extends PanelCtrl {
     }
 
     const ns = _.find(this.templateVariables, {'name': 'namespace'});
-    this.namespace = ns.current.value !== '$__all' ? ns.current.value : '';
+    this.namespace = ns.current.value !== '$__all' && ns.current.value[0] !== '$__all' ? ns.current.value : '';
     const podVariable = _.find(this.templateVariables, {'name': 'pod'});
 
     if (podVariable.current.value !== '$__all') {
@@ -137,6 +165,8 @@ export class PodNavCtrl extends PanelCtrl {
 
   getCluster() {
     const clusterName = this.$location.search()['var-cluster'];
+    this.clusterName = clusterName;
+
     return this.backendSrv.get('/api/datasources')
     .then(result => {
       return _.filter(result, {"name": clusterName})[0];
@@ -163,7 +193,6 @@ export class PodNavCtrl extends PanelCtrl {
 
   selectPod(podName) {
     this.chosenTags = {};
-    // this.loadTags();
 
     if (!this.selectedPods.includes(podName)) {
       this.selectedPods.push(podName);

@@ -98,6 +98,39 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
         }
 
         _createClass(PodNavCtrl, [{
+          key: 'refresh',
+          value: function refresh() {
+            if (this.needsRefresh()) {
+              this.currentTags = {};
+              this.currentPods = [];
+              this.chosenTags = {};
+              this.selectedPods = [];
+
+              this.setDefaults();
+              this.loadTags();
+            }
+          }
+        }, {
+          key: 'needsRefresh',
+          value: function needsRefresh() {
+            var cluster = _.find(this.templateVariables, { 'name': 'cluster' });
+            var ns = _.find(this.templateVariables, { 'name': 'namespace' });
+
+            if (this.clusterName !== cluster.current.value) {
+              return true;
+            }
+
+            if ((ns.current.value === '$__all' || ns.current.value[0] === '$__all') && (this.namespace === ns.current.value || this.namespace === '')) {
+              return false;
+            }
+
+            if (ns.current.value !== this.namespace) {
+              return true;
+            }
+
+            return false;
+          }
+        }, {
           key: 'loadTags',
           value: function loadTags() {
             var _this2 = this;
@@ -120,7 +153,7 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
             }
 
             var ns = _.find(this.templateVariables, { 'name': 'namespace' });
-            this.namespace = ns.current.value !== '$__all' ? ns.current.value : '';
+            this.namespace = ns.current.value !== '$__all' && ns.current.value[0] !== '$__all' ? ns.current.value : '';
             var podVariable = _.find(this.templateVariables, { 'name': 'pod' });
 
             if (podVariable.current.value !== '$__all') {
@@ -250,6 +283,8 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
             var _this8 = this;
 
             var clusterName = this.$location.search()['var-cluster'];
+            this.clusterName = clusterName;
+
             return this.backendSrv.get('/api/datasources').then(function (result) {
               return _.filter(result, { "name": clusterName })[0];
             }).then(function (ds) {
@@ -279,7 +314,6 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
           key: 'selectPod',
           value: function selectPod(podName) {
             this.chosenTags = {};
-            // this.loadTags();
 
             if (!this.selectedPods.includes(podName)) {
               this.selectedPods.push(podName);
