@@ -147,7 +147,8 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
         }, {
           key: 'setDefaults',
           value: function setDefaults() {
-            if (!("var-cluster" in this.$location.search())) {
+            var cluster = _.find(this.templateVariables, { 'name': 'cluster' });
+            if (!cluster) {
               this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
               return;
             }
@@ -282,12 +283,17 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
           value: function getCluster() {
             var _this8 = this;
 
-            var clusterName = this.$location.search()['var-cluster'];
+            var clusterName = _.find(this.templateVariables, { 'name': 'cluster' }).current.value;
             this.clusterName = clusterName;
 
             return this.backendSrv.get('/api/datasources').then(function (result) {
               return _.filter(result, { "name": clusterName })[0];
             }).then(function (ds) {
+              if (!ds) {
+                _this8.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
+                throw "Failed to connect to " + clusterName;
+              }
+
               if (!ds.jsonData.ds) {
                 ds.jsonData.ds = "";
               }

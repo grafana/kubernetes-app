@@ -109,14 +109,16 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
           value: function loadCluster() {
             var _this2 = this;
 
-            if (!("var-cluster" in this.$location.search())) {
+            var cluster = _.find(this.templateVariables, { 'name': 'cluster' });
+            if (!cluster) {
               this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
               return;
             } else {
               (function () {
-                var cluster_id = _this2.$location.search()['var-cluster'];
-                var node_name = _this2.$location.search()['var-node'];
-                var graphiteDs = _this2.$location.search()['var-datasource'];
+                var cluster_id = cluster.current.value;
+                var nodeVar = _.find(_this2.templateVariables, { 'name': 'node' });
+                var node_name = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
+                var graphiteDs = _.find(_this2.templateVariables, { 'name': 'datasource' }).current.value;
 
                 _this2.loadDatasource(cluster_id).then(function () {
                   return _this2.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
@@ -201,6 +203,10 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
             return this.backendSrv.get('api/datasources').then(function (result) {
               return _.filter(result, { "type": "raintank-kubernetes-datasource", "name": id })[0];
             }).then(function (ds) {
+              if (!ds) {
+                _this3.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
+                throw "Failed to connect to " + id;
+              }
               _this3.cluster = ds;
               return _this3.datasourceSrv.get(ds.name);
             }).then(function (clusterDS) {

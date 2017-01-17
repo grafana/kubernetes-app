@@ -65,7 +65,8 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   setDefaults() {
-    if (!("var-cluster" in this.$location.search())) {
+    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
+    if (!cluster) {
       this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     }
@@ -164,7 +165,7 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   getCluster() {
-    const clusterName = this.$location.search()['var-cluster'];
+    const clusterName = _.find(this.templateVariables, {'name': 'cluster'}).current.value;
     this.clusterName = clusterName;
 
     return this.backendSrv.get('/api/datasources')
@@ -172,6 +173,11 @@ export class PodNavCtrl extends PanelCtrl {
       return _.filter(result, {"name": clusterName})[0];
     })
     .then((ds) => {
+      if (!ds) {
+        this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
+        throw "Failed to connect to " + clusterName;
+      }
+
       if (!(ds.jsonData.ds)) {
         ds.jsonData.ds = "";
       }

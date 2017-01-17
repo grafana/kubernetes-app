@@ -34,13 +34,15 @@ export class NodeDataCtrl extends PanelCtrl {
   }
 
   loadCluster() {
-    if (!("var-cluster" in this.$location.search())) {
+    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
+    if (!cluster) {
       this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
-      const cluster_id = this.$location.search()['var-cluster'];
-      const node_name  = this.$location.search()['var-node'];
-      const graphiteDs  = this.$location.search()['var-datasource'];
+      const cluster_id = cluster.current.value;
+      const nodeVar = _.find(this.templateVariables, {'name': 'node'});
+      const node_name  = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
+      const graphiteDs  = _.find(this.templateVariables, {'name': 'datasource'}).current.value;
 
       this.loadDatasource(cluster_id).then(() => {
         return this.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
@@ -118,6 +120,10 @@ export class NodeDataCtrl extends PanelCtrl {
         return _.filter(result, {"type": "raintank-kubernetes-datasource", "name": id})[0];
       })
       .then(ds => {
+        if (!ds) {
+          this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
+          throw "Failed to connect to " + id;
+        }
         this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
       }).then(clusterDS => {
