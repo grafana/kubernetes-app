@@ -353,7 +353,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Network Traffic (Inbound)",
+          "title": "Network Traffic (Outbound)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
