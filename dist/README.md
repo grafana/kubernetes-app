@@ -94,7 +94,17 @@ The manual deployment instructions and files needed, can be downloaded from the 
 
 #### Uninstalling the Collectors (DaemonSet and Pod)
 
-There is an Undeploy button on the Cluster Config page as well as manual instructions for undeploying with kubectl at the bottom of the page.
+There is an Undeploy button on the Cluster Config page. To manually undeploy them:
+
+```bash
+kubectl delete daemonsets -n kube-system snap
+
+kubectl delete deployments -n kube-system snap-kubestate-deployment
+
+kubectl delete configmaps -n kube-system snap-tasks
+
+kubectl delete configmaps -n kube-system snap-tasks-kubestate
+```
 
 #### Technical Details
 
