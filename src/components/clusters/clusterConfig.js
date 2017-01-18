@@ -370,7 +370,7 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-const raintankSnapImage = 'raintank/snap_k8s:v20';
+const raintankSnapImage = 'raintank/snap_k8s:v21';
 
 var configMap = {
   "kind": "ConfigMap",
@@ -568,7 +568,7 @@ var daemonSet = {
                 }
               },
               {
-                "name": "LISTEN_PORT",
+                "name": "SNAP_PORT",
                 "value": "8282"
               },
               {
@@ -669,7 +669,7 @@ const kubestate = {
             },
             "env": [
               {
-                "name": "LISTEN_PORT",
+                "name": "SNAP_PORT",
                 "value": "8383"
               },
               {

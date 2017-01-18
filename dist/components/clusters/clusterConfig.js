@@ -431,7 +431,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-      raintankSnapImage = 'raintank/snap_k8s:v20';
+      raintankSnapImage = 'raintank/snap_k8s:v21';
       configMap = {
         "kind": "ConfigMap",
         "apiVersion": "v1",
@@ -602,7 +602,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                     }
                   }
                 }, {
-                  "name": "LISTEN_PORT",
+                  "name": "SNAP_PORT",
                   "value": "8282"
                 }, {
                   "name": "SNAP_URL",
@@ -681,7 +681,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                   initialDelaySeconds: 60
                 },
                 "env": [{
-                  "name": "LISTEN_PORT",
+                  "name": "SNAP_PORT",
                   "value": "8383"
                 }, {
                   "name": "SNAP_URL",
