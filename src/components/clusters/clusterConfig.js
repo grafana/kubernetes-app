@@ -406,12 +406,37 @@ var snapTask = {
   "workflow": {
     "collect": {
       "metrics": {
-        "/intel/docker/*":{},
-        "/intel/procfs/cpu/*": {},
-        "/intel/procfs/meminfo/*": {},
-        "/intel/procfs/iface/*": {},
-        "/intel/linux/iostat/*": {},
-        "/intel/procfs/load/*": {}
+        "/intel/docker/*/*/*/stats/cgroups/cpu_stats/cpu_usage/total_usage":{},
+        "/intel/docker/*/*/*/stats/cgroups/memory_stats/usage/usage":{},
+        "/intel/docker/*/*/*/stats/connection/tcp/*":{},
+        "/intel/docker/*/*/*/stats/filesystem/*/available":{},
+        "/intel/docker/*/*/*/stats/filesystem/*/capacity":{},
+        "/intel/docker/*/*/*/stats/filesystem/*/reads_completed":{},
+        "/intel/docker/*/*/*/stats/filesystem/*/usage":{},
+        "/intel/docker/*/*/*/stats/filesystem/*/writes_completed":{},
+        "/intel/docker/*/*/*/stats/network/*/rx_bytes":{},
+        "/intel/docker/*/*/*/stats/network/*/tx_bytes":{},
+        "/intel/procfs/cpu/all/*": {},
+        "/intel/procfs/meminfo/mem_available": {},
+        "/intel/procfs/meminfo/mem_available_perc": {},
+        "/intel/procfs/meminfo/mem_free": {},
+        "/intel/procfs/meminfo/mem_free_perc": {},
+        "/intel/procfs/meminfo/mem_total": {},
+        "/intel/procfs/meminfo/mem_total_perc": {},
+        "/intel/procfs/meminfo/mem_used": {},
+        "/intel/procfs/meminfo/mem_used_perc": {},
+        "/intel/procfs/iface/*/bytes_recv": {},
+        "/intel/procfs/iface/*/bytes_sent": {},
+        "/intel/procfs/iface/*/packets_recv": {},
+        "/intel/procfs/iface/*/packets_sent": {},
+        "/intel/procfs/iface/*/errs_recv": {},
+        "/intel/procfs/iface/*/errs_sent": {},
+        "/intel/iostat/device/*/%util": {},
+        "/intel/iostat/device/*/rkB_per_sec": {},
+        "/intel/iostat/device/*/wkB_per_sec": {},
+        "/intel/iostat/device/ALL/r_per_sec": {},
+        "/intel/iostat/device/ALL/w_per_sec": {},
+        "/intel/procfs/load/min1_rel": {}
       },
       "config": {
         "/intel/procfs": {
@@ -536,6 +561,12 @@ var daemonSet = {
           {
             "name": "snap",
             "image": raintankSnapImage,
+            "command": [
+              "/usr/local/bin/start.sh"
+            ],
+            "args": [
+              "/opt/snap/sbin/snapteld"
+            ],
             "ports": [
               {
                 "name": "snap-api",
@@ -580,7 +611,8 @@ var daemonSet = {
                 "value": "3"
               }
             ],
-            "resources": {},
+            "resources": {
+            },
             "volumeMounts": [
               {
                 "name": "cgroup",

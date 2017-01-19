@@ -432,12 +432,12 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.r_per_sec), 'rIOPS')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.ALL.r_per_sec), 'rIOPS')",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.ALL.w_per_sec), 'wIOPS')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.ALL.w_per_sec), 'wIOPS')",
               "textEditor": false
             }
           ],
@@ -509,12 +509,12 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.*.rkB_per_sec), 'Read Bps')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.*.rkB_per_sec), 'Read Bps')",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.linux.iostat.device.*.wkB_per_sec), 'Write Bps')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.*.wkB_per_sec), 'Write Bps')",
               "textEditor": false
             }
           ],
@@ -586,7 +586,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasByNode(snap.$cluster.$node.intel.linux.iostat.device.*.%util, 2, 7)",
+              "target": "aliasByNode(snap.$cluster.$node.intel.iostat.device.*.%util, 2, 7)",
               "textEditor": false
             }
           ],
