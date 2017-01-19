@@ -66,20 +66,21 @@ export default class NodeStatsDatasource {
 
   updateNodeWithStats(node, nodeStats) {
     var formatFunc = kbn.valueFormats['percentunit'];
-    const podsUsedData = _.find(nodeStats.podsPerNode, {'target': node.metadata.name});
+    const nodeName = slugify(node.metadata.name);
+    const podsUsedData = _.find(nodeStats.podsPerNode, {'target': nodeName});
     if (podsUsedData) {
       node.podsUsed = _.last(podsUsedData.datapoints)[0];
       node.podsUsedPerc = formatFunc(node.podsUsed / node.status.capacity.pods, 2, 5);
     }
 
-    const cpuData = _.find(nodeStats.cpuPerNode, {'target': node.metadata.name});
+    const cpuData = _.find(nodeStats.cpuPerNode, {'target': nodeName});
     if (cpuData) {
       node.cpuUsage = _.last(cpuData.datapoints)[0];
       node.cpuUsageFormatted = kbn.valueFormats['none'](node.cpuUsage, 2, null);
       node.cpuUsagePerc = formatFunc(node.cpuUsage / node.status.capacity.cpu, 2, 5);
     }
 
-    const memData = _.find(nodeStats.memoryPerNode, {'target': node.metadata.name});
+    const memData = _.find(nodeStats.memoryPerNode, {'target': nodeName});
     if (memData) {
       node.memoryUsage = _.last(memData.datapoints)[0];
       const memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2)  * 1000;
@@ -90,4 +91,9 @@ export default class NodeStatsDatasource {
 
     return node;
   }
+}
+
+function slugify(str) {
+  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
+  return slug;
 }

@@ -11,6 +11,10 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
     }
   }
 
+  function slugify(str) {
+    var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
+    return slug;
+  }
   return {
     setters: [function (_appCoreUtilsKbn) {
       kbn = _appCoreUtilsKbn.default;
@@ -104,20 +108,21 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
           key: 'updateNodeWithStats',
           value: function updateNodeWithStats(node, nodeStats) {
             var formatFunc = kbn.valueFormats['percentunit'];
-            var podsUsedData = _.find(nodeStats.podsPerNode, { 'target': node.metadata.name });
+            var nodeName = slugify(node.metadata.name);
+            var podsUsedData = _.find(nodeStats.podsPerNode, { 'target': nodeName });
             if (podsUsedData) {
               node.podsUsed = _.last(podsUsedData.datapoints)[0];
               node.podsUsedPerc = formatFunc(node.podsUsed / node.status.capacity.pods, 2, 5);
             }
 
-            var cpuData = _.find(nodeStats.cpuPerNode, { 'target': node.metadata.name });
+            var cpuData = _.find(nodeStats.cpuPerNode, { 'target': nodeName });
             if (cpuData) {
               node.cpuUsage = _.last(cpuData.datapoints)[0];
               node.cpuUsageFormatted = kbn.valueFormats['none'](node.cpuUsage, 2, null);
               node.cpuUsagePerc = formatFunc(node.cpuUsage / node.status.capacity.cpu, 2, 5);
             }
 
-            var memData = _.find(nodeStats.memoryPerNode, { 'target': node.metadata.name });
+            var memData = _.find(nodeStats.memoryPerNode, { 'target': nodeName });
             if (memData) {
               node.memoryUsage = _.last(memData.datapoints)[0];
               var memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2) * 1000;
