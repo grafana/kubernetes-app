@@ -21,7 +21,7 @@
       </div>
     </div>
   </div>
-  <div class="podnav-results">
+  <div class="podnav-pods">
     <h4>Filter by Pod Name</h4>
     <div class="chosen-tags-container">
       <span class="search-result-tag label label-tag" style="margin-right: 10px; float: left" ng-repeat="podTag in ctrl.selectedPods" tag-color-from-name="podTag" ng-click="ctrl.removePodTag(podTag)">
@@ -30,9 +30,11 @@
         <i class="fa fa-remove"></i>
       </span>
     </div>
-    <span class="podnav-result" ng-repeat="pod in ctrl.currentPods">
-      <button type="button" class="btn btn-success" ng-click="ctrl.selectPod(pod)">Select</button>
-      {{pod}}
-    </span>
+    <div class="podnav-results">
+      <span class="podnav-result" ng-repeat="pod in ctrl.currentPods">
+        <button type="button" class="btn btn-success" ng-click="ctrl.selectPod(pod)">Select</button>
+        {{pod}}
+      </span>
+    </div>
   </div>
 </div>

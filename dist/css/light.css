@@ -32,8 +32,13 @@ tr.dashlist-item:hover {
   overflow: auto;
 }
 
-.podnav-results {
+.podnav-pods {
   width: 40%;
+  display: flex;
+  flex-direction: column;
+}
+
+.podnav-results {
   display: flex;
   flex-direction: column;
   overflow: auto;
