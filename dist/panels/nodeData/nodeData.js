@@ -40,6 +40,11 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
     return slug;
   }
 
+  function unslugify(str) {
+    var slug = str.replace(/[_]/g, ".");
+    return slug;
+  }
+
   return {
     setters: [function (_moment) {
       moment = _moment.default;
@@ -135,7 +140,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
                     });
                   } else {
                     _this2.isInListMode = false;
-                    _this2.clusterDS.getNode(node_name).then(function (node) {
+                    _this2.clusterDS.getNode(unslugify(node_name)).then(function (node) {
                       _this2.node = node;
                       _this2.pageReady = true;
                     });

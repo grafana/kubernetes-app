@@ -59,7 +59,7 @@ export class NodeDataCtrl extends PanelCtrl {
           });
         } else {
           this.isInListMode = false;
-          this.clusterDS.getNode(node_name).then(node => {
+          this.clusterDS.getNode(unslugify(node_name)).then(node => {
             this.node = node;
             this.pageReady = true;
           });
@@ -168,6 +168,11 @@ export class NodeDataCtrl extends PanelCtrl {
 
 function slugify(str) {
   var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
+  return slug;
+}
+
+function unslugify(str) {
+  var slug = str.replace(/[_]/g, ".");
   return slug;
 }
 
