@@ -123,3 +123,23 @@ The following Snap plugins are used to collect metrics:
 ### Feedback and Questions
 
 Please submit any issues with the app on [Github](https://github.com/raintank/kubernetes-app/issues).
+
+#### Troubleshooting
+
+If there are any problems with metrics not being collected then you can collect some logs with the following steps:
+
+1. Get the snap pod (or pods if you have multiple nodes) name with:
+
+    `kubectl get pods -n kube-system`
+
+2. Check if the task is running with (replace xxxx with the guid):
+
+    `kubectl exec -it snap-xxxxx-n kube-system -- /opt/snap/bin/snaptel task list`
+
+    Include the output in the issue.
+
+3. Get the logs with:
+
+    `kubectl logs snap-xxxxx -n kube-system`
+
+    Include this output in the issue too.
