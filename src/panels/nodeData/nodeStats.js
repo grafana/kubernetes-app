@@ -84,8 +84,8 @@ export default class NodeStatsDatasource {
     if (memData) {
       node.memoryUsage = _.last(memData.datapoints)[0];
       const memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2)  * 1000;
-      node.memUsageFormatted = kbn.valueFormats['kbytes'](node.memoryUsage, 3, null);
-      node.memCapacityFormatted = kbn.valueFormats['kbytes'](memCapacity, 3, null);
+      node.memUsageFormatted = kbn.valueFormats['bytes'](node.memoryUsage, 2, null);
+      node.memCapacityFormatted = kbn.valueFormats['bytes'](memCapacity, 2, null);
       node.memoryUsagePerc = formatFunc((node.memoryUsage / memCapacity), 2, 5);
     }
 
