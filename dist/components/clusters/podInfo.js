@@ -58,15 +58,17 @@ System.register(["moment"], function (_export, _context) {
             alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
             return;
           } else {
-            this.cluster_id = $location.search().cluster;
-            var pod_name = $location.search().pod;
+            (function () {
+              _this.cluster_id = $location.search().cluster;
+              var pod_name = $location.search().pod;
 
-            this.loadDatasource(this.cluster_id).then(function () {
-              _this.clusterDS.getPod(pod_name).then(function (pod) {
-                _this.pod = pod;
-                _this.pageReady = true;
+              _this.loadDatasource(_this.cluster_id).then(function () {
+                _this.clusterDS.getPod(pod_name).then(function (pod) {
+                  _this.pod = pod;
+                  _this.pageReady = true;
+                });
               });
-            });
+            })();
           }
         }
 

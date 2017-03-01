@@ -119,32 +119,34 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
               this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
               return;
             } else {
-              var cluster_id = cluster.current.value;
-              var nodeVar = _.find(this.templateVariables, { 'name': 'node' });
-              var node_name = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
-              var graphiteDs = _.find(this.templateVariables, { 'name': 'datasource' }).current.value;
+              (function () {
+                var cluster_id = cluster.current.value;
+                var nodeVar = _.find(_this2.templateVariables, { 'name': 'node' });
+                var node_name = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
+                var graphiteDs = _.find(_this2.templateVariables, { 'name': 'datasource' }).current.value;
 
-              this.loadDatasource(cluster_id).then(function () {
-                return _this2.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
-              }).then(function (nodeStats) {
-                if (node_name === 'All') {
-                  _this2.isInListMode = true;
-                  _this2.clusterDS.getNodes().then(function (nodes) {
-                    _this2.nodes = _.map(nodes, function (node) {
-                      node.healthState = _this2.getNodeHealth(node);
-                      _this2.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
+                _this2.loadDatasource(cluster_id).then(function () {
+                  return _this2.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
+                }).then(function (nodeStats) {
+                  if (node_name === 'All') {
+                    _this2.isInListMode = true;
+                    _this2.clusterDS.getNodes().then(function (nodes) {
+                      _this2.nodes = _.map(nodes, function (node) {
+                        node.healthState = _this2.getNodeHealth(node);
+                        _this2.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
 
-                      return node;
+                        return node;
+                      });
                     });
-                  });
-                } else {
-                  _this2.isInListMode = false;
-                  _this2.clusterDS.getNode(unslugify(node_name)).then(function (node) {
-                    _this2.node = node;
-                    _this2.pageReady = true;
-                  });
-                }
-              });
+                  } else {
+                    _this2.isInListMode = false;
+                    _this2.clusterDS.getNode(unslugify(node_name)).then(function (node) {
+                      _this2.node = node;
+                      _this2.pageReady = true;
+                    });
+                  }
+                });
+              })();
             }
           }
         }, {
