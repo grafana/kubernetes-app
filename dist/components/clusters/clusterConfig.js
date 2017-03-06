@@ -456,6 +456,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
       };
       snapTask = {
         "version": 1,
+        "start": true,
         "schedule": {
           "type": "simple",
           "interval": "10s"
@@ -516,6 +517,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
       };
       kubestateSnapTask = {
         "version": 1,
+        "start": true,
         "schedule": {
           "type": "simple",
           "interval": "10s"

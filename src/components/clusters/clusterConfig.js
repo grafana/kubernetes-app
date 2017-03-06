@@ -398,6 +398,7 @@ var kubestateConfigMap = {
 
 var snapTask = {
   "version": 1,
+  "start": true,
   "schedule": {
     "type": "simple",
     "interval": "10s"
@@ -461,6 +462,7 @@ var snapTask = {
 
 var kubestateSnapTask = {
   "version": 1,
+  "start": true,
   "schedule": {
     "type": "simple",
     "interval": "10s"
