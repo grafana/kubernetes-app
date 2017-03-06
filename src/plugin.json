@@ -30,8 +30,8 @@
       {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
-    "version": "0.0.6",
-    "updated": "2017-03-01"
+    "version": "0.0.7",
+    "updated": "2017-03-06"
   },
 
   "includes": [
