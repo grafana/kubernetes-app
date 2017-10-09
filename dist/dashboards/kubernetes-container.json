@@ -249,7 +249,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 4,
+          "span": 6,
           "stack": true,
           "steppedLine": false,
           "targets": [
@@ -328,7 +328,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 4,
+          "span": 6,
           "stack": true,
           "steppedLine": false,
           "targets": [
