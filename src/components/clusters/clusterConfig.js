@@ -169,8 +169,13 @@ export class ClusterConfigCtrl {
     task.workflow.collect.publish[0].config.prefix = "snap."+slugify(this.cluster.name) + ".<%NODE%>";
     task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
     task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
+    var cadvisor_task = _.cloneDeep(snapCadvisorTask);
+    cadvisor_task.workflow.collect.publish[0].config.prefix = "snap."+slugify(this.cluster.name) + ".<%NODE%>";
+    cadvisor_task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
+    cadvisor_task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
     var cm = _.cloneDeep(configMap);
     cm.data["core.json"] = JSON.stringify(task);
+    cm.data["cadvisor.json"] = JSON.stringify(cadvisor_task);
     return cm;
   }
 
@@ -370,7 +375,7 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-const raintankSnapImage = 'raintank/snap_k8s:v21';
+const raintankSnapImage = 'raintank/snap_k8s:v22';
 
 var configMap = {
   "kind": "ConfigMap",
@@ -380,7 +385,8 @@ var configMap = {
     "namespace": "kube-system"
   },
   "data": {
-    "core.json": ""
+    "core.json": "",
+    "cadvisor.json": ""
   }
 };
 
@@ -407,16 +413,6 @@ var snapTask = {
   "workflow": {
     "collect": {
       "metrics": {
-        "/intel/docker/*/*/*/stats/cgroups/cpu_stats/cpu_usage/total_usage":{},
-        "/intel/docker/*/*/*/stats/cgroups/memory_stats/usage/usage":{},
-        "/intel/docker/*/*/*/stats/connection/tcp/*":{},
-        "/intel/docker/*/*/*/stats/filesystem/*/available":{},
-        "/intel/docker/*/*/*/stats/filesystem/*/capacity":{},
-        "/intel/docker/*/*/*/stats/filesystem/*/reads_completed":{},
-        "/intel/docker/*/*/*/stats/filesystem/*/usage":{},
-        "/intel/docker/*/*/*/stats/filesystem/*/writes_completed":{},
-        "/intel/docker/*/*/*/stats/network/*/rx_bytes":{},
-        "/intel/docker/*/*/*/stats/network/*/tx_bytes":{},
         "/intel/procfs/cpu/all/*": {},
         "/intel/procfs/meminfo/mem_available": {},
         "/intel/procfs/meminfo/mem_available_perc": {},
@@ -426,6 +422,18 @@ var snapTask = {
         "/intel/procfs/meminfo/mem_total_perc": {},
         "/intel/procfs/meminfo/mem_used": {},
         "/intel/procfs/meminfo/mem_used_perc": {},
+        "/intel/procfs/filesystem/*/inodes_free": {},
+        "/intel/procfs/filesystem/*/inodes_reserved": {},
+        "/intel/procfs/filesystem/*/inodes_used": {},
+        "/intel/procfs/filesystem/*/space_free": {},
+        "/intel/procfs/filesystem/*/space_reserved": {},
+        "/intel/procfs/filesystem/*/space_used": {},
+        "/intel/procfs/filesystem/*/inodes_percent_free": {},
+        "/intel/procfs/filesystem/*/inodes_percent_reserved": {},
+        "/intel/procfs/filesystem/*/inodes_percent_used": {},
+        "/intel/procfs/filesystem/*/space_percent_free": {},
+        "/intel/procfs/filesystem/*/space_percent_reserved": {},
+        "/intel/procfs/filesystem/*/space_percent_used": {},
         "/intel/procfs/iface/*/bytes_recv": {},
         "/intel/procfs/iface/*/bytes_sent": {},
         "/intel/procfs/iface/*/packets_recv": {},
@@ -441,10 +449,43 @@ var snapTask = {
       },
       "config": {
         "/intel/procfs": {
-          "proc_path": "/proc_host"
+          "proc_path": "/proc_host",
+          "keep_original_mountpoint": false
         }
       },
-      "process": null,
+      "publish": [
+        {
+          "plugin_name": "graphite",
+          "config": {
+            "prefix_tags": "",
+            "prefix": "",
+            "server": "",
+            "port": 2003
+          }
+        }
+      ]
+    }
+  }
+};
+
+var snapCadvisorTask = {
+  "version": 1,
+  "start": true,
+  "schedule": {
+    "type": "streaming",
+  },
+  "workflow": {
+    "collect": {
+      "metrics": {
+        "/grafanalabs/cadvisor/container/*/*/*/cpu/total/usage":{},
+        "/grafanalabs/cadvisor/container/*/*/*/mem/usage":{},
+        "/grafanalabs/cadvisor/container/*/*/*/fs/*":{},
+        "/grafanalabs/cadvisor/container/*/*/*/diskio/*":{},
+        "/grafanalabs/cadvisor/container/*/*/*/iface/*/out_bytes":{},
+        "/grafanalabs/cadvisor/container/*/*/*/iface/*/in_bytes":{},
+        "/grafanalabs/cadvisor/container/*/*/*/tcp/*": {},
+        "/grafanalabs/cadvisor/container/*/*/*/tcp6/*": {},
+      },
       "publish": [
         {
           "plugin_name": "graphite",

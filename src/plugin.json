@@ -10,7 +10,7 @@
     "description": "Kubernetes app. shows data collected by snap.",
     "author": {
       "name": "Raintank Inc.",
-      "url": "http://raintank.io"
+      "url": "https://grafana.com/"
     },
     "keywords": ["raintank", "kubernetes", "snap"],
     "logos": {
@@ -30,7 +30,7 @@
       {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
-    "version": "0.0.7",
+    "version": "0.0.8",
     "updated": "2017-03-06"
   },
 
