@@ -471,12 +471,12 @@
             {
               "hide": false,
               "refId": "A",
-              "target": "averageSeries(snap.$cluster.$node.intel.procfs.filesystem.var_lib_docker*.space_percent_used)",
+              "target": "averageSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_percent_used)",
               "textEditor": false
             }
           ],
           "thresholds": "80,90",
-          "title": "Cluster Disk Usage - /var/lib/docker",
+          "title": "Cluster Disk Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -773,19 +773,19 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.var_lib_docker*.space_free), 'Available')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_free), 'Available')",
               "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.var_lib_docker*.space_used), 'Usage')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_used), 'Usage')",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Cluster Disk Usage - /var/lib/docker",
+          "title": "Cluster Disk Usage",
           "tooltip": {
             "msResolution": false,
             "shared": true,

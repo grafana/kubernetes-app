@@ -65,7 +65,7 @@
             "max": false,
             "min": false,
             "rightSide": true,
-            "show": false,
+            "show": true,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -92,7 +92,8 @@
             {
               "refId": "B",
               "target": "aliasSub(groupByNode(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.POD.mem.usage, 7, 'sum'), '(.*)', '\\1-pod')",
-              "textEditor": false
+              "textEditor": false,
+              "hide": true              
             }
           ],
           "thresholds": [],
@@ -177,7 +178,8 @@
             {
               "refId": "B",
               "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.POD.cpu.total.usage), 7, 'sum'), '(.*)', '\\1-pod')",
-              "textEditor": false
+              "textEditor": false,
+              "hide": true              
             }
           ],
           "thresholds": [],
@@ -234,7 +236,7 @@
             "max": false,
             "min": false,
             "rightSide": true,
-            "show": false,
+            "show": true,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -313,7 +315,7 @@
             "max": false,
             "min": false,
             "rightSide": true,
-            "show": false,
+            "show": true,
             "sort": "current",
             "sortDesc": true,
             "total": false,
@@ -424,7 +426,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.dev.*.reads, 'POD')), 8, 'sum')",
+              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.reads, 'POD')), 8, 'sum')",
               "textEditor": false
             }
           ],
@@ -482,7 +484,7 @@
             "max": false,
             "min": false,
             "rightSide": true,
-            "show": false,
+            "show": true,
             "total": false,
             "values": true
           },
@@ -501,7 +503,7 @@
           "targets": [
             {
               "refId": "A",
-              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.dev.*.writes, 'POD')), 8, 'sum')",
+              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.writes, 'POD')), 8, 'sum')",
               "textEditor": false
             }
           ],

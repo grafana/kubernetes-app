@@ -348,17 +348,17 @@
           "targets": [
             {
               "refId": "A",
-              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.var_lib_docker*.space_free, 2, 'maxSeries'), '(.*)', '\\1 Free')"
+              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_free, 2, 'maxSeries'), '(.*)', '\\1 Free')"
             },
             {
               "refId": "B",
-              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.var_lib_docker*.space_used, 2, 'maxSeries'), '(.*)', '\\1 Usage')"
+              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_used, 2, 'maxSeries'), '(.*)', '\\1 Usage')"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Disk Usage and Capacity - /var/lib/docker",
+          "title": "Disk Usage and Capacity",
           "tooltip": {
             "msResolution": false,
             "shared": true,
