@@ -317,7 +317,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "$datasource",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -348,24 +348,17 @@
           "targets": [
             {
               "refId": "A",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.capacity, 10, 'maxSeries')), 'capacity')",
-              "textEditor": false
-            },
-            {
-              "refId": "C",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.available, 10, 'maxSeries')), 'available')",
-              "textEditor": false
+              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_free, 2, 'maxSeries'), '(.*)', '\\1 Free')"
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage, 10, 'maxSeries')), 'used')",
-              "textEditor": false
+              "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_used, 2, 'maxSeries'), '(.*)', '\\1 Usage')"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Disk Usage and Capacity - /var/lib/docker",
+          "title": "Disk Usage and Capacity",
           "tooltip": {
             "msResolution": false,
             "shared": true,

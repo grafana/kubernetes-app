@@ -10,32 +10,27 @@
   "editable": true,
   "hideControls": false,
   "sharedCrosshair": true,
-  "links": [
-    {
-      "asDropdown": true,
-      "icon": "external link",
-      "includeVars": true,
-      "tags": [
-        "kubernetes-app"
-      ],
-      "title": "Dashboards",
-      "type": "dashboards"
-    }
-  ],
-  "rows": [
-    {
+  "links": [{
+    "asDropdown": true,
+    "icon": "external link",
+    "includeVars": true,
+    "tags": [
+      "kubernetes-app"
+    ],
+    "title": "Dashboards",
+    "type": "dashboards"
+  }],
+  "rows": [{
       "collapse": false,
       "height": "120",
-      "panels": [
-        {
-          "id": 9,
-          "links": [],
-          "span": 12,
-          "title": "",
-          "transparent": true,
-          "type": "raintank-kubernetes-podnav-panel"
-        }
-      ],
+      "panels": [{
+        "id": 9,
+        "links": [],
+        "span": 12,
+        "title": "",
+        "transparent": true,
+        "type": "raintank-kubernetes-podnav-panel"
+      }],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
@@ -46,8 +41,7 @@
     {
       "collapse": false,
       "height": 209,
-      "panels": [
-        {
+      "panels": [{
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -83,11 +77,16 @@
           "span": 6,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
-              "target": "groupByNode(exclude(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.memory_stats.usage.usage, 0), 'POD'), 7, 'sum')",
+              "target": "groupByNode(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.mem.usage, 'POD'), 8, 'sum')",
               "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "aliasSub(groupByNode(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.POD.mem.usage, 7, 'sum'), '(.*)', '\\1-pod')",
+              "textEditor": false,
+              "hide": true
             }
           ],
           "thresholds": [],
@@ -107,8 +106,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "bytes",
               "label": null,
               "logBase": 1,
@@ -163,11 +161,16 @@
           "span": 6,
           "stack": true,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
-              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.cgroups.cpu_stats.cpu_usage.total_usage), 'POD'), 7, 'sum')",
+              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.cpu.total.usage, 'POD')), 8, 'sum')",
               "textEditor": false
+            },
+            {
+              "refId": "B",
+              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.POD.cpu.total.usage), 7, 'sum'), '(.*)', '\\1-pod')",
+              "textEditor": false,
+              "hide": true
             }
           ],
           "thresholds": [],
@@ -187,8 +190,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "ns",
               "label": null,
               "logBase": 1,
@@ -238,28 +240,15 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "/.*-out/",
-              "transform": "negative-Y"
-            }
-          ],
-          "span": 4,
+          "seriesOverrides": [],
+          "span": 6,
           "stack": true,
           "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.rx_bytes), 'POD'), 7, 'sum')",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "refId": "B",
-              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 6, 'sum'), '(.*)', '\\1-out')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.iface.*.in_bytes), 7, 'sum')",
+            "textEditor": false
+          }],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
@@ -277,8 +266,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "bps",
               "label": null,
               "logBase": 1,
@@ -328,28 +316,15 @@
           "pointradius": 5,
           "points": false,
           "renderer": "flot",
-          "seriesOverrides": [
-            {
-              "alias": "/.*-out/",
-              "transform": "negative-Y"
-            }
-          ],
-          "span": 4,
+          "seriesOverrides": [],
+          "span": 6,
           "stack": true,
           "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(exclude(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 'POD'), 7, 'sum')",
-              "textEditor": false
-            },
-            {
-              "hide": true,
-              "refId": "B",
-              "target": "aliasSub(groupByNode(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.network.*.tx_bytes), 6, 'sum'), '(.*)', '\\1-out')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.iface.*.out_bytes), 7, 'sum')",
+            "textEditor": false
+          }],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
@@ -367,89 +342,8 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "bps",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "alerting": {},
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "$datasource",
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {},
-          "id": 3,
-          "legend": {
-            "alignAsTable": true,
-            "avg": false,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sort": "current",
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 3,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 4,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(exclude(averageAbove(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.connection.tcp.*, 0.0001), 'POD'), 7, 'sum')",
-              "textEditor": false
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "TCP Connections",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "sort": 2,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -477,8 +371,7 @@
     {
       "collapse": false,
       "height": 214,
-      "panels": [
-        {
+      "panels": [{
           "alerting": {},
           "aliasColors": {},
           "bars": false,
@@ -513,13 +406,11 @@
           "span": 6,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(exclude(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.reads_completed), 10), 'POD'), 7, 'sum')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.reads, 'POD')), 8, 'sum')",
+            "textEditor": false
+          }],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
@@ -537,9 +428,8 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
-              "format": "short",
+          "yaxes": [{
+              "format": "rps",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -590,13 +480,11 @@
           "span": 6,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
-              "refId": "A",
-              "target": "groupByNode(exclude(sumSeriesWithWildcards(perSecond(snap.$cluster.$node.intel.docker.$namespace.$pod.$container.stats.filesystem.*.writes_completed), 10), 'POD'), 7, 'sum')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.writes, 'POD')), 8, 'sum')",
+            "textEditor": false
+          }],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
@@ -614,9 +502,8 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
-              "format": "short",
+          "yaxes": [{
+              "format": "wps",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -634,6 +521,90 @@
           ]
         }
       ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "New row",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 214,
+      "panels": [{
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "$datasource",
+        "fill": 1,
+        "id": 10,
+        "legend": {
+          "alignAsTable": true,
+          "avg": false,
+          "current": true,
+          "hideEmpty": true,
+          "max": false,
+          "min": false,
+          "rightSide": true,
+          "show": true,
+          "sort": "current",
+          "sortDesc": true,
+          "total": false,
+          "values": true
+        },
+        "lines": false,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "connected",
+        "percentage": false,
+        "pointradius": 5,
+        "points": true,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "span": 12,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [{
+          "refId": "A",
+          "target": "groupByNode(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.tcp*.*, 7, 'sum')"
+        }],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "TCP Connections",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [{
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ]
+      }],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
@@ -672,8 +643,7 @@
     ]
   },
   "templating": {
-    "list": [
-      {
+    "list": [{
         "current": {},
         "hide": 0,
         "label": "",
@@ -729,7 +699,7 @@
         "multi": true,
         "name": "pod",
         "options": [],
-        "query": "snap.$cluster.$node.intel.docker.$namespace.*",
+        "query": "snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.*",
         "refresh": 1,
         "type": "query"
       },
@@ -741,7 +711,7 @@
         "multi": true,
         "name": "container",
         "options": [],
-        "query": "snap.$cluster.$node.intel.docker.$namespace.$pod.*",
+        "query": "snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*",
         "refresh": 1,
         "type": "query"
       }
@@ -751,7 +721,7 @@
     "list": []
   },
   "refresh": "10s",
-  "schemaVersion": 13,
+  "schemaVersion": 14,
   "gnetId": 482,
   "description": "Summary metrics about containers running on Kubernetes nodes."
 }

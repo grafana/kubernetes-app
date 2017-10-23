@@ -171,9 +171,9 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "$datasource",
           "editable": true,
@@ -235,7 +235,7 @@
               "textEditor": false
             }
           ],
-          "thresholds": "80,90",
+          "thresholds": "0.8,0.9",
           "title": "Cluster Pod Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -253,9 +253,9 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "$datasource",
           "editable": true,
@@ -317,7 +317,7 @@
               "textEditor": false
             }
           ],
-          "thresholds": "80,90",
+          "thresholds": "0.8,0.9",
           "title": "Cluster CPU Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -335,9 +335,9 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "$datasource",
           "editable": true,
@@ -399,7 +399,7 @@
               "textEditor": false
             }
           ],
-          "thresholds": "80,90",
+          "thresholds": "0.8,0.9",
           "title": "Cluster Memory Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
@@ -417,16 +417,16 @@
           "colorBackground": false,
           "colorValue": false,
           "colors": [
-            "rgba(245, 54, 54, 0.9)",
+            "rgba(50, 172, 45, 0.97)",
             "rgba(237, 129, 40, 0.89)",
-            "rgba(50, 172, 45, 0.97)"
+            "rgba(245, 54, 54, 0.9)"
           ],
           "datasource": "$datasource",
           "editable": true,
           "error": false,
-          "format": "percentunit",
+          "format": "percent",
           "gauge": {
-            "maxValue": 1,
+            "maxValue": 100,
             "minValue": 0,
             "show": true,
             "thresholdLabels": false,
@@ -469,20 +469,14 @@
           },
           "targets": [
             {
-              "hide": true,
+              "hide": false,
               "refId": "A",
-              "target": "sumSeries(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.capacity)",
-              "textEditor": false
-            },
-            {
-              "refId": "B",
-              "target": "divideSeries(consolidateBy(sumSeries(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage), 'max'), #A)",
-              "targetFull": "divideSeries(consolidateBy(sumSeries(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage), 'max'), sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.memory.bytes))",
+              "target": "averageSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_percent_used)",
               "textEditor": false
             }
           ],
           "thresholds": "80,90",
-          "title": "Cluster Disk Usage - /var/lib/docker",
+          "title": "Cluster Disk Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -778,24 +772,20 @@
           "steppedLine": false,
           "targets": [
             {
-              "hide": true,
               "refId": "A",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.capacity, 10, 'maxSeries')), 'Capacity')"
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_free), 'Available')",
+              "textEditor": false
             },
             {
               "refId": "B",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.available, 10, 'maxSeries')), 'Available')"
-            },
-            {
-              "refId": "C",
-              "target": "alias(sumSeries(groupByNode(snap.$cluster.$node.intel.docker.kube-system.*.snap.stats.filesystem.*.usage, 10, 'maxSeries')), 'Usage')",
+              "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_used), 'Usage')",
               "textEditor": false
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Cluster Disk Usage - /var/lib/docker",
+          "title": "Cluster Disk Usage",
           "tooltip": {
             "msResolution": false,
             "shared": true,

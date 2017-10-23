@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
   "use strict";
 
-  var PanelCtrl, _, _typeof, _createClass, panelDefaults, PodNavCtrl;
+  var PanelCtrl, _, _createClass, panelDefaults, PodNavCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -42,12 +42,6 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
       _ = _lodash.default;
     }],
     execute: function () {
-      _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-        return typeof obj;
-      } : function (obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-      };
-
       _createClass = function () {
         function defineProperties(target, props) {
           for (var i = 0; i < props.length; i++) {
@@ -168,21 +162,15 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
 
             if (this.currentPods.length === 0) {
               if (_.isArray(this.namespace)) {
-                var _ret = function () {
-                  var promises = [];
-                  _.forEach(_this3.namespace, function (ns) {
-                    promises.push(_this3.clusterDS.getPods(ns));
+                var promises = [];
+                _.forEach(this.namespace, function (ns) {
+                  promises.push(_this3.clusterDS.getPods(ns));
+                });
+                return this.$q.all(promises).then(function (pods) {
+                  return _.flatten(pods).filter(function (n) {
+                    return n;
                   });
-                  return {
-                    v: _this3.$q.all(promises).then(function (pods) {
-                      return _.flatten(pods).filter(function (n) {
-                        return n;
-                      });
-                    })
-                  };
-                }();
-
-                if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+                });
               } else {
                 return this.clusterDS.getPods(this.namespace);
               }
@@ -230,21 +218,15 @@ System.register(['app/plugins/sdk', 'lodash'], function (_export, _context) {
             var _this6 = this;
 
             if (_.isArray(this.namespace)) {
-              var _ret2 = function () {
-                var promises = [];
-                _.forEach(_this6.namespace, function (ns) {
-                  promises.push(_this6.clusterDS.getPodsByLabel(ns, _this6.chosenTags));
+              var promises = [];
+              _.forEach(this.namespace, function (ns) {
+                promises.push(_this6.clusterDS.getPodsByLabel(ns, _this6.chosenTags));
+              });
+              return this.$q.all(promises).then(function (pods) {
+                return _.flatten(pods).filter(function (n) {
+                  return n;
                 });
-                return {
-                  v: _this6.$q.all(promises).then(function (pods) {
-                    return _.flatten(pods).filter(function (n) {
-                      return n;
-                    });
-                  })
-                };
-              }();
-
-              if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+              });
             } else {
               return this.clusterDS.getPodsByLabel(this.namespace, this.chosenTags);
             }
