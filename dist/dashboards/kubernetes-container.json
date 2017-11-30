@@ -79,7 +79,7 @@
           "steppedLine": false,
           "targets": [{
               "refId": "A",
-              "target": "groupByNode(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.mem.usage, 'POD'), 8, 'sum')",
+              "target": "groupByNode(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.mem.usage, 'POD'), 8, 'sum')",
               "textEditor": false
             },
             {
@@ -163,7 +163,7 @@
           "steppedLine": false,
           "targets": [{
               "refId": "A",
-              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.cpu.total.usage, 'POD')), 8, 'sum')",
+              "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.cpu.total.usage, 'POD')), 8, 'sum')",
               "textEditor": false
             },
             {
@@ -246,7 +246,7 @@
           "steppedLine": false,
           "targets": [{
             "refId": "A",
-            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.iface.*.in_bytes), 7, 'sum')",
+            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.iface.*.in_bytes), 7, 'sum')",            
             "textEditor": false
           }],
           "thresholds": [],
@@ -322,7 +322,7 @@
           "steppedLine": false,
           "targets": [{
             "refId": "A",
-            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.iface.*.out_bytes), 7, 'sum')",
+            "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.iface.*.out_bytes), 7, 'sum')",
             "textEditor": false
           }],
           "thresholds": [],
@@ -408,7 +408,7 @@
           "steppedLine": false,
           "targets": [{
             "refId": "A",
-            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.reads, 'POD')), 8, 'sum')",
+            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.diskio.*.reads, 'POD')), 8, 'sum')",
             "textEditor": false
           }],
           "thresholds": [],
@@ -482,7 +482,7 @@
           "steppedLine": false,
           "targets": [{
             "refId": "A",
-            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.diskio.*.writes, 'POD')), 8, 'sum')",
+            "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.diskio.*.writes, 'POD')), 8, 'sum')",
             "textEditor": false
           }],
           "thresholds": [],
@@ -568,7 +568,7 @@
         "steppedLine": false,
         "targets": [{
           "refId": "A",
-          "target": "groupByNode(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.$container.tcp*.*, 7, 'sum')"
+          "target": "groupByNode(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.tcp*.*, 7, 'sum')"
         }],
         "thresholds": [],
         "timeFrom": null,
@@ -700,18 +700,6 @@
         "name": "pod",
         "options": [],
         "query": "snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.*",
-        "refresh": 1,
-        "type": "query"
-      },
-      {
-        "current": {},
-        "datasource": "$datasource",
-        "hide": 0,
-        "includeAll": true,
-        "multi": true,
-        "name": "container",
-        "options": [],
-        "query": "snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*",
         "refresh": 1,
         "type": "query"
       }
