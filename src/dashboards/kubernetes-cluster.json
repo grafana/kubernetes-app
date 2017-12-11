@@ -1,6 +1,5 @@
 {
-  "__requires": [
-    {
+  "__requires": [{
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
@@ -73,8 +72,7 @@
     ]
   },
   "templating": {
-    "list": [
-      {
+    "list": [{
         "current": {},
         "hide": 0,
         "label": "",
@@ -147,26 +145,22 @@
   "refresh": "30s",
   "schemaVersion": 13,
   "version": 1,
-  "links": [
-    {
-      "asDropdown": true,
-      "icon": "external link",
-      "includeVars": true,
-      "keepTime": false,
-      "tags": [
-        "kubernetes-app"
-      ],
-      "title": "Dashboards",
-      "type": "dashboards"
-    }
-  ],
+  "links": [{
+    "asDropdown": true,
+    "icon": "external link",
+    "includeVars": true,
+    "keepTime": false,
+    "tags": [
+      "kubernetes-app"
+    ],
+    "title": "Dashboards",
+    "type": "dashboards"
+  }],
   "gnetId": null,
-  "rows": [
-    {
+  "rows": [{
       "collapse": false,
       "height": 236,
-      "panels": [
-        {
+      "panels": [{
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
@@ -190,8 +184,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -207,13 +200,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -221,8 +212,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
+          "targets": [{
               "hide": true,
               "refId": "A",
               "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods)",
@@ -239,13 +229,11 @@
           "title": "Cluster Pod Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -272,8 +260,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -289,13 +276,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -303,8 +288,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
+          "targets": [{
               "hide": true,
               "refId": "A",
               "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.cpu.cores)",
@@ -321,13 +305,11 @@
           "title": "Cluster CPU Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -354,8 +336,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -371,13 +352,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -385,8 +364,7 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
+          "targets": [{
               "hide": true,
               "refId": "A",
               "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.memory.bytes)",
@@ -403,13 +381,11 @@
           "title": "Cluster Memory Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -436,8 +412,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -453,13 +428,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -467,25 +440,21 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "hide": false,
-              "refId": "A",
-              "target": "averageSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_percent_used)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "hide": false,
+            "refId": "A",
+            "target": "averageSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_percent_used)",
+            "textEditor": false
+          }],
           "thresholds": "80,90",
           "title": "Cluster Disk Usage",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -520,8 +489,7 @@
           "span": 3,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
               "target": "alias(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.pods), 'Capacity')",
               "textEditor": false
@@ -553,8 +521,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -604,8 +571,7 @@
           "span": 3,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
               "target": "alias(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.cpu.cores), 'Capacity')"
             },
@@ -636,8 +602,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -687,8 +652,7 @@
           "span": 3,
           "stack": false,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
               "target": "alias(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.capacity.memory.bytes), 'Capacity')"
             },
@@ -719,8 +683,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "decbytes",
               "label": null,
               "logBase": 1,
@@ -770,8 +733,7 @@
           "span": 3,
           "stack": true,
           "steppedLine": false,
-          "targets": [
-            {
+          "targets": [{
               "refId": "A",
               "target": "alias(sumSeries(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_free), 'Available')",
               "textEditor": false
@@ -799,8 +761,7 @@
             "show": true,
             "values": []
           },
-          "yaxes": [
-            {
+          "yaxes": [{
               "format": "decbytes",
               "label": null,
               "logBase": 1,
@@ -829,14 +790,11 @@
     {
       "collapse": false,
       "height": "175",
-      "panels": [
-        {
-          "columns": [
-            {
-              "text": "Current",
-              "value": "current"
-            }
-          ],
+      "panels": [{
+          "columns": [{
+            "text": "Current",
+            "value": "current"
+          }],
           "editable": true,
           "error": false,
           "fontSize": "100%",
@@ -850,8 +808,7 @@
             "desc": true
           },
           "span": 3,
-          "styles": [
-            {
+          "styles": [{
               "dateFormat": "YYYY-MM-DD HH:mm:ss",
               "pattern": "Time",
               "type": "date"
@@ -873,13 +830,11 @@
               "unit": "short"
             }
           ],
-          "targets": [
-            {
-              "hide": false,
-              "refId": "B",
-              "target": "aliasByNode(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.updatedreplicas, 6)"
-            }
-          ],
+          "targets": [{
+            "hide": false,
+            "refId": "B",
+            "target": "aliasByNode(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.updatedreplicas, 6)"
+          }],
           "title": "Deployment Replicas - up-to-date",
           "transform": "timeseries_aggregations",
           "type": "table"
@@ -908,8 +863,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -925,13 +879,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -939,23 +891,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.spec.desiredreplicas)"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.spec.desiredreplicas)"
+          }],
           "thresholds": "",
           "title": "Deployment Replicas - Desired",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -982,8 +930,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -999,13 +946,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1013,23 +958,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.updatedreplicas)"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.updatedreplicas)"
+          }],
           "thresholds": "",
           "title": "Deployments Replicas - Up-to-date",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1056,8 +997,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1073,13 +1013,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1087,23 +1025,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.unavailablereplicas)"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "sumSeries(snap.$cluster.grafanalabs.kubestate.deployment.$namespace.*.status.unavailablereplicas)"
+          }],
           "thresholds": "",
           "title": "Deployments Replicas -Unavailable",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         }
       ],
@@ -1118,8 +1052,7 @@
     {
       "collapse": false,
       "height": "120",
-      "panels": [
-        {
+      "panels": [{
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
@@ -1144,8 +1077,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1161,13 +1093,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1175,24 +1105,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "countSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "countSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk)",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Number of Nodes",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1219,8 +1145,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1236,13 +1161,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1250,24 +1173,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.status.outofdisk), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "1",
           "title": "Nodes Out of Disk",
           "type": "singlestat",
           "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1294,8 +1213,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1311,13 +1229,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1325,24 +1241,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": false
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.spec.unschedulable), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.node.$node.spec.unschedulable), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "1",
           "title": "Unschedulable Nodes",
           "type": "singlestat",
           "valueFontSize": "100%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         }
       ],
@@ -1357,8 +1269,7 @@
     {
       "collapse": false,
       "height": "120",
-      "panels": [
-        {
+      "panels": [{
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
@@ -1383,8 +1294,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1400,13 +1310,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
@@ -1414,24 +1322,20 @@
             "lineColor": "rgb(31, 200, 32)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Running), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Pods Running",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1459,8 +1363,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1476,13 +1379,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
@@ -1490,24 +1391,20 @@
             "lineColor": "rgb(31, 200, 32)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Pending), 'max'), 0)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Pending), 'max'), 0)",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Pods Pending",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1535,8 +1432,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1552,13 +1448,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
@@ -1566,24 +1460,20 @@
             "lineColor": "rgb(31, 200, 32)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Failed), 'max'), 0)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Failed), 'max'), 0)",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Pods Failed",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1611,8 +1501,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1628,13 +1517,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
@@ -1642,24 +1529,20 @@
             "lineColor": "rgb(31, 200, 32)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Succeeded), 'max'), 0)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Succeeded), 'max'), 0)",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Pods Succeeded",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1687,8 +1570,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1704,13 +1586,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 189, 41, 0.18)",
@@ -1718,24 +1598,20 @@
             "lineColor": "rgb(31, 200, 32)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Unknown), 'max'), 0)",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "transformNull(consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.pod.$namespace.$node.*.status.phase.Unknown), 'max'), 0)",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Pods - Status Unknown",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         }
       ],
@@ -1749,8 +1625,7 @@
     {
       "collapse": false,
       "height": "125",
-      "panels": [
-        {
+      "panels": [{
           "cacheTimeout": null,
           "colorBackground": false,
           "colorValue": false,
@@ -1775,8 +1650,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1792,13 +1666,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(89, 77, 192, 0.18)",
@@ -1806,24 +1678,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.running), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.running), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Containers Running",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1850,8 +1718,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1867,13 +1734,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 41, 189, 0.18)",
@@ -1881,23 +1746,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.waiting), 'max')"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.waiting), 'max')"
+          }],
           "thresholds": "",
           "title": "Containers Waiting",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -1925,8 +1786,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -1942,13 +1802,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -1956,23 +1814,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.terminated), 'max')"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.terminated), 'max')"
+          }],
           "thresholds": "",
           "title": "Containers Terminated",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -2000,8 +1854,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -2017,13 +1870,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -2031,23 +1882,19 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.restarts))"
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "derivative(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.status.restarts))"
+          }],
           "thresholds": "",
           "title": "Container Restarts (last 30 mins)",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -2075,8 +1922,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -2092,13 +1938,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -2106,24 +1950,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.cpu.cores), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "CPU Cores Requested by Containers",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         },
         {
@@ -2151,8 +1991,7 @@
           "interval": null,
           "links": [],
           "mappingType": 1,
-          "mappingTypes": [
-            {
+          "mappingTypes": [{
               "name": "value to text",
               "value": 1
             },
@@ -2168,13 +2007,11 @@
           "postfixFontSize": "50%",
           "prefix": "",
           "prefixFontSize": "50%",
-          "rangeMaps": [
-            {
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
           "span": 6,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
@@ -2182,24 +2019,20 @@
             "lineColor": "rgb(31, 120, 193)",
             "show": true
           },
-          "targets": [
-            {
-              "refId": "A",
-              "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max')",
-              "textEditor": false
-            }
-          ],
+          "targets": [{
+            "refId": "A",
+            "target": "consolidateBy(sumSeries(snap.$cluster.grafanalabs.kubestate.container.$namespace.$node.*.*.requested.memory.bytes), 'max')",
+            "textEditor": false
+          }],
           "thresholds": "",
           "title": "Memory Requested By Containers",
           "type": "singlestat",
           "valueFontSize": "80%",
-          "valueMaps": [
-            {
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
           "valueName": "current"
         }
       ],
@@ -2210,6 +2043,215 @@
       "title": "Containers",
       "titleSize": "h3",
       "isNew": false
+    },
+    {
+      "collapse": true,
+      "height": 250,
+      "panels": [{
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 38,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [{
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
+          "span": 4,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [{
+            "refId": "A",
+            "target": "snap.minikube.grafanalabs.kubestate.job.$namespace.*.status.succeeded"
+          }],
+          "thresholds": "",
+          "title": "Jobs Succeeded",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 39,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [{
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
+          "span": 4,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [{
+            "refId": "A",
+            "target": "snap.minikube.grafanalabs.kubestate.job.$namespace.*.status.failed"
+          }],
+          "thresholds": "",
+          "title": "Jobs Active",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "$datasource",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 40,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [{
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [{
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }],
+          "span": 4,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [{
+            "refId": "A",
+            "target": "snap.minikube.grafanalabs.kubestate.job.$namespace.*.status.failed"
+          }],
+          "thresholds": "",
+          "title": "Jobs Failed",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [{
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }],
+          "valueName": "current"
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "Jobs",
+      "titleSize": "h3"
     }
   ]
 }
