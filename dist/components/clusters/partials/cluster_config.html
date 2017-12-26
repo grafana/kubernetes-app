@@ -72,8 +72,8 @@
 <p>The Deploy button will deploy the <a class="pointer highlight-word" href="https://hub.docker.com/r/raintank/snap_k8s/">Snap Kubernetes Docker image</a> with two metrics collectors that provides summary performance and availability metrics of a Kubernetes Node and its containers. (The manual deployment instructions are at the bottom of the page.)</p>
 <div class="gf-form-group" ng-show="ctrl.isOrgEditor">
   	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
-  	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.snapDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
-  	<button type="submit" class="btn btn-secondary" ng-click="ctrl.undeploy()" ng-show="ctrl.snapDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
+  	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.prometheusDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
+  	<button type="submit" class="btn btn-secondary" ng-click="ctrl.undeploy()" ng-show="ctrl.prometheusDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
   	<a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
 </div>
 

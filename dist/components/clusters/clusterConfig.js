@@ -3,7 +3,7 @@
 System.register(['lodash', 'app/core/app_events', 'angular'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, angular, _createClass, ClusterConfigCtrl, raintankSnapImage, configMap, kubestateConfigMap, snapTask, snapCadvisorTask, kubestateSnapTask, daemonSet, kubestate;
+  var _, appEvents, angular, _createClass, ClusterConfigCtrl, raintankSnapImage, configMap, kubestateConfigMap, snapTask, snapCadvisorTask, kubestateSnapTask, daemonSet, kubestate, prometheusImage, kubestateImage, prometheusDeployment, kubestateDeployment;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -54,9 +54,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
           this.$window = $window;
           this.$location = $location;
-          this.cluster = { type: 'raintank-kubernetes-datasource' };
+          this.cluster = {
+            type: 'raintank-kubernetes-datasource'
+          };
           this.pageReady = false;
-          this.snapDeployed = false;
+          this.prometheusDeployed = false;
           this.alertSrv = alertSrv;
           this.showHelp = false;
           document.title = 'Grafana Kubernetes App';
@@ -78,17 +80,17 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var promises = [];
             if ("cluster" in self.$location.search()) {
               promises.push(self.getCluster(this.$location.search().cluster).then(function () {
-                return self.getDaemonSets().then(function (ds) {
-                  _.forEach(ds.items, function (daemonSet) {
-                    if (daemonSet.metadata.name === "snap") {
-                      self.snapDeployed = true;
+                return self.getDeployments().then(function (ds) {
+                  _.forEach(ds.items, function (deployment) {
+                    if (deployment.metadata.name === "prometheus-deployment") {
+                      self.prometheusDeployed = true;
                     }
                   });
                 });
               }));
             }
 
-            promises.push(self.getGraphiteDatasources());
+            promises.push(self.getPrometheusDatasources());
 
             return this.$q.all(promises);
           }
@@ -104,21 +106,25 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             });
           }
         }, {
-          key: 'getGraphiteDatasources',
-          value: function getGraphiteDatasources() {
+          key: 'getPrometheusDatasources',
+          value: function getPrometheusDatasources() {
             var self = this;
             return this.backendSrv.get('/api/datasources').then(function (result) {
-              self.datasources = _.filter(result, { "type": "graphite" });
+              self.datasources = _.filter(result, {
+                "type": "prometheus"
+              });
             });
           }
         }, {
-          key: 'getDaemonSets',
-          value: function getDaemonSets() {
+          key: 'getDeployments',
+          value: function getDeployments() {
             var self = this;
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + '/apis/extensions/v1beta1/daemonsets',
+              url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta2/namespaces/kube-system/deployments',
               method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
+              headers: {
+                'Content-Type': 'application/json'
+              }
             });
           }
         }, {
@@ -159,7 +165,9 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
         }, {
           key: 'saveToFile',
           value: function saveToFile(filename, json) {
-            var blob = new Blob([angular.toJson(json, true)], { type: "application/json;charset=utf-8" });
+            var blob = new Blob([angular.toJson(json, true)], {
+              type: "application/json;charset=utf-8"
+            });
             var wnd = window;
             wnd.saveAs(blob, filename + '.json');
           }
@@ -168,7 +176,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           value: function deploy() {
             var _this2 = this;
 
-            var question = !this.snapDeployed ? 'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. ' + 'Are you sure you want to deploy?' : 'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
+            var question = !this.prometheusDeployed ? 'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. ' + 'Are you sure you want to deploy?' : 'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
             appEvents.emit('confirm-modal', {
               title: 'Deploy to Kubernetes Cluster',
               text: question,
@@ -192,7 +200,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               yesText: "Remove",
               icon: "fa-question",
               onConfirm: function onConfirm() {
-                _this3.undeploySnap();
+                _this3.undeployPrometheus();
               }
             });
           }
@@ -211,7 +219,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var _this4 = this;
 
             return this.saveDatasource().then(function () {
-              return _this4.deploySnap();
+              return _this4.deployPrometheus();
             });
           }
         }, {
@@ -255,7 +263,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var cm = this.generateConfigMap();
             var kubestateCm = this.generateKubestateConfigMap();
 
-            if (!this.snapDeployed) {
+            if (!this.prometheusDeployed) {
               return this.checkApiVersion(self.cluster.id).then(function () {
                 return _this5.createConfigMap(self.cluster.id, cm);
               }).then(function () {
@@ -267,7 +275,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               }).catch(function (err) {
                 _this5.alertSrv.set("Error", err, 'error');
               }).then(function () {
-                _this5.snapDeployed = true;
+                _this5.prometheusDeployed = true;
                 _this5.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
               });
             } else {
@@ -297,7 +305,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             }).catch(function (err) {
               _this6.alertSrv.set("Error", err, 'error');
             }).then(function () {
-              _this6.snapDeployed = false;
+              _this6.prometheusDeployed = false;
               _this6.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
             });
           }
@@ -307,7 +315,9 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             return this.backendSrv.request({
               url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
               method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
+              headers: {
+                'Content-Type': 'application/json'
+              }
             }).then(function (result) {
               if (!result.resources || result.resources.length === 0) {
                 throw "This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " + "You can install manually using the instructions at the bottom of the page.";
@@ -321,7 +331,9 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps',
               method: 'POST',
               data: cm,
-              headers: { 'Content-Type': 'application/json' }
+              headers: {
+                'Content-Type': 'application/json'
+              }
             });
           }
         }, {
@@ -331,7 +343,9 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
               method: 'POST',
               data: daemonSet,
-              headers: { 'Content-Type': "application/json" }
+              headers: {
+                'Content-Type': "application/json"
+              }
             });
           }
         }, {
@@ -346,10 +360,12 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           key: 'createDeployment',
           value: function createDeployment(clusterId, deployment) {
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/deployments',
+              url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/deployments',
               method: 'POST',
               data: deployment,
-              headers: { 'Content-Type': "application/json" }
+              headers: {
+                'Content-Type': "application/json"
+              }
             });
           }
         }, {
@@ -358,11 +374,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var _this7 = this;
 
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
+              url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/deployments/' + deploymentName,
               method: 'DELETE'
             }).then(function () {
               return _this7.backendSrv.request({
-                url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=app%3Dsnap-collector',
+                url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
                 method: 'DELETE'
               });
             });
@@ -382,12 +398,14 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
 
             var self = this;
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=app%3Dsnap-collector',
+              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=grafanak8sapp%3Dtrue',
               method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
+              headers: {
+                'Content-Type': 'application/json'
+              }
             }).then(function (pods) {
               if (!pods || pods.items.length === 0) {
-                throw "No snapd pod found to update.";
+                throw "No pods found to update.";
               }
 
               var promises = [];
@@ -426,6 +444,66 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           key: 'cancel',
           value: function cancel() {
             this.$window.history.back();
+          }
+        }, {
+          key: 'deployPrometheus',
+          value: function deployPrometheus() {
+            var _this10 = this;
+
+            var self = this;
+            if (!this.cluster || !this.cluster.id) {
+              this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
+              return;
+            }
+            return this.checkApiVersion(self.cluster.id).then(function () {
+              return _this10.createConfigMap(self.cluster.id, _this10.generatePrometheusConfigMap());
+            }).then(function () {
+              return _this10.createDeployment(self.cluster.id, kubestateDeployment);
+            }).then(function () {
+              return _this10.createDeployment(self.cluster.id, prometheusDeployment);
+            }).catch(function (err) {
+              _this10.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              _this10.prometheusDeployed = true;
+              _this10.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
+            });
+          }
+        }, {
+          key: 'undeployPrometheus',
+          value: function undeployPrometheus() {
+            var _this11 = this;
+
+            var self = this;
+            return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap').then(function () {
+              return _this11.deleteDeployment(self.cluster.id, 'kube-state-metrics');
+            }).catch(function (err) {
+              _this11.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              return _this11.deleteDeployment(self.cluster.id, 'prometheus-deployment');
+            }).catch(function (err) {
+              _this11.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              return _this11.deletePods();
+            }).catch(function (err) {
+              _this11.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              _this11.prometheusDeployed = false;
+              _this11.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
+            });
+          }
+        }, {
+          key: 'generatePrometheusConfigMap',
+          value: function generatePrometheusConfigMap() {
+            return {
+              "apiVersion": "v1",
+              "kind": "ConfigMap",
+              "metadata": {
+                "name": "prometheus-configmap"
+              },
+              "data": {
+                "prometheus.yml": '\n        scrape_configs:\n          - job_name: \'kubernetes-cadvisor\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-nodes\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-pods\'\n            kubernetes_sd_configs:\n            - role: pod\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_pod_label_(.+)\n            - source_labels: [__meta_kubernetes_namespace]\n              action: replace\n              target_label: kubernetes_namespace\n            - source_labels: [__meta_kubernetes_pod_name]\n              action: replace\n              target_label: kubernetes_pod_name\n            - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]\n              regex: .*true.*\n              action: keep\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name
+              }
+            };
           }
         }]);
 
@@ -721,7 +799,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           "replicas": 1,
           "template": {
             "metadata": {
-              labels: {
+              "labels": {
                 "app": "snap-collector"
               }
             },
@@ -765,6 +843,106 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                 "imagePullPolicy": "IfNotPresent"
               }],
               "restartPolicy": "Always"
+            }
+          }
+        }
+      };
+      prometheusImage = 'prom/prometheus:v2.0.0';
+      kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
+      prometheusDeployment = {
+        "apiVersion": "apps/v1beta2",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "prometheus-deployment",
+          "namespace": "kube-system"
+        },
+        "spec": {
+          "replicas": 1,
+          "strategy": {
+            "rollingUpdate": {
+              "maxSurge": 0,
+              "maxUnavailable": 1
+            },
+            "type": "RollingUpdate"
+          },
+          "selector": {
+            "matchLabels": {
+              "app": "prometheus",
+              "grafanak8sapp": "true"
+            }
+          },
+          "template": {
+            "metadata": {
+              "name": "prometheus",
+              "labels": {
+                "app": "prometheus",
+                "grafanak8sapp": "true"
+              }
+            },
+            "spec": {
+              "containers": [{
+                "name": "prometheus",
+                "image": prometheusImage,
+                "args": ['--config.file=/etc/prometheus/prometheus.yml'],
+                "ports": [{
+                  "name": "web",
+                  "containerPort": 9090
+                }],
+                "env": [],
+                "volumeMounts": [{
+                  "name": "config-volume",
+                  "mountPath": "/etc/prometheus"
+                }]
+              }],
+              "volumes": [{
+                "name": "config-volume",
+                "configMap": {
+                  "name": "prometheus-configmap"
+                }
+              }]
+            }
+          }
+        }
+      };
+      kubestateDeployment = {
+        "apiVersion": "apps/v1beta2",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "kube-state-metrics",
+          "namespace": "kube-system"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "k8s-app": "kube-state-metrics",
+              "grafanak8sapp": "true"
+            }
+          },
+          "replicas": 1,
+          "template": {
+            "metadata": {
+              "labels": {
+                "k8s-app": "kube-state-metrics",
+                "grafanak8sapp": "true"
+              }
+            },
+            "spec": {
+              "containers": [{
+                "name": "kube-state-metrics",
+                "image": kubestateImage,
+                "ports": [{
+                  "name": "http-metrics",
+                  "containerPort": 8080
+                }],
+                "readinessProbe": {
+                  "httpGet": {
+                    "path": "/healthz",
+                    "port": 8080
+                  },
+                  "initialDelaySeconds": 5,
+                  "timeoutSeconds": 5
+                }
+              }]
             }
           }
         }
