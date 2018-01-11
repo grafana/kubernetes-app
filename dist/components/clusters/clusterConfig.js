@@ -3,7 +3,7 @@
 System.register(['lodash', 'app/core/app_events', 'angular'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, angular, _createClass, ClusterConfigCtrl, raintankSnapImage, configMap, kubestateConfigMap, snapTask, snapCadvisorTask, kubestateSnapTask, daemonSet, kubestate, prometheusImage, kubestateImage, prometheusDeployment, kubestateDeployment;
+  var _, appEvents, angular, _createClass, ClusterConfigCtrl, raintankSnapImage, configMap, kubestateConfigMap, snapTask, snapCadvisorTask, kubestateSnapTask, daemonSet, NodeExporterImage, nodeExporterDaemonSet, nodeExporterService, kubestate, prometheusImage, kubestateImage, prometheusDeployment, kubestateDeployment;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -340,7 +340,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           key: 'createDaemonSet',
           value: function createDaemonSet(clusterId, daemonSet) {
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
+              url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets',
               method: 'POST',
               data: daemonSet,
               headers: {
@@ -352,7 +352,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           key: 'deleteDaemonSet',
           value: function deleteDaemonSet(clusterId) {
             return this.backendSrv.request({
-              url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/snap',
+              url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets/node-exporter',
               method: 'DELETE'
             });
           }
@@ -421,6 +421,29 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             });
           }
         }, {
+          key: 'createService',
+          value: function createService(clusterId, service) {
+            return this.backendSrv.request({
+              url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services',
+              method: 'POST',
+              data: service,
+              headers: {
+                'Content-Type': "application/json"
+              }
+            });
+          }
+        }, {
+          key: 'deleteService',
+          value: function deleteService(clusterId) {
+            return this.backendSrv.request({
+              url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services/node-exporter',
+              method: 'DELETE',
+              headers: {
+                'Content-Type': "application/json"
+              }
+            });
+          }
+        }, {
           key: 'updateSnapSettings',
           value: function updateSnapSettings(cm, kubestateCm) {
             var _this9 = this;
@@ -460,6 +483,10 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             }).then(function () {
               return _this10.createDeployment(self.cluster.id, kubestateDeployment);
             }).then(function () {
+              return _this10.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
+            }).then(function () {
+              return _this10.createService(self.cluster.id, nodeExporterService);
+            }).then(function () {
               return _this10.createDeployment(self.cluster.id, prometheusDeployment);
             }).catch(function (err) {
               _this10.alertSrv.set("Error", err, 'error');
@@ -476,12 +503,12 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var self = this;
             return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap').then(function () {
               return _this11.deleteDeployment(self.cluster.id, 'kube-state-metrics');
-            }).catch(function (err) {
-              _this11.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this11.deleteDeployment(self.cluster.id, 'prometheus-deployment');
-            }).catch(function (err) {
-              _this11.alertSrv.set("Error", err, 'error');
+            }).then(function () {
+              return _this11.deleteDaemonSet(self.cluster.id);
+            }).then(function () {
+              return _this11.deleteService(self.cluster.id);
             }).then(function () {
               return _this11.deletePods();
             }).catch(function (err) {
@@ -501,7 +528,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
                 "name": "prometheus-configmap"
               },
               "data": {
-                "prometheus.yml": '\n        scrape_configs:\n          - job_name: \'kubernetes-cadvisor\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-nodes\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-pods\'\n            kubernetes_sd_configs:\n            - role: pod\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_pod_label_(.+)\n            - source_labels: [__meta_kubernetes_namespace]\n              action: replace\n              target_label: kubernetes_namespace\n            - source_labels: [__meta_kubernetes_pod_name]\n              action: replace\n              target_label: kubernetes_pod_name\n            - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]\n              regex: .*true.*\n              action: keep\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name
+                "prometheus.yml": '\n        scrape_configs:\n          - job_name: \'kubernetes-kubelet\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-cadvisor\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-nodes\'\n            scheme: https\n            tls_config:\n              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n              insecure_skip_verify: true\n            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token\n            kubernetes_sd_configs:\n            - role: node\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_node_label_(.+)\n            - target_label: __address__\n              replacement: kubernetes.default.svc:443\n            - source_labels: [__meta_kubernetes_node_name]\n              regex: (.+)\n              target_label: __metrics_path__\n              replacement: /api/v1/nodes/${1}/proxy/metrics\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name + '\n          - job_name: \'kubernetes-pods\'\n            kubernetes_sd_configs:\n            - role: pod\n            relabel_configs:\n            - action: labelmap\n              regex: __meta_kubernetes_pod_label_(.+)\n            - source_labels: [__meta_kubernetes_namespace]\n              action: replace\n              target_label: kubernetes_namespace\n            - source_labels: [__meta_kubernetes_pod_name]\n              action: replace\n              target_label: kubernetes_pod_name\n            - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]\n              regex: .*true.*\n              action: keep\n            - source_labels: [__address__]\n              regex: .*\n              target_label: kubernetes_cluster\n              replacement: ' + this.cluster.name
               }
             };
           }
@@ -785,6 +812,89 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               "hostNetwork": true,
               "hostPID": true
             }
+          }
+        }
+      };
+      NodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
+      nodeExporterDaemonSet = {
+        "kind": "DaemonSet",
+        "apiVersion": "apps/v1beta2",
+        "metadata": {
+          "name": "node-exporter",
+          "namespace": "kube-system"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "daemon": "node-exporter"
+            }
+          },
+          "template": {
+            "metadata": {
+              "name": "node-exporter",
+              "labels": {
+                "daemon": "node-exporter"
+              }
+            },
+            "spec": {
+              "volumes": [{
+                "name": "proc",
+                "hostPath": {
+                  "path": "/proc"
+                }
+              }, {
+                "name": "sys",
+                "hostPath": {
+                  "path": "/sys"
+                }
+              }],
+              "containers": [{
+                "name": "node-exporter",
+                "image": NodeExporterImage,
+                "args": ["--path.procfs=/proc_host", "--path.sysfs=/host_sys"],
+                "ports": [{
+                  "name": "node-exporter",
+                  "hostPort": 9100,
+                  "containerPort": 9100
+                }],
+                "volumeMounts": [{
+                  "name": "sys",
+                  "readOnly": true,
+                  "mountPath": "/host_sys"
+                }, {
+                  "name": "proc",
+                  "readOnly": true,
+                  "mountPath": "/proc_host"
+                }],
+                "imagePullPolicy": "IfNotPresent"
+              }],
+              "restartPolicy": "Always",
+              "hostNetwork": true,
+              "hostPID": true
+            }
+          }
+        }
+      };
+      nodeExporterService = {
+        "apiVersion": "v1",
+        "kind": "Service",
+        "metadata": {
+          "labels": {
+            "app": "node-exporter",
+            "grafanak8sapp": "true"
+          },
+          "name": "node-exporter"
+        },
+        "spec": {
+          "type": "ClusterIP",
+          "clusterIP": "None",
+          "ports": [{
+            "name": "http-metrics",
+            "port": 9100,
+            "protocol": "TCP"
+          }],
+          "selector": {
+            "daemon": "node-exporter"
           }
         }
       };

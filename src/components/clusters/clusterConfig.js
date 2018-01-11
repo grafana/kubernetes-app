@@ -293,7 +293,7 @@ export class ClusterConfigCtrl {
 
   createDaemonSet(clusterId, daemonSet) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets',
       method: 'POST',
       data: daemonSet,
       headers: {
@@ -304,7 +304,7 @@ export class ClusterConfigCtrl {
 
   deleteDaemonSet(clusterId) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/snap',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets/node-exporter',
       method: 'DELETE',
     });
   }
@@ -367,6 +367,27 @@ export class ClusterConfigCtrl {
     });
   }
 
+  createService(clusterId, service) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services',
+      method: 'POST',
+      data: service,
+      headers: {
+        'Content-Type': "application/json"
+      }
+    });
+  }
+
+  deleteService(clusterId) {
+    return this.backendSrv.request({
+      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services/node-exporter',
+      method: 'DELETE',
+      headers: {
+        'Content-Type': "application/json"
+      }
+    });
+  }
+
   updateSnapSettings(cm, kubestateCm) {
     var self = this;
     return this.deleteConfigMap(self.cluster.id, 'snap-tasks')
@@ -403,6 +424,12 @@ export class ClusterConfigCtrl {
         return this.createDeployment(self.cluster.id, kubestateDeployment);
       })
       .then(() => {
+        return this.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
+      })
+      .then(() => {
+        return this.createService(self.cluster.id, nodeExporterService);
+      })
+      .then(() => {
         return this.createDeployment(self.cluster.id, prometheusDeployment);
       })
       .catch(err => {
@@ -419,14 +446,14 @@ export class ClusterConfigCtrl {
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'kube-state-metrics');
       })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'prometheus-deployment');
       })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+      .then(() => {
+        return this.deleteDaemonSet(self.cluster.id);
+      })
+      .then(() => {
+        return this.deleteService(self.cluster.id);
       })
       .then(() => {
         return this.deletePods();
@@ -450,6 +477,27 @@ export class ClusterConfigCtrl {
       "data": {
         "prometheus.yml": `
         scrape_configs:
+          - job_name: \'kubernetes-kubelet\'
+            scheme: https
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              insecure_skip_verify: true
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            kubernetes_sd_configs:
+            - role: node
+            relabel_configs:
+            - action: labelmap
+              regex: __meta_kubernetes_node_label_(.+)
+            - target_label: __address__
+              replacement: kubernetes.default.svc:443
+            - source_labels: [__meta_kubernetes_node_name]
+              regex: (.+)
+              target_label: __metrics_path__
+              replacement: /api/v1/nodes/\${1}/proxy/metrics
+            - source_labels: [__address__]
+              regex: .*
+              target_label: kubernetes_cluster
+              replacement: ${this.cluster.name}
           - job_name: \'kubernetes-cadvisor\'
             scheme: https
             tls_config:
@@ -821,6 +869,100 @@ var daemonSet = {
         "hostNetwork": true,
         "hostPID": true
       }
+    }
+  }
+};
+
+const NodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
+
+const nodeExporterDaemonSet = {
+  "kind": "DaemonSet",
+  "apiVersion": "apps/v1beta2",
+  "metadata": {
+    "name": "node-exporter",
+    "namespace": "kube-system"
+  },
+  "spec": {
+    "selector": {
+      "matchLabels": {
+        "daemon": "node-exporter",
+      }
+    },
+    "template": {
+      "metadata": {
+        "name": "node-exporter",
+        "labels": {
+          "daemon": "node-exporter",
+        }
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "proc",
+            "hostPath": {
+              "path": "/proc"
+            }
+          },
+          {
+            "name": "sys",
+            "hostPath": {
+              "path": "/sys"
+            }
+          }
+        ],
+        "containers": [{
+          "name": "node-exporter",
+          "image": NodeExporterImage,
+          "args": [
+            "--path.procfs=/proc_host",
+            "--path.sysfs=/host_sys"
+          ],
+          "ports": [{
+            "name": "node-exporter",
+            "hostPort": 9100,
+            "containerPort": 9100
+          }],
+          "volumeMounts": [{
+              "name": "sys",
+              "readOnly": true,
+              "mountPath": "/host_sys"
+            },
+            {
+              "name": "proc",
+              "readOnly": true,
+              "mountPath": "/proc_host"
+            }
+          ],
+          "imagePullPolicy": "IfNotPresent"
+        }],
+        "restartPolicy": "Always",
+        "hostNetwork": true,
+        "hostPID": true
+      }
+    }
+  }
+};
+
+const nodeExporterService = {
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "labels": {
+      "app": "node-exporter",
+      "grafanak8sapp": "true"
+    },
+    "name": "node-exporter"
+  },
+  "spec": {
+    "type": "ClusterIP",
+    "clusterIP": "None",
+    "ports": [{
+      "name": "http-metrics",
+      "port": 9100,
+      "protocol": "TCP"
+    }],
+    "selector": {
+      "daemon": "node-exporter"
     }
   }
 };
