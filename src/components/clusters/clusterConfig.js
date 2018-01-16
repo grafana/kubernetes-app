@@ -99,6 +99,11 @@ export class ClusterConfigCtrl {
       });
   }
 
+  savePrometheusConfigToFile() {
+    let cm = this.generatePrometheusConfigMap();
+    this.saveToFile('prometheus-grafana-k8s.yaml', cm);
+  }
+
   saveConfigMapToFile() {
     const cm = this.generateConfigMap();
     this.saveToFile('snap-configmap', cm);
@@ -420,14 +425,26 @@ export class ClusterConfigCtrl {
       .then(() => {
         return this.createConfigMap(self.cluster.id, this.generatePrometheusConfigMap());
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.createDeployment(self.cluster.id, kubestateDeployment);
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         return this.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.createService(self.cluster.id, nodeExporterService);
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         return this.createDeployment(self.cluster.id, prometheusDeployment);
@@ -446,14 +463,26 @@ export class ClusterConfigCtrl {
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'kube-state-metrics');
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'prometheus-deployment');
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         return this.deleteDaemonSet(self.cluster.id);
       })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
+      })
       .then(() => {
         return this.deleteService(self.cluster.id);
+      })
+      .catch(err => {
+        this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
         return this.deletePods();
@@ -558,7 +587,10 @@ export class ClusterConfigCtrl {
             - source_labels: [__address__]
               regex: .*
               target_label: kubernetes_cluster
-              replacement: ${this.cluster.name}`
+              replacement: ${this.cluster.name}
+            - source_labels: [__meta_kubernetes_pod_node_name]
+              action: replace
+              target_label: instance`
       }
     };
   }
@@ -886,6 +918,7 @@ const nodeExporterDaemonSet = {
     "selector": {
       "matchLabels": {
         "daemon": "node-exporter",
+        "grafanak8sapp": "true"
       }
     },
     "template": {
@@ -893,6 +926,7 @@ const nodeExporterDaemonSet = {
         "name": "node-exporter",
         "labels": {
           "daemon": "node-exporter",
+          "grafanak8sapp": "true"
         }
       },
       "spec": {
