@@ -68,11 +68,11 @@ export class ClusterConfigCtrl {
   getPrometheusDatasources() {
     var self = this;
     return this.backendSrv.get('/api/datasources')
-      .then((result) => {
-        self.datasources = _.filter(result, {
-          "type": "prometheus"
-        });
+    .then((result) => {
+      self.datasources = _.filter(result, {
+        "type": "prometheus"
       });
+    });
   }
 
   getDeployments() {
@@ -100,34 +100,43 @@ export class ClusterConfigCtrl {
   }
 
   savePrometheusConfigToFile() {
-    let cm = this.generatePrometheusConfigMap();
-    this.saveToFile('prometheus-grafana-k8s.yaml', cm);
-  }
-
-  saveConfigMapToFile() {
-    const cm = this.generateConfigMap();
-    this.saveToFile('snap-configmap', cm);
-  }
-
-  saveKubestateConfigMapToFile() {
-    const cm = this.generateKubestateConfigMap();
-    this.saveToFile('snap-kubestate-configmap', cm);
-  }
-
-  saveDaemonSetToFile() {
-    this.saveToFile('snap-daemonset', daemonSet);
-  }
-
-  saveDeploymentToFile() {
-    this.saveToFile('snap-kubestate', kubestate);
-  }
-
-  saveToFile(filename, json) {
-    const blob = new Blob([angular.toJson(json, true)], {
-      type: "application/json;charset=utf-8"
+    let blob = new Blob([this.generatePrometheusConfig()], {
+      type: "application/yaml"
     });
-    const wnd = window;
-    wnd.saveAs(blob, filename + '.json');
+    this.saveToFile('prometheus.yml', blob);
+  }
+
+  savePrometheusConfigMapToFile() {
+    let blob = new Blob([angular.toJson(this.generatePrometheusConfigMap(), true)], {
+      type: "application/json"
+    });
+    this.saveToFile('grafanak8s-prometheus-cm.yml', blob);
+  }
+
+  saveNodeExporterDSToFile() {
+    let blob = new Blob([angular.toJson(nodeExporterDaemonSet, true)], {
+      type: "application/json"
+    });
+    this.saveToFile('grafanak8s-node-exporter-ds.json', blob);
+  }
+
+  saveKubeStateDeployToFile() {
+    let blob = new Blob([angular.toJson(kubestateDeployment, true)], {
+      type: "application/json"
+    });
+    this.saveToFile('grafanak8s-kubestate-deploy.json', blob);
+  }
+
+  saveToFile(filename, blob) {
+    let blobUrl = window.URL.createObjectURL(blob);
+
+    let element = document.createElement('a');
+    element.setAttribute('href', blobUrl);
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   }
 
   deploy() {
@@ -441,12 +450,6 @@ export class ClusterConfigCtrl {
         this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
-        return this.createService(self.cluster.id, nodeExporterService);
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
         return this.createDeployment(self.cluster.id, prometheusDeployment);
       })
       .catch(err => {
@@ -479,12 +482,6 @@ export class ClusterConfigCtrl {
         this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
-        return this.deleteService(self.cluster.id);
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
         return this.deletePods();
       })
       .catch(err => {
@@ -496,6 +493,95 @@ export class ClusterConfigCtrl {
       });
   }
 
+  generatePrometheusConfig() {
+    return `scrape_configs:
+- job_name: \'kubernetes-kubelet\'
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubernetes_sd_configs:
+  - role: node
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_node_label_(.+)
+  - target_label: __address__
+    replacement: kubernetes.default.svc:443
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/\${1}/proxy/metrics
+  - source_labels: [__address__]
+    regex: .*
+    target_label: kubernetes_cluster
+    replacement: ${this.cluster.name}
+- job_name: \'kubernetes-cadvisor\'
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubernetes_sd_configs:
+  - role: node
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_node_label_(.+)
+  - target_label: __address__
+    replacement: kubernetes.default.svc:443
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/\${1}/proxy/metrics/cadvisor
+  - source_labels: [__address__]
+    regex: .*
+    target_label: kubernetes_cluster
+    replacement: ${this.cluster.name}
+- job_name: \'kubernetes-nodes\'
+  scheme: https
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  kubernetes_sd_configs:
+  - role: node
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_node_label_(.+)
+  - target_label: __address__
+    replacement: kubernetes.default.svc:443
+  - source_labels: [__meta_kubernetes_node_name]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/\${1}/proxy/metrics
+  - source_labels: [__address__]
+    regex: .*
+    target_label: kubernetes_cluster
+    replacement: ${this.cluster.name}
+- job_name: \'kubernetes-pods\'
+  kubernetes_sd_configs:
+  - role: pod
+  relabel_configs:
+  - action: labelmap
+    regex: __meta_kubernetes_pod_label_(.+)
+  - source_labels: [__meta_kubernetes_namespace]
+    action: replace
+    target_label: kubernetes_namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    action: replace
+    target_label: kubernetes_pod_name
+  - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]
+    regex: .*true.*
+    action: keep
+  - source_labels: [__address__]
+    regex: .*
+    target_label: kubernetes_cluster
+    replacement: ${this.cluster.name}
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    action: replace
+    target_label: instance`;
+  }
+
   generatePrometheusConfigMap() {
     return {
       "apiVersion": "v1",
@@ -504,93 +590,7 @@ export class ClusterConfigCtrl {
         "name": "prometheus-configmap"
       },
       "data": {
-        "prometheus.yml": `
-        scrape_configs:
-          - job_name: \'kubernetes-kubelet\'
-            scheme: https
-            tls_config:
-              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-              insecure_skip_verify: true
-            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-            kubernetes_sd_configs:
-            - role: node
-            relabel_configs:
-            - action: labelmap
-              regex: __meta_kubernetes_node_label_(.+)
-            - target_label: __address__
-              replacement: kubernetes.default.svc:443
-            - source_labels: [__meta_kubernetes_node_name]
-              regex: (.+)
-              target_label: __metrics_path__
-              replacement: /api/v1/nodes/\${1}/proxy/metrics
-            - source_labels: [__address__]
-              regex: .*
-              target_label: kubernetes_cluster
-              replacement: ${this.cluster.name}
-          - job_name: \'kubernetes-cadvisor\'
-            scheme: https
-            tls_config:
-              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-              insecure_skip_verify: true
-            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-            kubernetes_sd_configs:
-            - role: node
-            relabel_configs:
-            - action: labelmap
-              regex: __meta_kubernetes_node_label_(.+)
-            - target_label: __address__
-              replacement: kubernetes.default.svc:443
-            - source_labels: [__meta_kubernetes_node_name]
-              regex: (.+)
-              target_label: __metrics_path__
-              replacement: /api/v1/nodes/\${1}/proxy/metrics/cadvisor
-            - source_labels: [__address__]
-              regex: .*
-              target_label: kubernetes_cluster
-              replacement: ${this.cluster.name}
-          - job_name: \'kubernetes-nodes\'
-            scheme: https
-            tls_config:
-              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-              insecure_skip_verify: true
-            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-            kubernetes_sd_configs:
-            - role: node
-            relabel_configs:
-            - action: labelmap
-              regex: __meta_kubernetes_node_label_(.+)
-            - target_label: __address__
-              replacement: kubernetes.default.svc:443
-            - source_labels: [__meta_kubernetes_node_name]
-              regex: (.+)
-              target_label: __metrics_path__
-              replacement: /api/v1/nodes/\${1}/proxy/metrics
-            - source_labels: [__address__]
-              regex: .*
-              target_label: kubernetes_cluster
-              replacement: ${this.cluster.name}
-          - job_name: \'kubernetes-pods\'
-            kubernetes_sd_configs:
-            - role: pod
-            relabel_configs:
-            - action: labelmap
-              regex: __meta_kubernetes_pod_label_(.+)
-            - source_labels: [__meta_kubernetes_namespace]
-              action: replace
-              target_label: kubernetes_namespace
-            - source_labels: [__meta_kubernetes_pod_name]
-              action: replace
-              target_label: kubernetes_pod_name
-            - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]
-              regex: .*true.*
-              action: keep
-            - source_labels: [__address__]
-              regex: .*
-              target_label: kubernetes_cluster
-              replacement: ${this.cluster.name}
-            - source_labels: [__meta_kubernetes_pod_node_name]
-              action: replace
-              target_label: instance`
+        "prometheus.yml": this.generatePrometheusConfig
       }
     };
   }
@@ -973,30 +973,6 @@ const nodeExporterDaemonSet = {
         "hostNetwork": true,
         "hostPID": true
       }
-    }
-  }
-};
-
-const nodeExporterService = {
-  "apiVersion": "v1",
-  "kind": "Service",
-  "metadata": {
-    "labels": {
-      "app": "node-exporter",
-      "grafanak8sapp": "true"
-    },
-    "name": "node-exporter"
-  },
-  "spec": {
-    "type": "ClusterIP",
-    "clusterIP": "None",
-    "ports": [{
-      "name": "http-metrics",
-      "port": 9100,
-      "protocol": "TCP"
-    }],
-    "selector": {
-      "daemon": "node-exporter"
     }
   }
 };

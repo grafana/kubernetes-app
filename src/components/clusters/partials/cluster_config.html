@@ -30,7 +30,7 @@
                 </figure>
                 <div class="card-item-details">
                   <div class="card-item-sub-name">
-                    Grafana Labs is now offering stealth access to our 100% Graphite compatible hosted metrics to select customers.
+                    Grafana Labs is now offering stealth access to our 100% Prometheus compatible hosted metrics to select customers.
                     <span class="pluginlist-message--enable">Learn More</span>
                   </div>
                 </div>
@@ -48,34 +48,31 @@
       		</div>
       	</div>
       </div>
-      <h4 class="page-heading">Graphite Write</h4>
-      <div class="gf-form-group">
-      	<div class="gf-form-inline">
-      		<div class="gf-form">
-      			<span class="gf-form-label width-8">Carbon Host</span>
-    				<input class="gf-form-input max-width-21" type="text" ng-model="ctrl.cluster.jsonData.server" placeholder="Carbon host" required="" />
-            <info-popover mode="right-absolute">
-              Specify a url to the Carbon Host. Metrics from Kubernetes are sent to the Carbon host and saved to Graphite. This url must be available from inside the Kubernetes cluster.
-            </info-popover>
-      		</div>
-      		<div class="gf-form">
-      			<span class="gf-form-label width-5">Port</span>
-      				<input class="gf-form-input max-width-6" type="number" ng-model="ctrl.cluster.jsonData.port" placeholder="2003" required="" />
-      		</div>
-      	</div>
-      </div>
     </div>
     <div class="col-lg-4 offset-lg-1">
     </div>
   </div>
 </form>
-<p>The Deploy button will deploy the <a class="pointer highlight-word" href="https://hub.docker.com/r/raintank/snap_k8s/">Snap Kubernetes Docker image</a> with two metrics collectors that provides summary performance and availability metrics of a Kubernetes Node and its containers. (The manual deployment instructions are at the bottom of the page.)</p>
+<p>The Deploy button will deploy the following: (1) A promtheus configmap which contains the prometheus jobs that collect metrics used by the dashboards in the kubernetes app (2) a <a class="pointer highlight-word" href="https://github.com/prometheus/node_exporter">Node Exporter</a> deployment, and (3) a <a class="pointer highlight-word" href="https://github.com/kubernetes/kube-state-metrics">Kube-State Metrics</a> deployment</p>
 <div class="gf-form-group" ng-show="ctrl.isOrgEditor">
   	<button type="submit" class="btn btn-success" ng-click="ctrl.save()" ng-enabled="clusterform.$valid">Save</button>
   	<button type="submit" class="btn btn-success" ng-click="ctrl.deploy()" ng-enabled="clusterform.$valid">{{ctrl.prometheusDeployed ? 'Update and Deploy' : 'Deploy'}}</button>
   	<button type="submit" class="btn btn-secondary" ng-click="ctrl.undeploy()" ng-show="ctrl.prometheusDeployed" ng-enabled="clusterform.$valid">Undeploy</button>
   	<a class="btn btn-link" ng-click="ctrl.cancel();">Cancel</a>
 </div>
+
+
+<span class="gf-form-label width-16">
+    <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click here to show required prometheus job'" data-placement="bottom">
+      <i class="fa fa-info-circle"></i> Configuring Prometheus
+    </a>
+  </span>
+  
+  <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
+    <h5>Example Prometheus Configuration File</h5>
+    <p>The below file is meant to be run on a Prometheus node inside a kubernetes cluster. If the required exporters are present in the cluster the jobs should gather the metrics required for the dashboards present in this plugin. When altering this configuration please be sure to maintain the same label names as they are required to for this appplication to perform correctly.</p>
+    <code ng-bind="ctrl.generatePrometheusConfig()" style="display:block;white-space:pre-wrap"></code>
+  </div>
 
 <span class="gf-form-label width-16">
   <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click to show instructions and download links'" data-placement="bottom">
@@ -86,24 +83,8 @@
 <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
   <h5>Manual Deploy</h5>
   <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
-  <p>
-    <button type="button" class="btn btn-success" ng-click="ctrl.savePrometheusConfigToFile()">Download Daemonset ConfigMap</button>
-    <button type="button" class="btn btn-success" ng-click="ctrl.saveKubestateConfigMapToFile()">Download Kubestate ConfigMap</button>
-  </p>
-  <button type="button" class="btn btn-success" ng-click="ctrl.saveDaemonSetToFile()">Download Daemonset</button>
-  <button type="button" class="btn btn-success" ng-click="ctrl.saveDeploymentToFile()">Download Kubestate Deployment</button>
-
-
+  <button type="button" class="btn btn-success" ng-click="ctrl.savePrometheusConfigMapToFile()">Download Prometheus ConfigMap</button>
   <p class="small">(The ConfigMap is generated from the settings so remember to save your settings before downloading.)</p>
-  <p>To deploy the Config Map and Daemon Set, execute the following:</p>
-  <p><code>kubectl create -f snap-configmap.json</code></p>
-  <p><code>kubectl create -f snap-kubestate-configmap.json</code></p>
-  <p><code>kubectl create -f snap-daemonset.json</code></p>
-  <p><code>kubectl create -f snap-kubestate.json</code></p>
-  <br />
-  <h5>Removing the Daemon Set and Config Map</h5>
-  <p><code>kubectl delete daemonsets -n kube-system snap</code></p>
-  <p><code>kubectl delete deployments -n kube-system snap-kubestate-deployment</code></p>
-  <p><code>kubectl delete configmaps -n kube-system snap-tasks</code></p>
-  <p><code>kubectl delete configmaps -n kube-system snap-tasks-kubestate</code></p>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveKubeStateDeployToFile()">Download KubeState Deploy</button>
+  <button type="button" class="btn btn-success" ng-click="ctrl.saveNodeExporterDSToFile()">Download Node Exporter Daemon Set</button>
 </div>
