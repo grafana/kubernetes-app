@@ -130,9 +130,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
-          "refId": "A",
-          "target": "groupByNode(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.mem.usage, 'POD'), 8, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -223,9 +221,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
-          "refId": "A",
-          "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.cpu.total.usage, 'POD')), 8, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -316,9 +312,7 @@
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
-          "refId": "A",
-          "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.iface.*.in_bytes), 7, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -408,9 +402,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
-          "refId": "A",
-          "target": "groupByNode(perSecond(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.iface.*.out_bytes), 7, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -501,9 +493,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{pod_name}}",
-          "refId": "A",
-          "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.diskio.*.reads, 'POD')), 8, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -591,9 +581,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
-          "refId": "A",
-          "target": "groupByNode(perSecond(exclude(snap.$cluster.$node.grafanalabs.cadvisor.container.$namespace.$pod.*.diskio.*.writes, 'POD')), 8, 'sum')",
-          "textEditor": false
+          "refId": "A"
         }
       ],
       "thresholds": [],

@@ -380,7 +380,6 @@
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A",
-          "target": "alias(averageSeries(snap.$cluster.$node.intel.procfs.load.min1_rel), 'short term')",
           "textEditor": false
         }
       ],
@@ -442,8 +441,7 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ nodename }} free",
-          "refId": "B",
-          "target": "aliasSub(groupByNode(snap.$cluster.$node.intel.procfs.filesystem.rootfs.space_used, 2, 'maxSeries'), '(.*)', '\\1 Usage')"
+          "refId": "B"
         },
         {
           "expr": "(sum(node_filesystem_size{nodename=~\"$node\"}) by (nodename) - sum(node_filesystem_free) by (nodename))",
@@ -536,18 +534,14 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Read",
-          "refId": "A",
-          "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.*.rkB_per_sec), 'Read Bps')",
-          "textEditor": false
+          "refId": "A"
         },
         {
           "expr": "sum(rate(node_disk_bytes_written{nodename=~\"$node\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Write",
-          "refId": "B",
-          "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.*.wkB_per_sec), 'Write Bps')",
-          "textEditor": false
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -630,18 +624,14 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Reads",
-          "refId": "A",
-          "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.ALL.r_per_sec), 'rIOPS')",
-          "textEditor": false
+          "refId": "A"
         },
         {
           "expr": "sum(rate(node_disk_writes_completed{nodename=~\"$node\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Writes",
-          "refId": "B",
-          "target": "alias(sumSeries(snap.$cluster.$node.intel.iostat.device.ALL.w_per_sec), 'wIOPS')",
-          "textEditor": false
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -919,18 +909,14 @@
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "receive",
-          "refId": "A",
-          "target": "alias(sumSeries(perSecond(snap.$cluster.$node.intel.procfs.iface.{eth*,en*}.packets_recv)), 'in')",
-          "textEditor": false
+          "refId": "A"
         },
         {
           "expr": "sum(rate(node_network_transmit_packets{nodename=~\"$node\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "transmit",
-          "refId": "B",
-          "target": "alias(sumSeries(perSecond(snap.$cluster.$node.intel.procfs.iface.{eth*,en*}.packets_sent)), 'out')",
-          "textEditor": false
+          "refId": "B"
         }
       ],
       "thresholds": [],

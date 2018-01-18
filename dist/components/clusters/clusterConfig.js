@@ -191,7 +191,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           value: function deploy() {
             var _this2 = this;
 
-            var question = !this.prometheusDeployed ? 'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. ' + 'Are you sure you want to deploy?' : 'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
+            var question = !this.prometheusDeployed ? 'This action will deploy Prometheus exporters to your Kubernetes cluster.' + 'Are you sure you want to deploy?' : 'This action will update the Prometheus exporters on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
             appEvents.emit('confirm-modal', {
               title: 'Deploy to Kubernetes Cluster',
               text: question,
@@ -366,22 +366,26 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             return this.checkApiVersion(self.cluster.id).then(function () {
               return _this7.createConfigMap(self.cluster.id, _this7.generatePrometheusConfigMap());
             }).catch(function (err) {
+              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDeployment(self.cluster.id, kubestateDeployment);
             }).catch(function (err) {
+              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
             }).catch(function (err) {
+              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDeployment(self.cluster.id, prometheusDeployment);
             }).catch(function (err) {
+              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               _this7.prometheusDeployed = true;
-              _this7.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
+              _this7.alertSrv.set("Deployed", "Prometheus and exporters have been deployed to " + self.cluster.name, 'success', 5000);
             });
           }
         }, {
@@ -393,22 +397,26 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap').then(function () {
               return _this8.deleteDeployment(self.cluster.id, 'kube-state-metrics');
             }).catch(function (err) {
+              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deleteDeployment(self.cluster.id, 'prometheus-deployment');
             }).catch(function (err) {
+              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deleteDaemonSet(self.cluster.id);
             }).catch(function (err) {
+              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deletePods();
             }).catch(function (err) {
+              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               _this8.prometheusDeployed = false;
-              _this8.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
+              _this8.alertSrv.set("Grafana K8s removed", "Prometheus and exporters removed from " + self.cluster.name, 'success', 5000);
             });
           }
         }, {

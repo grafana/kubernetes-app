@@ -141,9 +141,9 @@ export class ClusterConfigCtrl {
 
   deploy() {
     var question = !this.prometheusDeployed ?
-      'This action will deploy a DaemonSet to your Kubernetes cluster. It uses Intel Snap to collect health metrics. ' +
+      'This action will deploy Prometheus exporters to your Kubernetes cluster.' +
       'Are you sure you want to deploy?' :
-      'This action will update the Config Map for the Snap DaemonSet and recreate the snapd pod on your Kubernetes cluster. ' +
+      'This action will update the Prometheus exporters on your Kubernetes cluster. ' +
       'Are you sure you want to deploy?';
     appEvents.emit('confirm-modal', {
       title: 'Deploy to Kubernetes Cluster',
@@ -324,7 +324,7 @@ export class ClusterConfigCtrl {
         this.alertSrv.set("Error", err, 'error');
       }).then(() => {
         this.prometheusDeployed = true;
-        this.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
+        this.alertSrv.set("Deployed", "Prometheus and exporters have been deployed to " + self.cluster.name, 'success', 5000);
       });
   }
 
@@ -357,7 +357,7 @@ export class ClusterConfigCtrl {
       })
       .then(() => {
         this.prometheusDeployed = false;
-        this.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
+        this.alertSrv.set("Grafana K8s removed", "Prometheus and exporters removed from " + self.cluster.name, 'success', 5000);
       });
   }
 
