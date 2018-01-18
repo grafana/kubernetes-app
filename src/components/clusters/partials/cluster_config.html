@@ -63,12 +63,12 @@
 
 
 <span class="gf-form-label width-16">
-    <a ng-click="ctrl.toggleHelp()" bs-tooltip="'click here to show required prometheus job'" data-placement="bottom">
+    <a ng-click="ctrl.togglePrometheusExample()" bs-tooltip="'click here to show required prometheus job'" data-placement="bottom">
       <i class="fa fa-info-circle"></i> Configuring Prometheus
     </a>
   </span>
   
-  <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
+  <div class="grafana-info-box span10" ng-if="ctrl.showPrometheusExample">
     <h5>Example Prometheus Configuration File</h5>
     <p>The below file is meant to be run on a Prometheus node inside a kubernetes cluster. If the required exporters are present in the cluster the jobs should gather the metrics required for the dashboards present in this plugin. When altering this configuration please be sure to maintain the same label names as they are required to for this appplication to perform correctly.</p>
     <code ng-bind="ctrl.generatePrometheusConfig()" style="display:block;white-space:pre-wrap"></code>

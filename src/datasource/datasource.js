@@ -61,7 +61,7 @@ export class K8sDatasource {
   }
 
   getDaemonSets(namespace) {
-    return this._get('/apis/apps/v1beta2/beta' + addNamespace(namespace) + 'daemonsets')
+    return this._get('/apis/extensions/v1beta1/beta' + addNamespace(namespace) + 'daemonsets')
       .then(result => {
         return result.items;
       });

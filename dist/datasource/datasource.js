@@ -112,7 +112,7 @@ System.register(['lodash'], function (_export, _context) {
         }, {
           key: 'getDaemonSets',
           value: function getDaemonSets(namespace) {
-            return this._get('/apis/apps/v1beta2/beta' + addNamespace(namespace) + 'daemonsets').then(function (result) {
+            return this._get('/apis/extensions/v1beta1/beta' + addNamespace(namespace) + 'daemonsets').then(function (result) {
               return result.items;
             });
           }

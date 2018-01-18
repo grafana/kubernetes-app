@@ -354,7 +354,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum (node_filesystem_size{instance=~\"$node\"}) - sum (node_filesystem_free{instance=~\"$node\"})) / sum (node_filesystem_size{instance=~\"$node\"})",
+          "expr": "(sum (node_filesystem_size{nodename=~\"$node\"}) - sum (node_filesystem_free{nodename=~\"$node\"})) / sum (node_filesystem_size{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -693,14 +693,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_size{instance=~\"$node\"}) - sum(node_filesystem_free{instance=~\"$node\"})",
+          "expr": "sum(node_filesystem_size{nodename=~\"$node\"}) - sum(node_filesystem_free{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "usage",
           "refId": "A"
         },
         {
-          "expr": "sum(node_filesystem_size{instance=~\"$node\"})",
+          "expr": "sum(node_filesystem_size{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "limit",
@@ -2145,7 +2145,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kube_pod_container_resource_requests_cpu_cores{namespace=~\"$namespace\", node=~\"$node\")",
+          "expr": "sum(kube_pod_container_resource_requests_cpu_cores{namespace=~\"$namespace\", node=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"

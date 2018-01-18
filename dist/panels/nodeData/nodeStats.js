@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
+System.register(['app/core/utils/kbn', 'lodash', 'moment'], function (_export, _context) {
   "use strict";
 
-  var kbn, _, _createClass, NodeStatsDatasource;
+  var kbn, _, moment, _createClass, NodeStatsDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -20,6 +20,8 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
       kbn = _appCoreUtilsKbn.default;
     }, function (_lodash) {
       _ = _lodash.default;
+    }, function (_moment) {
+      moment = _moment.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -49,56 +51,55 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
         }
 
         _createClass(NodeStatsDatasource, [{
-          key: 'issueGraphiteQuery',
-          value: function issueGraphiteQuery(graphiteDs, query) {
-            var _this = this;
-
-            return this.datasourceSrv.get(graphiteDs).then(function (datasource) {
+          key: 'issuePrometheusQuery',
+          value: function issuePrometheusQuery(prometheusDS, query) {
+            return this.datasourceSrv.get(prometheusDS).then(function (datasource) {
               var metricsQuery = {
-                range: _this.timeSrv.timeRange(),
-                rangeRaw: _this.timeSrv.timeRange().raw,
-                interval: _this.interval,
-                intervalMs: _this.intervalMs,
-                targets: [{
-                  refId: 'A',
-                  target: query
-                }],
-                format: 'json',
-                maxDataPoints: 1000
+                range: { from: moment().subtract(5, 'minute'), to: moment() },
+                targets: [{ expr: query.expr, format: 'time_series' }],
+                legendFormat: query.legend,
+                interval: '60s'
               };
-
               return datasource.query(metricsQuery);
             }).then(function (result) {
               if (result && result.data) {
                 return result.data;
               }
-
               return {};
             });
           }
         }, {
           key: 'getNodeStats',
-          value: function getNodeStats(cluster_id, graphiteDs) {
-            var _this2 = this;
+          value: function getNodeStats(cluster_id, prometheusDS) {
+            var _this = this;
 
             var podsPerNode = void 0,
                 cpuPerNode = void 0,
                 memoryPerNode = void 0;
 
-            var podQuery = 'aliasByNode(keepLastValue(groupByNode(snap.' + cluster_id + ".grafanalabs.kubestate.pod.*.*.*.status.phase.Running, 6, 'sum'), 100), 0)";
-            var cpuQuery = 'aliasByNode(keepLastValue(groupByNode(snap.' + cluster_id + ".grafanalabs.kubestate.container.*.*.*.*.requested.cpu.cores, 6, 'sum'), 100), 0)";
-            var memoryQuery = 'aliasByNode(keepLastValue(groupByNode(snap.' + cluster_id + ".grafanalabs.kubestate.container.*.*.*.*.requested.memory.bytes, 6, 'sum'), 100), 0)";
+            var podQuery = {
+              expr: 'sum(label_join(kubelet_running_pod_count, "node",  "", "kubernetes_io_hostname")) by (node)',
+              legend: "{{node}}"
+            };
+            var cpuQuery = {
+              expr: 'sum(kube_pod_container_resource_requests_cpu_cores) by (node)',
+              legend: "{{node}}"
+            };
+            var memoryQuery = {
+              expr: 'sum(kube_pod_container_resource_requests_memory_bytes) by (node)',
+              legend: "{{node}}"
+            };
 
-            return this.issueGraphiteQuery(graphiteDs, podQuery).then(function (data) {
+            return this.issuePrometheusQuery(prometheusDS, podQuery).then(function (data) {
               podsPerNode = data;
               return;
             }).then(function () {
-              return _this2.issueGraphiteQuery(graphiteDs, cpuQuery);
+              return _this.issuePrometheusQuery(prometheusDS, cpuQuery);
             }).then(function (data) {
               cpuPerNode = data;
               return;
             }).then(function () {
-              return _this2.issueGraphiteQuery(graphiteDs, memoryQuery);
+              return _this.issuePrometheusQuery(prometheusDS, memoryQuery);
             }).then(function (data) {
               memoryPerNode = data;
               return { podsPerNode: podsPerNode, cpuPerNode: cpuPerNode, memoryPerNode: memoryPerNode };
@@ -109,20 +110,23 @@ System.register(['app/core/utils/kbn', 'lodash'], function (_export, _context) {
           value: function updateNodeWithStats(node, nodeStats) {
             var formatFunc = kbn.valueFormats['percentunit'];
             var nodeName = slugify(node.metadata.name);
-            var podsUsedData = _.find(nodeStats.podsPerNode, { 'target': nodeName });
+            var findFunction = function findFunction(o) {
+              return o.target.substring(7, o.target.length - 2) === nodeName;
+            };
+            var podsUsedData = _.find(nodeStats.podsPerNode, findFunction);
             if (podsUsedData) {
               node.podsUsed = _.last(podsUsedData.datapoints)[0];
               node.podsUsedPerc = formatFunc(node.podsUsed / node.status.capacity.pods, 2, 5);
             }
 
-            var cpuData = _.find(nodeStats.cpuPerNode, { 'target': nodeName });
+            var cpuData = _.find(nodeStats.cpuPerNode, findFunction);
             if (cpuData) {
               node.cpuUsage = _.last(cpuData.datapoints)[0];
               node.cpuUsageFormatted = kbn.valueFormats['none'](node.cpuUsage, 2, null);
               node.cpuUsagePerc = formatFunc(node.cpuUsage / node.status.capacity.cpu, 2, 5);
             }
 
-            var memData = _.find(nodeStats.memoryPerNode, { 'target': nodeName });
+            var memData = _.find(nodeStats.memoryPerNode, findFunction);
             if (memData) {
               node.memoryUsage = _.last(memData.datapoints)[0];
               var memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2) * 1000;

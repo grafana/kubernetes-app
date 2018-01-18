@@ -2,11 +2,6 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 import angular from 'angular';
 
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
-}
-
 export class ClusterConfigCtrl {
   /** @ngInject */
   constructor($scope, $injector, backendSrv, $q, contextSrv, $location, $window, alertSrv) {
@@ -23,6 +18,7 @@ export class ClusterConfigCtrl {
     this.prometheusDeployed = false;
     this.alertSrv = alertSrv;
     this.showHelp = false;
+    this.showPrometheusExample = false;
     document.title = 'Grafana Kubernetes App';
 
     this.getDatasources().then(() => {
@@ -32,6 +28,10 @@ export class ClusterConfigCtrl {
 
   toggleHelp() {
     this.showHelp = !this.showHelp;
+  }
+
+  togglePrometheusExample() {
+    this.showPrometheusExample = !this.showPrometheusExample;
   }
 
   getDatasources() {
@@ -78,7 +78,7 @@ export class ClusterConfigCtrl {
   getDeployments() {
     var self = this;
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta2/namespaces/kube-system/deployments',
+      url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -186,99 +186,6 @@ export class ClusterConfigCtrl {
       });
   }
 
-  generateConfigMap() {
-    var task = _.cloneDeep(snapTask);
-    task.workflow.collect.publish[0].config.prefix = "snap." + slugify(this.cluster.name) + ".<%NODE%>";
-    task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
-    task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
-    var cadvisor_task = _.cloneDeep(snapCadvisorTask);
-    cadvisor_task.workflow.collect.publish[0].config.prefix = "snap." + slugify(this.cluster.name) + ".<%NODE%>";
-    cadvisor_task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
-    cadvisor_task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
-    var cm = _.cloneDeep(configMap);
-    cm.data["core.json"] = JSON.stringify(task);
-    cm.data["cadvisor.json"] = JSON.stringify(cadvisor_task);
-    return cm;
-  }
-
-  generateKubestateConfigMap() {
-    var task = _.cloneDeep(kubestateSnapTask);
-    task.workflow.collect.publish[0].config.prefix = "snap." + slugify(this.cluster.name);
-    task.workflow.collect.publish[0].config.port = this.cluster.jsonData.port;
-    task.workflow.collect.publish[0].config.server = this.cluster.jsonData.server;
-    var cm = _.cloneDeep(kubestateConfigMap);
-    cm.data["core.json"] = JSON.stringify(task);
-    return cm;
-  }
-
-  deploySnap() {
-    if (!this.cluster || !this.cluster.id) {
-      this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
-      return;
-    }
-
-    var self = this;
-    var cm = this.generateConfigMap();
-    var kubestateCm = this.generateKubestateConfigMap();
-
-    if (!this.prometheusDeployed) {
-      return this.checkApiVersion(self.cluster.id)
-        .then(() => {
-          return this.createConfigMap(self.cluster.id, cm);
-        })
-        .then(() => {
-          return this.createConfigMap(self.cluster.id, kubestateCm);
-        })
-        .then(() => {
-          return this.createDaemonSet(self.cluster.id, daemonSet);
-        })
-        .then(() => {
-          return this.createDeployment(self.cluster.id, kubestate);
-        })
-        .catch(err => {
-          this.alertSrv.set("Error", err, 'error');
-        }).then(() => {
-          this.prometheusDeployed = true;
-          this.alertSrv.set("Deployed", "Snap DaemonSet for Kubernetes metrics deployed to " + self.cluster.name, 'success', 5000);
-        });
-    } else {
-      return self.updateSnapSettings(cm, kubestateCm);
-    }
-  }
-
-  undeploySnap() {
-    var self = this;
-    return this.deleteConfigMap(self.cluster.id, 'snap-tasks')
-      .then(() => {
-        return this.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
-        return this.deleteDaemonSet(self.cluster.id);
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
-        return this.deleteDeployment(self.cluster.id, 'snap-kubestate-deployment');
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
-        return this.deletePods();
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
-        this.prometheusDeployed = false;
-        this.alertSrv.set("Daemonset removed", "Snap DaemonSet for Kubernetes metrics removed from " + self.cluster.name, 'success', 5000);
-      });
-  }
-
   checkApiVersion(clusterId) {
     return this.backendSrv.request({
       url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
@@ -307,7 +214,7 @@ export class ClusterConfigCtrl {
 
   createDaemonSet(clusterId, daemonSet) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
       method: 'POST',
       data: daemonSet,
       headers: {
@@ -318,14 +225,14 @@ export class ClusterConfigCtrl {
 
   deleteDaemonSet(clusterId) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/daemonsets/node-exporter',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/node-exporter',
       method: 'DELETE',
     });
   }
 
   createDeployment(clusterId, deployment) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/deployments',
+      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
       method: 'POST',
       data: deployment,
       headers: {
@@ -336,12 +243,12 @@ export class ClusterConfigCtrl {
 
   deleteDeployment(clusterId, deploymentName) {
     return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta2/namespaces/kube-system/deployments/' + deploymentName,
+      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
       method: 'DELETE'
     }).then(() => {
       return this.backendSrv.request({
         url: 'api/datasources/proxy/' + clusterId +
-          '/apis/apps/v1beta2/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
+          '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
         method: 'DELETE'
       });
     });
@@ -379,45 +286,6 @@ export class ClusterConfigCtrl {
 
       return this.$q.all(promises);
     });
-  }
-
-  createService(clusterId, service) {
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services',
-      method: 'POST',
-      data: service,
-      headers: {
-        'Content-Type': "application/json"
-      }
-    });
-  }
-
-  deleteService(clusterId) {
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/services/node-exporter',
-      method: 'DELETE',
-      headers: {
-        'Content-Type': "application/json"
-      }
-    });
-  }
-
-  updateSnapSettings(cm, kubestateCm) {
-    var self = this;
-    return this.deleteConfigMap(self.cluster.id, 'snap-tasks')
-      .then(() => {
-        return this.createConfigMap(self.cluster.id, cm);
-      }).then(() => {
-        return this.deleteConfigMap(self.cluster.id, 'snap-tasks-kubestate');
-      }).then(() => {
-        return this.createConfigMap(self.cluster.id, kubestateCm);
-      }).then(() => {
-        return this.deletePods();
-      }).catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      }).then(() => {
-        this.alertSrv.set("Updated", "Graphite Settings in Config Map on " + self.cluster.name + " updated successfully", 'success', 3000);
-      });
   }
 
   cancel() {
@@ -537,28 +405,7 @@ export class ClusterConfigCtrl {
     regex: .*
     target_label: kubernetes_cluster
     replacement: ${this.cluster.name}
-- job_name: \'kubernetes-nodes\'
-  scheme: https
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  kubernetes_sd_configs:
-  - role: node
-  relabel_configs:
-  - action: labelmap
-    regex: __meta_kubernetes_node_label_(.+)
-  - target_label: __address__
-    replacement: kubernetes.default.svc:443
-  - source_labels: [__meta_kubernetes_node_name]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/\${1}/proxy/metrics
-  - source_labels: [__address__]
-    regex: .*
-    target_label: kubernetes_cluster
-    replacement: ${this.cluster.name}
-- job_name: \'kubernetes-pods\'
+- job_name: \'kubernetes-kube-state\'
   kubernetes_sd_configs:
   - role: pod
   relabel_configs:
@@ -577,9 +424,10 @@ export class ClusterConfigCtrl {
     regex: .*
     target_label: kubernetes_cluster
     replacement: ${this.cluster.name}
-  - source_labels: [__meta_kubernetes_pod_node_name]
+  - source_labels: ['__meta_kubernetes_pod_label_daemon', '__meta_kubernetes_pod_node_name']
+    regex: 'node-exporter;(.*)'
     action: replace
-    target_label: instance`;
+    target_label: nodename`;
   }
 
   generatePrometheusConfigMap() {
@@ -590,7 +438,7 @@ export class ClusterConfigCtrl {
         "name": "prometheus-configmap"
       },
       "data": {
-        "prometheus.yml": this.generatePrometheusConfig
+        "prometheus.yml": this.generatePrometheusConfig()
       }
     };
   }
@@ -598,457 +446,12 @@ export class ClusterConfigCtrl {
 
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
-const raintankSnapImage = 'raintank/snap_k8s:v23';
-
-var configMap = {
-  "kind": "ConfigMap",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "snap-tasks",
-    "namespace": "kube-system"
-  },
-  "data": {
-    "core.json": "",
-    "cadvisor.json": ""
-  }
-};
-
-var kubestateConfigMap = {
-  "kind": "ConfigMap",
-  "apiVersion": "v1",
-  "metadata": {
-    "name": "snap-tasks-kubestate",
-    "namespace": "kube-system"
-  },
-  "data": {
-    "core.json": ""
-  }
-};
-
-var snapTask = {
-  "version": 1,
-  "start": true,
-  "schedule": {
-    "type": "simple",
-    "interval": "10s"
-  },
-  "max-failures": 10,
-  "workflow": {
-    "collect": {
-      "metrics": {
-        "/intel/procfs/cpu/all/*": {},
-        "/intel/procfs/meminfo/mem_available": {},
-        "/intel/procfs/meminfo/mem_available_perc": {},
-        "/intel/procfs/meminfo/mem_free": {},
-        "/intel/procfs/meminfo/mem_free_perc": {},
-        "/intel/procfs/meminfo/mem_total": {},
-        "/intel/procfs/meminfo/mem_total_perc": {},
-        "/intel/procfs/meminfo/mem_used": {},
-        "/intel/procfs/meminfo/mem_used_perc": {},
-        "/intel/procfs/filesystem/*/inodes_free": {},
-        "/intel/procfs/filesystem/*/inodes_reserved": {},
-        "/intel/procfs/filesystem/*/inodes_used": {},
-        "/intel/procfs/filesystem/*/space_free": {},
-        "/intel/procfs/filesystem/*/space_reserved": {},
-        "/intel/procfs/filesystem/*/space_used": {},
-        "/intel/procfs/filesystem/*/inodes_percent_free": {},
-        "/intel/procfs/filesystem/*/inodes_percent_reserved": {},
-        "/intel/procfs/filesystem/*/inodes_percent_used": {},
-        "/intel/procfs/filesystem/*/space_percent_free": {},
-        "/intel/procfs/filesystem/*/space_percent_reserved": {},
-        "/intel/procfs/filesystem/*/space_percent_used": {},
-        "/intel/procfs/iface/*/bytes_recv": {},
-        "/intel/procfs/iface/*/bytes_sent": {},
-        "/intel/procfs/iface/*/packets_recv": {},
-        "/intel/procfs/iface/*/packets_sent": {},
-        "/intel/procfs/iface/*/errs_recv": {},
-        "/intel/procfs/iface/*/errs_sent": {},
-        "/intel/iostat/device/*/%util": {},
-        "/intel/iostat/device/*/rkB_per_sec": {},
-        "/intel/iostat/device/*/wkB_per_sec": {},
-        "/intel/iostat/device/ALL/r_per_sec": {},
-        "/intel/iostat/device/ALL/w_per_sec": {},
-        "/intel/procfs/load/min1_rel": {}
-      },
-      "config": {
-        "/intel/procfs": {
-          "proc_path": "/proc_host",
-          "keep_original_mountpoint": false
-        }
-      },
-      "publish": [{
-        "plugin_name": "graphite",
-        "config": {
-          "prefix_tags": "",
-          "prefix": "",
-          "server": "",
-          "port": 2003
-        }
-      }]
-    }
-  }
-};
-
-var snapCadvisorTask = {
-  "version": 1,
-  "start": true,
-  "schedule": {
-    "type": "streaming",
-  },
-  "workflow": {
-    "collect": {
-      "metrics": {
-        "/grafanalabs/cadvisor/container/*/*/*/cpu/total/usage": {},
-        "/grafanalabs/cadvisor/container/*/*/*/mem/usage": {},
-        "/grafanalabs/cadvisor/container/*/*/*/fs/*": {},
-        "/grafanalabs/cadvisor/container/*/*/*/diskio/*": {},
-        "/grafanalabs/cadvisor/container/*/*/*/iface/*/out_bytes": {},
-        "/grafanalabs/cadvisor/container/*/*/*/iface/*/in_bytes": {},
-        "/grafanalabs/cadvisor/container/*/*/*/tcp/*": {},
-        "/grafanalabs/cadvisor/container/*/*/*/tcp6/*": {},
-      },
-      "publish": [{
-        "plugin_name": "graphite",
-        "config": {
-          "prefix_tags": "",
-          "prefix": "",
-          "server": "",
-          "port": 2003
-        }
-      }]
-    }
-  }
-};
-
-var kubestateSnapTask = {
-  "version": 1,
-  "start": true,
-  "schedule": {
-    "type": "simple",
-    "interval": "10s"
-  },
-  "max-failures": 10,
-  "workflow": {
-    "collect": {
-      "metrics": {
-        "/grafanalabs/kubestate/*": {}
-      },
-      "process": null,
-      "publish": [{
-        "plugin_name": "graphite",
-        "config": {
-          "prefix_tags": "",
-          "prefix": "",
-          "server": "",
-          "port": 2003
-        }
-      }]
-    }
-  }
-};
-
-var daemonSet = {
-  "kind": "DaemonSet",
-  "apiVersion": "extensions/v1beta1",
-  "metadata": {
-    "name": "snap",
-    "namespace": "kube-system",
-    "labels": {
-      "daemon": "snapd"
-    }
-  },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "daemon": "snapd",
-        "app": "snap-collector"
-      }
-    },
-    "template": {
-      "metadata": {
-        "name": "snap",
-        "labels": {
-          "daemon": "snapd",
-          "app": "snap-collector"
-        }
-      },
-      "spec": {
-        "volumes": [{
-            "name": "dev",
-            "hostPath": {
-              "path": "/dev"
-            }
-          },
-          {
-            "name": "cgroup",
-            "hostPath": {
-              "path": "/sys/fs/cgroup"
-            }
-          },
-          {
-            "name": "docker-sock",
-            "hostPath": {
-              "path": "/var/run/docker.sock"
-            }
-          },
-          {
-            "name": "fs-stats",
-            "hostPath": {
-              "path": "/var/lib/docker"
-            }
-          },
-          {
-            "name": "docker",
-            "hostPath": {
-              "path": "/usr/bin/docker"
-            }
-          },
-          {
-            "name": "proc",
-            "hostPath": {
-              "path": "/proc"
-            }
-          },
-          {
-            "name": "snap-tasks",
-            "configMap": {
-              "name": "snap-tasks"
-            }
-          }
-        ],
-        "containers": [{
-          "name": "snap",
-          "image": raintankSnapImage,
-          "command": [
-            "/usr/local/bin/start.sh"
-          ],
-          "args": [
-            "/opt/snap/sbin/snapteld"
-          ],
-          "ports": [{
-            "name": "snap-api",
-            "hostPort": 8282,
-            "containerPort": 8282,
-            "protocol": "TCP"
-          }],
-          "livenessProbe": {
-            "exec": {
-              "command": [
-                "/bin/bash",
-                "-c",
-                "/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"
-              ]
-            },
-            initialDelaySeconds: 60
-          },
-          "env": [{
-              "name": "PROCFS_MOUNT",
-              "value": "/proc_host"
-            },
-            {
-              "name": "NODE_NAME",
-              "valueFrom": {
-                "fieldRef": {
-                  "fieldPath": "spec.nodeName"
-                }
-              }
-            },
-            {
-              "name": "SNAP_PORT",
-              "value": "8282"
-            },
-            {
-              "name": "SNAP_URL",
-              "value": "http://localhost:8282"
-            },
-            {
-              "name": "SNAP_LOG_LEVEL",
-              "value": "3"
-            }
-          ],
-          "resources": {},
-          "volumeMounts": [{
-              "name": "cgroup",
-              "mountPath": "/sys/fs/cgroup"
-            },
-            {
-              "name": "docker-sock",
-              "mountPath": "/var/run/docker.sock"
-            },
-            {
-              "name": "fs-stats",
-              "mountPath": "/var/lib/docker"
-            },
-            {
-              "name": "docker",
-              "mountPath": "/usr/local/bin/docker"
-            },
-            {
-              "name": "proc",
-              "mountPath": "/proc_host"
-            },
-            {
-              "name": "snap-tasks",
-              "mountPath": "/opt/snap/tasks"
-            }
-          ],
-          "imagePullPolicy": "IfNotPresent",
-          "securityContext": {
-            "privileged": true
-          }
-        }],
-        "restartPolicy": "Always",
-        "hostNetwork": true,
-        "hostPID": true
-      }
-    }
-  }
-};
-
-const NodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
-
-const nodeExporterDaemonSet = {
-  "kind": "DaemonSet",
-  "apiVersion": "apps/v1beta2",
-  "metadata": {
-    "name": "node-exporter",
-    "namespace": "kube-system"
-  },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "daemon": "node-exporter",
-        "grafanak8sapp": "true"
-      }
-    },
-    "template": {
-      "metadata": {
-        "name": "node-exporter",
-        "labels": {
-          "daemon": "node-exporter",
-          "grafanak8sapp": "true"
-        }
-      },
-      "spec": {
-        "volumes": [
-          {
-            "name": "proc",
-            "hostPath": {
-              "path": "/proc"
-            }
-          },
-          {
-            "name": "sys",
-            "hostPath": {
-              "path": "/sys"
-            }
-          }
-        ],
-        "containers": [{
-          "name": "node-exporter",
-          "image": NodeExporterImage,
-          "args": [
-            "--path.procfs=/proc_host",
-            "--path.sysfs=/host_sys"
-          ],
-          "ports": [{
-            "name": "node-exporter",
-            "hostPort": 9100,
-            "containerPort": 9100
-          }],
-          "volumeMounts": [{
-              "name": "sys",
-              "readOnly": true,
-              "mountPath": "/host_sys"
-            },
-            {
-              "name": "proc",
-              "readOnly": true,
-              "mountPath": "/proc_host"
-            }
-          ],
-          "imagePullPolicy": "IfNotPresent"
-        }],
-        "restartPolicy": "Always",
-        "hostNetwork": true,
-        "hostPID": true
-      }
-    }
-  }
-};
-
-const kubestate = {
-  "kind": "Deployment",
-  "apiVersion": "extensions/v1beta1",
-  "metadata": {
-    "name": "snap-kubestate-deployment",
-    "namespace": "kube-system",
-  },
-  "spec": {
-    "replicas": 1,
-    "template": {
-      "metadata": {
-        "labels": {
-          "app": "snap-collector"
-        }
-      },
-      "spec": {
-        "volumes": [{
-          "name": "snap-tasks",
-          "configMap": {
-            "name": "snap-tasks-kubestate"
-          }
-        }],
-        "containers": [{
-          "name": "snap",
-          "image": raintankSnapImage,
-          "ports": [{
-            "name": "snap-api",
-            "hostPort": 8383,
-            "containerPort": 8383,
-            "protocol": "TCP"
-          }],
-          "livenessProbe": {
-            "exec": {
-              "command": [
-                "/bin/bash",
-                "-c",
-                "/opt/snap/bin/snaptel task list |grep Disabled | awk 'BEGIN {err = 0} length($1) > 0 { err = 1} END {exit err}'"
-              ]
-            },
-            initialDelaySeconds: 60
-          },
-          "env": [{
-              "name": "SNAP_PORT",
-              "value": "8383"
-            },
-            {
-              "name": "SNAP_URL",
-              "value": "http://localhost:8383"
-            },
-            {
-              "name": "SNAP_LOG_LEVEL",
-              "value": "3"
-            }
-          ],
-          "resources": {},
-          "volumeMounts": [{
-            "name": "snap-tasks",
-            "mountPath": "/opt/snap/tasks"
-          }],
-          "imagePullPolicy": "IfNotPresent",
-        }],
-        "restartPolicy": "Always",
-      }
-    }
-  }
-};
-
+const nodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
 const prometheusImage = 'prom/prometheus:v2.0.0';
 const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
 
 let prometheusDeployment = {
-  "apiVersion": "apps/v1beta2",
+  "apiVersion": "apps/v1beta1",
   "kind": "Deployment",
   "metadata": {
     "name": "prometheus-deployment",
@@ -1106,7 +509,7 @@ let prometheusDeployment = {
 };
 
 let kubestateDeployment = {
-  "apiVersion": "apps/v1beta2",
+  "apiVersion": "apps/v1beta1",
   "kind": "Deployment",
   "metadata": {
     "name": "kube-state-metrics",
@@ -1144,6 +547,76 @@ let kubestateDeployment = {
             "timeoutSeconds": 5
           }
         }]
+      }
+    }
+  }
+};
+
+const nodeExporterDaemonSet = {
+  "kind": "DaemonSet",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "name": "node-exporter",
+    "namespace": "kube-system"
+  },
+  "spec": {
+    "selector": {
+      "matchLabels": {
+        "daemon": "node-exporter",
+        "grafanak8sapp": "true"
+      }
+    },
+    "template": {
+      "metadata": {
+        "name": "node-exporter",
+        "labels": {
+          "daemon": "node-exporter",
+          "grafanak8sapp": "true"
+        }
+      },
+      "spec": {
+        "volumes": [
+          {
+            "name": "proc",
+            "hostPath": {
+              "path": "/proc"
+            }
+          },
+          {
+            "name": "sys",
+            "hostPath": {
+              "path": "/sys"
+            }
+          }
+        ],
+        "containers": [{
+          "name": "node-exporter",
+          "image": nodeExporterImage,
+          "args": [
+            "--path.procfs=/proc_host",
+            "--path.sysfs=/host_sys"
+          ],
+          "ports": [{
+            "name": "node-exporter",
+            "hostPort": 9100,
+            "containerPort": 9100
+          }],
+          "volumeMounts": [{
+              "name": "sys",
+              "readOnly": true,
+              "mountPath": "/host_sys"
+            },
+            {
+              "name": "proc",
+              "readOnly": true,
+              "mountPath": "/proc_host"
+            }
+          ],
+          "imagePullPolicy": "IfNotPresent"
+        }],
+        "restartPolicy": "Always",
+        "hostNetwork": true,
+        "hostPID": true
       }
     }
   }

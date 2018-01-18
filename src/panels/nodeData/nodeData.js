@@ -42,11 +42,12 @@ export class NodeDataCtrl extends PanelCtrl {
       const cluster_id = cluster.current.value;
       const nodeVar = _.find(this.templateVariables, {'name': 'node'});
       const node_name  = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
-      const graphiteDs  = _.find(this.templateVariables, {'name': 'datasource'}).current.value;
+      const prometheusDS  = _.find(this.templateVariables, {'name': 'datasource'}).current.value;
 
       this.loadDatasource(cluster_id).then(() => {
-        return this.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
+        return this.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
       }).then(nodeStats => {
+        console.log(nodeStats);
         if (node_name === 'All') {
           this.isInListMode = true;
           this.clusterDS.getNodes().then(nodes => {

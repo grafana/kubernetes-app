@@ -122,11 +122,12 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
               var cluster_id = cluster.current.value;
               var nodeVar = _.find(this.templateVariables, { 'name': 'node' });
               var node_name = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
-              var graphiteDs = _.find(this.templateVariables, { 'name': 'datasource' }).current.value;
+              var prometheusDS = _.find(this.templateVariables, { 'name': 'datasource' }).current.value;
 
               this.loadDatasource(cluster_id).then(function () {
-                return _this2.nodeStatsDatasource.getNodeStats(cluster_id, graphiteDs);
+                return _this2.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
               }).then(function (nodeStats) {
+                console.log(nodeStats);
                 if (node_name === 'All') {
                   _this2.isInListMode = true;
                   _this2.clusterDS.getNodes().then(function (nodes) {
