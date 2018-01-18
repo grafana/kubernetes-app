@@ -111,6 +111,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           value: function getPrometheusDatasources() {
             var self = this;
             return this.backendSrv.get('/api/datasources').then(function (result) {
+              self.hostedMetricsDS = _.filter(result, function (obj) {
+                return (/grafana.net\/(graphite|prometheus)$/.test(obj.url)
+                );
+              });
+              console.log(self.hostedMetricsDS);
               self.datasources = _.filter(result, {
                 "type": "prometheus"
               });
