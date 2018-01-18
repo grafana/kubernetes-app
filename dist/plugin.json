@@ -7,12 +7,12 @@
   ],
 
   "info": {
-    "description": "Kubernetes app. shows data collected by snap.",
+    "description": "Kubernetes app. shows data collected by Prometheus.",
     "author": {
       "name": "Raintank Inc.",
       "url": "https://grafana.com/"
     },
-    "keywords": ["raintank", "kubernetes", "snap"],
+    "keywords": ["raintank", "kubernetes", "Prometheus"],
     "logos": {
       "small": "img/logo.svg",
       "large": "img/logo.svg"

@@ -366,22 +366,18 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             return this.checkApiVersion(self.cluster.id).then(function () {
               return _this7.createConfigMap(self.cluster.id, _this7.generatePrometheusConfigMap());
             }).catch(function (err) {
-              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDeployment(self.cluster.id, kubestateDeployment);
             }).catch(function (err) {
-              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
             }).catch(function (err) {
-              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDeployment(self.cluster.id, prometheusDeployment);
             }).catch(function (err) {
-              console.log(err);
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               _this7.prometheusDeployed = true;
@@ -397,22 +393,18 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap').then(function () {
               return _this8.deleteDeployment(self.cluster.id, 'kube-state-metrics');
             }).catch(function (err) {
-              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deleteDeployment(self.cluster.id, 'prometheus-deployment');
             }).catch(function (err) {
-              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deleteDaemonSet(self.cluster.id);
             }).catch(function (err) {
-              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this8.deletePods();
             }).catch(function (err) {
-              console.log(err);
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
               _this8.prometheusDeployed = false;
