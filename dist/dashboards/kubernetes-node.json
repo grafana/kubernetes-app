@@ -143,7 +143,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(avg by (instance) (irate(node_cpu{instance=~\"$node\", mode=\"system\"}[5m])) * 100)",
+          "expr": "sum((avg(irate(node_cpu{instance=~\"$node\", mode=\"system\"}[5m])) * 100))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -152,21 +152,21 @@
           "refId": "A"
         },
         {
-          "expr": "(avg by (instance) (irate(node_cpu{instance=~\"$node\", mode=\"user\"}[5m])) * 100)",
+          "expr": "sum((avg(irate(node_cpu{instance=~\"$node\", mode=\"user\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "user",
           "refId": "B"
         },
         {
-          "expr": "(avg by (instance) (irate(node_cpu{instance=~\"$node\", mode=\"iowait\"}[5m])) * 100)",
+          "expr": "sum((avg(irate(node_cpu{instance=~\"$node\", mode=\"iowait\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "iowait",
           "refId": "C"
         },
         {
-          "expr": "(avg by (instance) (irate(node_cpu{instance=~\"$node\", mode=\"steal\"}[5m])) * 100)",
+          "expr": "sum((avg(irate(node_cpu{instance=~\"$node\", mode=\"steal\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "steal",
