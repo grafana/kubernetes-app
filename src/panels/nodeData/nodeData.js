@@ -47,7 +47,6 @@ export class NodeDataCtrl extends PanelCtrl {
       this.loadDatasource(cluster_id).then(() => {
         return this.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
       }).then(nodeStats => {
-        console.log(nodeStats);
         if (node_name === 'All') {
           this.isInListMode = true;
           this.clusterDS.getNodes().then(nodes => {

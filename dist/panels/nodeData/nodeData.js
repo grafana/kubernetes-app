@@ -127,7 +127,6 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
               this.loadDatasource(cluster_id).then(function () {
                 return _this2.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
               }).then(function (nodeStats) {
-                console.log(nodeStats);
                 if (node_name === 'All') {
                   _this2.isInListMode = true;
                   _this2.clusterDS.getNodes().then(function (nodes) {
