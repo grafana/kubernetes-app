@@ -18,7 +18,7 @@
       "large": "img/logo.svg"
     },
     "links": [
-      {"name": "raintank", "url": "http://raintank.io"},
+      {"name": "Grafana Labs", "url": "https://grafana.com/"},
       {"name": "GitHub", "url": "https://github.com/raintank/kubernetes-app"},
       {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
     ],
@@ -30,7 +30,7 @@
       {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
-    "version": "0.0.8",
+    "version": "1.0.0",
     "updated": "2017-03-06"
   },
 
@@ -80,7 +80,7 @@
   ],
 
   "dependencies": {
-    "grafanaVersion": "3.0+",
+    "grafanaVersion": "5.0+",
     "plugins": []
   }
 }
