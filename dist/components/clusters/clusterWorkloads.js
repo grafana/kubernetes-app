@@ -157,7 +157,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             var clickTargetClickAttr = _.find(closestElm.attributes, { name: "ng-click" });
             var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
             if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
-              this.$location.path("plugins/raintank-kubernetes-app/page/pod-info").search({
+              this.$location.path("plugins/prometheus-kubernetes-app/page/pod-info").search({
                 "cluster": this.cluster.id,
                 "namespace": slugify(pod.metadata.namespace),
                 "pod": pod.metadata.name

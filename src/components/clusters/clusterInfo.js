@@ -94,7 +94,7 @@ export class ClusterInfoCtrl {
   goToWorkloads(ns, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("plugins/raintank-kubernetes-app/page/cluster-workloads")
+      this.$location.path("plugins/prometheus-kubernetes-app/page/cluster-workloads")
       .search({
         "cluster": this.cluster.id,
         "namespace": slugify(ns.metadata.name)
@@ -110,7 +110,7 @@ export class ClusterInfoCtrl {
     var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
-      this.$location.path("plugins/raintank-kubernetes-app/page/node-info")
+      this.$location.path("plugins/prometheus-kubernetes-app/page/node-info")
       .search({
         "cluster": this.cluster.id,
         "node": node.metadata.name

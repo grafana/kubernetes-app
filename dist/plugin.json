@@ -1,7 +1,7 @@
 {
   "type": "app",
   "name": "kubernetes",
-  "id": "raintank-kubernetes-app",
+  "id": "prometheus-kubernetes-app",
 
   "routes": [
   ],
@@ -9,7 +9,7 @@
   "info": {
     "description": "Kubernetes app. shows data collected by Prometheus.",
     "author": {
-      "name": "Raintank Inc.",
+      "name": "Grafana Labs",
       "url": "https://grafana.com/"
     },
     "keywords": ["raintank", "kubernetes", "Prometheus"],
@@ -31,7 +31,7 @@
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
     "version": "1.0.0",
-    "updated": "2017-03-06"
+    "updated": "2018-01-18"
   },
 
   "includes": [

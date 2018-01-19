@@ -25,8 +25,8 @@ System.register(['./components/config/config', './components/clusters/clusters',
     execute: function () {
 
       loadPluginCss({
-        dark: 'plugins/raintank-kubernetes-app/css/dark.css',
-        light: 'plugins/raintank-kubernetes-app/css/light.css'
+        dark: 'plugins/prometheus-kubernetes-app/css/dark.css',
+        light: 'plugins/prometheus-kubernetes-app/css/light.css'
       });
 
       _export('ConfigCtrl', ConfigCtrl);

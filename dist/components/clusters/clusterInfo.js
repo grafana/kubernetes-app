@@ -197,7 +197,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           value: function goToWorkloads(ns, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
             if (clickTargetIsLinkOrHasLinkParents === false) {
-              this.$location.path("plugins/raintank-kubernetes-app/page/cluster-workloads").search({
+              this.$location.path("plugins/prometheus-kubernetes-app/page/cluster-workloads").search({
                 "cluster": this.cluster.id,
                 "namespace": slugify(ns.metadata.name)
               });
@@ -212,7 +212,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
             var clickTargetClickAttr = _.find(closestElm.attributes, { name: "ng-click" });
             var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
             if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
-              this.$location.path("plugins/raintank-kubernetes-app/page/node-info").search({
+              this.$location.path("plugins/prometheus-kubernetes-app/page/node-info").search({
                 "cluster": this.cluster.id,
                 "node": node.metadata.name
               });

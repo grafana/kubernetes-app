@@ -13,7 +13,7 @@ export class ConfigCtrl {
     return this.appEditCtrl.importDashboards().then(() => {
       this.enabled = true;
       return {
-        url: "plugins/raintank-kubernetes-app/page/clusters",
+        url: "plugins/prometheus-kubernetes-app/page/clusters",
         message: "Kubernetes App enabled!"
       };
     });

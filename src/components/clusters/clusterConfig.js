@@ -69,9 +69,9 @@ export class ClusterConfigCtrl {
     var self = this;
     return this.backendSrv.get('/api/datasources')
     .then((result) => {
-      self.hostedMetricsDS = _.filter(result, obj =>
-        /grafana.net\/(graphite|prometheus)$/.test(obj.url)
-      );
+      // self.hostedMetricsDS = _.filter(result, obj =>
+      //   /grafana.net\/(graphite|prometheus)$/.test(obj.url)
+      // );
       console.log(self.hostedMetricsDS);
       self.datasources = _.filter(result, {
         "type": "prometheus"

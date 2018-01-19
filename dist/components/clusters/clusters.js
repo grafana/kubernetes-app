@@ -88,7 +88,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
         }, {
           key: 'clusterInfo',
           value: function clusterInfo(cluster) {
-            this.$location.path("plugins/raintank-kubernetes-app/page/cluster-info").search({ "cluster": cluster.id });
+            this.$location.path("plugins/prometheus-kubernetes-app/page/cluster-info").search({ "cluster": cluster.id });
           }
         }]);
 

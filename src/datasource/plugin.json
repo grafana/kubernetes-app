@@ -1,12 +1,12 @@
 {
   "name": "Kubernetes",
-  "id": "raintank-kubernetes-datasource",
+  "id": "prometheus-kubernetes-datasource",
   "type": "datasource",
 
   "staticRoot": ".",
 
   "partials": {
-    "config": "public/app/plugins/raintank-kubernetes-app/datasource/config.html"
+    "config": "public/app/plugins/prometheus-kubernetes-app/datasource/config.html"
   },
 
   "metrics": false,
@@ -27,11 +27,11 @@
       {"name": "License", "url": "https://github.com/raintank/kubernetes-app/blob/master/LICENSE"}
     ],
     "version": "0.0.1",
-    "updated": "2016-09-27"
+    "updated": "2018-01-18"
   },
 
   "dependencies": {
-    "grafanaVersion": "3.x.x",
+    "grafanaVersion": "5.x.x",
     "plugins": [ ]
   }
 }

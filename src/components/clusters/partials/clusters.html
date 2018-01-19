@@ -1,6 +1,6 @@
 <div class="page-header">
 	<h1 >Kubernetes Clusters</h1>
-	<a class="btn btn-success" href="plugins/raintank-kubernetes-app/page/cluster-config" ng-show="ctrl.isOrgEditor">
+	<a class="btn btn-success" href="plugins/prometheus-kubernetes-app/page/cluster-config" ng-show="ctrl.isOrgEditor">
 		<i class="fa fa-plus"></i>
 		New Cluster
 	</a>
@@ -15,7 +15,7 @@
 		<div style="text-align: center; padding-top: 90px; min-height: 220px; min-width: 400px;  margin: 0 auto;">
 			<i ng-class="icon" class="icon-gf icon-gf-endpoint no-endpoints"></i>
 			<p ng-if="ctrl.isOrgEditor">Looks like you don’t have any clulsters yet.<br>
-				<a class="highlight-word" href="plugins/raintank-kubernetes-app/page/cluster-config">Add a new cluster</a>
+				<a class="highlight-word" href="plugins/prometheus-kubernetes-app/page/cluster-config">Add a new cluster</a>
 			</p>
 			<p ng-if="!ctrl.isOrgEditor">Your org does not have any clusters configured. Contact your org admin.
 			</p>
@@ -37,7 +37,7 @@
           </a>
         </td>
         <td class="text-right">
-          <a style="margin-left: 15px; vertical-align: sub;" href="plugins/raintank-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
+          <a style="margin-left: 15px; vertical-align: sub;" href="plugins/prometheus-kubernetes-app/page/cluster-config?cluster={{cluster.id}}">
             <i ng-class="icon" class="icon-gf icon-gf-settings" bs-tooltip="'Cluster Config'"></i> Cluster Config
           </a>
           &nbsp;&nbsp;

@@ -63,7 +63,7 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 1. Use the grafana-cli tool to install kubernetes from the commandline:
 
 ```
-grafana-cli plugins install raintank-kubernetes-app
+grafana-cli plugins install prometheus-kubernetes-app
 ```
 
 2. Restart your Grafana server.

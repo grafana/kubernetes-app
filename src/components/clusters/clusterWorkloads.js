@@ -110,7 +110,7 @@ export class ClusterWorkloadsCtrl {
     var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
-      this.$location.path("plugins/raintank-kubernetes-app/page/pod-info")
+      this.$location.path("plugins/prometheus-kubernetes-app/page/pod-info")
       .search({
         "cluster": this.cluster.id,
         "namespace": slugify(pod.metadata.namespace),
