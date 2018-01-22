@@ -110,13 +110,6 @@ export class ClusterConfigCtrl {
     this.saveToFile('prometheus.yml', blob);
   }
 
-  savePrometheusConfigMapToFile() {
-    let blob = new Blob([angular.toJson(this.generatePrometheusConfigMap(), true)], {
-      type: "application/json"
-    });
-    this.saveToFile('grafanak8s-prometheus-cm.yml', blob);
-  }
-
   saveNodeExporterDSToFile() {
     let blob = new Blob([angular.toJson(nodeExporterDaemonSet, true)], {
       type: "application/json"
@@ -304,12 +297,6 @@ export class ClusterConfigCtrl {
     }
     return this.checkApiVersion(self.cluster.id)
       .then(() => {
-        return this.createConfigMap(self.cluster.id, this.generatePrometheusConfigMap());
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
         return this.createDeployment(self.cluster.id, kubestateDeployment);
       })
       .catch(err => {
@@ -322,11 +309,6 @@ export class ClusterConfigCtrl {
         this.alertSrv.set("Error", err, 'error');
       })
       .then(() => {
-        return this.createDeployment(self.cluster.id, prometheusDeployment);
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      }).then(() => {
         this.prometheusDeployed = true;
         this.alertSrv.set("Deployed", "Prometheus and exporters have been deployed to " + self.cluster.name, 'success', 5000);
       });
@@ -334,15 +316,9 @@ export class ClusterConfigCtrl {
 
   undeployPrometheus() {
     var self = this;
-    return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap')
+    return this.checkApiVersion(self.cluster.id)
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'kube-state-metrics');
-      })
-      .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
-      })
-      .then(() => {
-        return this.deleteDeployment(self.cluster.id, 'prometheus-deployment');
       })
       .catch(err => {
         this.alertSrv.set("Error", err, 'error');
@@ -451,66 +427,7 @@ export class ClusterConfigCtrl {
 ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
 const nodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
-const prometheusImage = 'prom/prometheus:v2.0.0';
 const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
-
-let prometheusDeployment = {
-  "apiVersion": "apps/v1beta1",
-  "kind": "Deployment",
-  "metadata": {
-    "name": "prometheus-deployment",
-    "namespace": "kube-system"
-  },
-  "spec": {
-    "replicas": 1,
-    "strategy": {
-      "rollingUpdate": {
-        "maxSurge": 0,
-        "maxUnavailable": 1
-      },
-      "type": "RollingUpdate"
-    },
-    "selector": {
-      "matchLabels": {
-        "app": "prometheus",
-        "grafanak8sapp": "true"
-      }
-    },
-    "template": {
-      "metadata": {
-        "name": "prometheus",
-        "labels": {
-          "app": "prometheus",
-          "grafanak8sapp": "true"
-        }
-      },
-      "spec": {
-        "containers": [{
-          "name": "prometheus",
-          "image": prometheusImage,
-          "args": [
-            '--config.file=/etc/prometheus/prometheus.yml',
-          ],
-          "ports": [{
-            "name": "web",
-            "containerPort": 9090
-          }],
-          "env": [],
-          "volumeMounts": [{
-            "name": "config-volume",
-            "mountPath": "/etc/prometheus"
-          }]
-        }],
-        "volumes": [{
-          "name": "config-volume",
-          "configMap": {
-            "name": "prometheus-configmap"
-          }
-        }]
-      }
-    }
-  }
-};
 
 let kubestateDeployment = {
   "apiVersion": "apps/v1beta1",

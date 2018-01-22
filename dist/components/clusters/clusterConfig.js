@@ -3,7 +3,7 @@
 System.register(['lodash', 'app/core/app_events', 'angular'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, angular, _createClass, ClusterConfigCtrl, nodeExporterImage, prometheusImage, kubestateImage, prometheusDeployment, kubestateDeployment, nodeExporterDaemonSet;
+  var _, appEvents, angular, _createClass, ClusterConfigCtrl, nodeExporterImage, kubestateImage, kubestateDeployment, nodeExporterDaemonSet;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -152,14 +152,6 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               type: "application/yaml"
             });
             this.saveToFile('prometheus.yml', blob);
-          }
-        }, {
-          key: 'savePrometheusConfigMapToFile',
-          value: function savePrometheusConfigMapToFile() {
-            var blob = new Blob([angular.toJson(this.generatePrometheusConfigMap(), true)], {
-              type: "application/json"
-            });
-            this.saveToFile('grafanak8s-prometheus-cm.yml', blob);
           }
         }, {
           key: 'saveNodeExporterDSToFile',
@@ -368,19 +360,11 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
               return;
             }
             return this.checkApiVersion(self.cluster.id).then(function () {
-              return _this7.createConfigMap(self.cluster.id, _this7.generatePrometheusConfigMap());
-            }).catch(function (err) {
-              _this7.alertSrv.set("Error", err, 'error');
-            }).then(function () {
               return _this7.createDeployment(self.cluster.id, kubestateDeployment);
             }).catch(function (err) {
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
               return _this7.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
-            }).catch(function (err) {
-              _this7.alertSrv.set("Error", err, 'error');
-            }).then(function () {
-              return _this7.createDeployment(self.cluster.id, prometheusDeployment);
             }).catch(function (err) {
               _this7.alertSrv.set("Error", err, 'error');
             }).then(function () {
@@ -394,12 +378,8 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
             var _this8 = this;
 
             var self = this;
-            return this.deleteConfigMap(self.cluster.id, 'prometheus-configmap').then(function () {
+            return this.checkApiVersion(self.cluster.id).then(function () {
               return _this8.deleteDeployment(self.cluster.id, 'kube-state-metrics');
-            }).catch(function (err) {
-              _this8.alertSrv.set("Error", err, 'error');
-            }).then(function () {
-              return _this8.deleteDeployment(self.cluster.id, 'prometheus-deployment');
             }).catch(function (err) {
               _this8.alertSrv.set("Error", err, 'error');
             }).then(function () {
@@ -444,63 +424,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
       ClusterConfigCtrl.templateUrl = 'components/clusters/partials/cluster_config.html';
 
       nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
-      prometheusImage = 'prom/prometheus:v2.0.0';
       kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
-      prometheusDeployment = {
-        "apiVersion": "apps/v1beta1",
-        "kind": "Deployment",
-        "metadata": {
-          "name": "prometheus-deployment",
-          "namespace": "kube-system"
-        },
-        "spec": {
-          "replicas": 1,
-          "strategy": {
-            "rollingUpdate": {
-              "maxSurge": 0,
-              "maxUnavailable": 1
-            },
-            "type": "RollingUpdate"
-          },
-          "selector": {
-            "matchLabels": {
-              "app": "prometheus",
-              "grafanak8sapp": "true"
-            }
-          },
-          "template": {
-            "metadata": {
-              "name": "prometheus",
-              "labels": {
-                "app": "prometheus",
-                "grafanak8sapp": "true"
-              }
-            },
-            "spec": {
-              "containers": [{
-                "name": "prometheus",
-                "image": prometheusImage,
-                "args": ['--config.file=/etc/prometheus/prometheus.yml'],
-                "ports": [{
-                  "name": "web",
-                  "containerPort": 9090
-                }],
-                "env": [],
-                "volumeMounts": [{
-                  "name": "config-volume",
-                  "mountPath": "/etc/prometheus"
-                }]
-              }],
-              "volumes": [{
-                "name": "config-volume",
-                "configMap": {
-                  "name": "prometheus-configmap"
-                }
-              }]
-            }
-          }
-        }
-      };
       kubestateDeployment = {
         "apiVersion": "apps/v1beta1",
         "kind": "Deployment",

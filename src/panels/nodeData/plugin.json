@@ -1,5 +1,5 @@
 {
   "type": "panel",
   "name": "Kubernetes Node Info",
-  "id": "raintank-kubernetes-nodeinfo-panel"
+  "id": "prometheus-kubernetes-nodeinfo-panel"
 }

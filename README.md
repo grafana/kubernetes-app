@@ -2,7 +2,7 @@
 
 [Kubernetes](http://kubernetes.io/) is an open-source system for automating deployment, scaling, and management of containerized applications.
 
-The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It also comes with [Intel Snap](http://snap-telemetry.io/) collectors that are deployed to your cluster to collect health metrics. The metrics collected are high-level cluster and node stats as well as lower level pod and container stats. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
+The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It allows for the automatic deployment of the required Prometheus exporters and a default scrape config to use with your in cluster Prometheus deployment. The metrics collected are high-level cluster and node stats as well as lower level pod and container stats. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
 
 ![Container Dashboard](https://raw.githubusercontent.com/raintank/kubernetes-app/master/src/img/cluster-dashboard-screenshot.png)
 
@@ -12,15 +12,15 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 
 ### Requirements
 
-1. Currently only has support for **Graphite**.
-2. For automatic deployment of the collectors, then Kubernetes 1.4 or higher is required.
-3. Grafana 4 is required if using TLS Client Auth (rather than Basic Auth).
+1. Currently only has support for [**Prometheus**](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+2. For automatic deployment of the exporters, then Kubernetes 1.9 or higher is required.
+3. Grafana 5.0.0+
 
 ### Features
 
 - The app uses Kubernetes tags to allow you to filter pod metrics. Kubernetes clusters tend to have a lot of pods and a lot of pod metrics. The Pod/Container dashboard leverages the pod tags so you can easily find the relevant pod or pods.
 
-- Easy installation of collectors, either a one click deploy from Grafana or detailed instructions to deploy them manually them with kubectl (also quite easy!)
+- Easy installation of exporters, either a one click deploy from Grafana or detailed instructions to deploy them manually them with kubectl (also quite easy!)
 
 - Cluster level metrics that are not available in Heapster, like CPU Capacity vs CPU Usage.
 
@@ -31,7 +31,7 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 - Pod Capacity/Usage
 - Memory Capacity/Usage
 - CPU Capacity/Usage
-- Disk Capacity/Usage (measurements from each container's /var/lib/docker)
+- Disk Capacity/Usage
 - Overview of Nodes, Pods and Containers
 
 ### Node Metrics
@@ -54,7 +54,6 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 - CPU Usage
 - Read IOPS
 - Write IOPS
-- All Established TCP Conn
 
 ### Documentation
 
@@ -80,19 +79,19 @@ grafana-cli plugins install prometheus-kubernetes-app
 
 3. Fill in the Auth details for your cluster.
 
-4. Choose the Graphite datasource that will be used for reading data in the dashboards.
+4. Choose the Prometheus datasource that will be used for reading data in the dashboards.
 
-5. Fill in the details for the Carbon host that is used to write to Graphite. This url has to be available from inside the cluster.
+5. Fill in the details for the Carbon host that is used to write to Prometheus. This url has to be available from inside the cluster.
 
 6. Click `Deploy`. This will deploy a DaemonSet, to collect health metrics for every node, and a pod that collects cluster metrics.
 
-#### Manual Deployment of Collectors
+#### Manual Deployment of Exporters
 
 If you do not want to deploy the collector DaemonSet and pod automatically, then it can be deployed manually with kubectl. If using an older version of Kubernetes than 1.4, you will have to adapt the json files, particularly for the daemonset, and remove some newer features. Please create an issue if you need support for older versions of Kubernetes built in to the app.
 
 The manual deployment instructions and files needed, can be downloaded from the Cluster Config page. At the bottom of the page, there is a help section with instructions and links to all the json files needed.
 
-#### Uninstalling the Collectors (DaemonSet and Pod)
+#### Uninstalling the Exporters (DaemonSet and Pod)
 
 There is an Undeploy button on the Cluster Config page. To manually undeploy them:
 
