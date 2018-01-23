@@ -58,7 +58,7 @@ System.register(['lodash', 'app/core/app_events'], function (_export, _context) 
           value: function getClusters() {
             var self = this;
             return this.backendSrv.get('/api/datasources').then(function (result) {
-              self.clusters = _.filter(result, { "type": "raintank-kubernetes-datasource" });
+              self.clusters = _.filter(result, { "type": "prometheus-kubernetes-datasource" });
             });
           }
         }, {

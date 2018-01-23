@@ -20,7 +20,7 @@ export class ClustersCtrl {
     var self = this;
     return this.backendSrv.get('/api/datasources')
     .then((result) => {
-      self.clusters = _.filter(result, {"type": "raintank-kubernetes-datasource"});
+      self.clusters = _.filter(result, {"type": "prometheus-kubernetes-datasource"});
     });
   }
 

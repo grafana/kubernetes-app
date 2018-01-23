@@ -204,7 +204,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
             var _this3 = this;
 
             return this.backendSrv.get('api/datasources').then(function (result) {
-              return _.filter(result, { "type": "raintank-kubernetes-datasource", "name": id })[0];
+              return _.filter(result, { "type": "prometheus-kubernetes-datasource", "name": id })[0];
             }).then(function (ds) {
               if (!ds) {
                 _this3.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');

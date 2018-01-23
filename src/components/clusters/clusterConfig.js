@@ -12,7 +12,7 @@ export class ClusterConfigCtrl {
     this.$window = $window;
     this.$location = $location;
     this.cluster = {
-      type: 'raintank-kubernetes-datasource'
+      type: 'prometheus-kubernetes-datasource'
     };
     this.pageReady = false;
     this.prometheusDeployed = false;

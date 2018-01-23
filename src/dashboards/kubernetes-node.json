@@ -15,7 +15,7 @@
     },
     {
       "type": "panel",
-      "id": "raintank-kubernetes-nodeinfo-panel",
+      "id": "prometheus-kubernetes-nodeinfo-panel",
       "name": "Kubernetes Node Info",
       "version": ""
     },
@@ -82,7 +82,7 @@
       "links": [],
       "title": "",
       "transparent": true,
-      "type": "raintank-kubernetes-nodeinfo-panel"
+      "type": "prometheus-kubernetes-nodeinfo-panel"
     },
     {
       "collapsed": false,

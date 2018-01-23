@@ -117,7 +117,7 @@ export class NodeDataCtrl extends PanelCtrl {
   loadDatasource(id) {
     return this.backendSrv.get('api/datasources')
       .then(result => {
-        return _.filter(result, {"type": "raintank-kubernetes-datasource", "name": id})[0];
+        return _.filter(result, {"type": "prometheus-kubernetes-datasource", "name": id})[0];
       })
       .then(ds => {
         if (!ds) {
