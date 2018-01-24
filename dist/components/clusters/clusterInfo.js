@@ -164,7 +164,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
         }, {
           key: 'goToClusterDashboard',
           value: function goToClusterDashboard() {
-            this.$location.path("dashboard/db/kubernetes-cluster").search({
+            this.$location.path("dashboard/db/k8s-cluster").search({
               "var-datasource": this.cluster.jsonData.ds,
               "var-cluster": this.cluster.name
             });
@@ -172,7 +172,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
         }, {
           key: 'goToPodDashboard',
           value: function goToPodDashboard() {
-            this.$location.path("dashboard/db/kubernetes-container").search({
+            this.$location.path("dashboard/db/k8s-container").search({
               "var-datasource": this.cluster.jsonData.ds,
               "var-cluster": this.cluster.name,
               "var-node": 'All',
@@ -185,7 +185,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
           value: function goToNodeDashboard(node, evt) {
             var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
             if (clickTargetIsLinkOrHasLinkParents === false) {
-              this.$location.path("dashboard/db/kubernetes-node").search({
+              this.$location.path("dashboard/db/k8s-node").search({
                 "var-datasource": this.cluster.jsonData.ds,
                 "var-cluster": this.cluster.name,
                 "var-node": node === 'All' ? 'All' : slugify(node.metadata.name)

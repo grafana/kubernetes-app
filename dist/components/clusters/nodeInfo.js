@@ -89,7 +89,7 @@ System.register(['moment'], function (_export, _context) {
         }, {
           key: 'goToNodeDashboard',
           value: function goToNodeDashboard() {
-            this.$location.path("dashboard/db/kubernetes-node").search({
+            this.$location.path("dashboard/db/k8s-node").search({
               "var-datasource": this.cluster.jsonData.ds,
               "var-cluster": this.cluster.name,
               "var-node": slugify(this.node.metadata.name)

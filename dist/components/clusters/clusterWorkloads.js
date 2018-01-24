@@ -130,7 +130,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
         }, {
           key: 'goToPodDashboard',
           value: function goToPodDashboard(pod) {
-            this.$location.path("dashboard/db/kubernetes-container").search({
+            this.$location.path("dashboard/db/k8s-container").search({
               "var-datasource": this.cluster.jsonData.ds,
               "var-cluster": this.cluster.name,
               "var-node": slugify(pod.spec.nodeName),
@@ -141,7 +141,7 @@ System.register(['lodash', 'jquery'], function (_export, _context) {
         }, {
           key: 'goToDeploymentDashboard',
           value: function goToDeploymentDashboard(deploy) {
-            this.$location.path("dashboard/db/kubernetes-deployments").search({
+            this.$location.path("dashboard/db/k8s-deployments").search({
               "var-datasource": this.cluster.jsonData.ds,
               "var-cluster": this.cluster.name,
               "var-namespace": deploy.metadata.namespace,

@@ -101,7 +101,7 @@ System.register(["moment"], function (_export, _context) {
         }, {
           key: "goToPodDashboard",
           value: function goToPodDashboard(pod) {
-            this.$location.path("dashboard/db/kubernetes-container").search({
+            this.$location.path("dashboard/db/k8s-container").search({
               "var-datasource": this.datasource,
               "var-cluster": this.clusterDS.name,
               "var-node": slugify(pod.spec.nodeName),

@@ -82,7 +82,7 @@ export class ClusterWorkloadsCtrl {
   }
 
   goToPodDashboard(pod) {
-    this.$location.path("dashboard/db/kubernetes-container")
+    this.$location.path("dashboard/db/k8s-container")
     .search({
       "var-datasource": this.cluster.jsonData.ds,
       "var-cluster": this.cluster.name,
@@ -93,7 +93,7 @@ export class ClusterWorkloadsCtrl {
   }
 
   goToDeploymentDashboard(deploy) {
-    this.$location.path("dashboard/db/kubernetes-deployments")
+    this.$location.path("dashboard/db/k8s-deployments")
     .search({
       "var-datasource": this.cluster.jsonData.ds,
       "var-cluster": this.cluster.name,

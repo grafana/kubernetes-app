@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/raintank/kubernetes-app.git"
+    "url": "git+https://github.com/grafana/prometheus-kubernetes-app.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/raintank/kubernetes-app/issues"
+    "url": "https://github.com/grafana/prometheus-kubernetes-app/issues"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

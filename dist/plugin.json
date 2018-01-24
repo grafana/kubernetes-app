@@ -47,26 +47,26 @@
     },
     {
       "type": "dashboard",
-      "name": "Kubernetes Node",
-      "path": "dashboards/kubernetes-node.json",
+      "name": "K8s Node",
+      "path": "dashboards/k8s-node.json",
       "addToNav": false
     },
     {
       "type": "dashboard",
-      "name": "Kubernetes Container",
-      "path": "dashboards/kubernetes-container.json",
+      "name": "K8s Container",
+      "path": "dashboards/k8s-container.json",
       "addToNav": false
     },
     {
       "type": "dashboard",
-      "name": "Kubernetes Cluster",
-      "path": "dashboards/kubernetes-cluster.json",
+      "name": "K8s Cluster",
+      "path": "dashboards/k8s-cluster.json",
       "addToNav": false
     },
     {
       "type": "dashboard",
-      "name": "Kubernetes Deployments",
-      "path": "dashboards/kubernetes-deployments.json",
+      "name": "K8s Deployments",
+      "path": "dashboards/k8s-deployments.json",
       "addToNav": false
     },
     {

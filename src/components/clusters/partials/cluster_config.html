@@ -47,33 +47,6 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-8" ng-hide="ctrl.hostedMetricsDS.length === 0">
-      <h4 class="page-heading">Hosted Metrics</h4>
-      <section class="card-section card-list-layout-grid">
-        <a class="card-item">
-          <div class="card-item-body">
-            <figure class="card-item-figure" style="height:2.6rem;">
-              <img ng-src="https://grafana.net/img/icon_hosted_metrics.svg" height="48">
-            </figure>
-            <div class="card-item-details">
-              <div class="card-item-sub-name">
-                It looks like you are using Hosted Metrics! If you select a hosted metrics datasource click deploy below to create the required exporters, and a Prometheus deployment that will write through to your Hosted Metrics. Hosted metrics will store all of your kubernetes metrics.
-                <span class="pluginlist-message--enable">Learn More</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </section>
-      <div class="gf-form-group">
-        <div class="gf-form-inline">
-          <div class="gf-form">
-            <span class="gf-form-label width-7">Datasource</span>
-            <select class="gf-form-input" ng-model="ctrl.cluster.jsonData.ds" ng-options="f.name as f.name for f in ctrl.hostedMetricsDS"
-              required></select>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </form>
 <p>The Deploy button will deploy the following: (1) A promtheus configmap which contains the prometheus jobs that collect metrics
@@ -113,8 +86,6 @@
 <div class="grafana-info-box span10" ng-if="ctrl.showHelp">
   <h5>Manual Deploy</h5>
   <p>If you want to deploy manually or to automate the deployment to Kubernetes, the following files are needed.</p>
-  <button type="button" class="btn btn-success" ng-click="ctrl.savePrometheusConfigMapToFile()">Download Prometheus ConfigMap</button>
-  <p class="small">(The ConfigMap is generated from the settings so remember to save your settings before downloading.)</p>
   <button type="button" class="btn btn-success" ng-click="ctrl.saveKubeStateDeployToFile()">Download KubeState Deploy</button>
   <button type="button" class="btn btn-success" ng-click="ctrl.saveNodeExporterDSToFile()">Download Node Exporter Daemon Set</button>
 </div>

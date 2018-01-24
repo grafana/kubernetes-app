@@ -58,7 +58,7 @@ export class PodInfoCtrl {
   }
 
   goToPodDashboard(pod) {
-    this.$location.path("dashboard/db/kubernetes-container")
+    this.$location.path("dashboard/db/k8s-container")
     .search({
       "var-datasource": this.datasource,
       "var-cluster": this.clusterDS.name,

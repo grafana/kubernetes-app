@@ -61,7 +61,7 @@ export class ClusterInfoCtrl {
   }
 
   goToClusterDashboard() {
-    this.$location.path("dashboard/db/kubernetes-cluster")
+    this.$location.path("dashboard/db/k8s-cluster")
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name
@@ -69,7 +69,7 @@ export class ClusterInfoCtrl {
   }
 
   goToPodDashboard() {
-    this.$location.path("dashboard/db/kubernetes-container")
+    this.$location.path("dashboard/db/k8s-container")
     .search({
       "var-datasource": this.cluster.jsonData.ds,
       "var-cluster": this.cluster.name,
@@ -82,7 +82,7 @@ export class ClusterInfoCtrl {
   goToNodeDashboard(node, evt) {
     var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("dashboard/db/kubernetes-node")
+      this.$location.path("dashboard/db/k8s-node")
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
