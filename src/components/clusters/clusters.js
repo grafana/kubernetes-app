@@ -20,7 +20,7 @@ export class ClustersCtrl {
     var self = this;
     return this.backendSrv.get('/api/datasources')
     .then((result) => {
-      self.clusters = _.filter(result, {"type": "prometheus-kubernetes-datasource"});
+      self.clusters = _.filter(result, {"type": "grafana-kubernetes-datasource"});
     });
   }
 
@@ -44,7 +44,7 @@ export class ClustersCtrl {
   }
 
   clusterInfo(cluster) {
-    this.$location.path("plugins/prometheus-kubernetes-app/page/cluster-info").search({"cluster": cluster.id});
+    this.$location.path("plugins/grafana-kubernetes-app/page/cluster-info").search({"cluster": cluster.id});
   }
 }
 

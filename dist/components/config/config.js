@@ -53,7 +53,7 @@ System.register([], function (_export, _context) {
             return this.appEditCtrl.importDashboards().then(function () {
               _this.enabled = true;
               return {
-                url: "plugins/prometheus-kubernetes-app/page/clusters",
+                url: "plugins/grafana-kubernetes-app/page/clusters",
                 message: "Kubernetes App enabled!"
               };
             });

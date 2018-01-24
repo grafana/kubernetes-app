@@ -8,8 +8,8 @@ import {PodInfoCtrl} from './components/clusters/podInfo';
 import {loadPluginCss} from 'app/plugins/sdk';
 
 loadPluginCss({
-  dark: 'plugins/prometheus-kubernetes-app/css/dark.css',
-  light: 'plugins/prometheus-kubernetes-app/css/light.css'
+  dark: 'plugins/grafana-kubernetes-app/css/dark.css',
+  light: 'plugins/grafana-kubernetes-app/css/light.css'
 });
 
 export {

@@ -1,7 +1,7 @@
 {
   "type": "app",
   "name": "kubernetes",
-  "id": "prometheus-kubernetes-app",
+  "id": "grafana-kubernetes-app",
 
   "routes": [
   ],

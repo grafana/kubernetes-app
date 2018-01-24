@@ -1,12 +1,12 @@
 {
   "name": "Kubernetes",
-  "id": "prometheus-kubernetes-datasource",
+  "id": "grafana-kubernetes-datasource",
   "type": "datasource",
 
   "staticRoot": ".",
 
   "partials": {
-    "config": "public/app/plugins/prometheus-kubernetes-app/datasource/config.html"
+    "config": "public/app/plugins/grafana-kubernetes-app/datasource/config.html"
   },
 
   "metrics": false,

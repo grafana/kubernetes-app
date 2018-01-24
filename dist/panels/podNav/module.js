@@ -13,8 +13,8 @@ System.register(['./podNav', 'app/plugins/sdk'], function (_export, _context) {
     execute: function () {
 
       loadPluginCss({
-        dark: 'plugins/prometheus-kubernetes-app/css/dark.css',
-        light: 'plugins/prometheus-kubernetes-app/css/light.css'
+        dark: 'plugins/grafana-kubernetes-app/css/dark.css',
+        light: 'plugins/grafana-kubernetes-app/css/light.css'
       });
 
       _export('PanelCtrl', PodNavCtrl);

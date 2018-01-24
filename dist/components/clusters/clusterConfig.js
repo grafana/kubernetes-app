@@ -50,7 +50,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function (_export,
           this.$window = $window;
           this.$location = $location;
           this.cluster = {
-            type: 'prometheus-kubernetes-datasource'
+            type: 'grafana-kubernetes-datasource'
           };
           this.pageReady = false;
           this.prometheusDeployed = false;
