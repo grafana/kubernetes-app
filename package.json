@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/grafana/grafana-kubernetes-app.git"
+    "url": "git+https://github.com/grafana/kubernetes-app.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/grafana/grafana-kubernetes-app/issues"
+    "url": "https://github.com/grafana/kubernetes-app/issues"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
