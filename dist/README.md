@@ -4,11 +4,11 @@
 
 The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's performance. It includes 4 dashboards, Cluster, Node, Pod/Container and Deployment. It allows for the automatic deployment of the required Prometheus exporters and a default scrape config to use with your in cluster Prometheus deployment. The metrics collected are high-level cluster and node stats as well as lower level pod and container stats. Use the high-level metrics to alert on and the low-level metrics to troubleshoot.
 
-![Container Dashboard](https://raw.githubusercontent.com/grafana/kubernetes-app/master/src/img/cluster-dashboard-screenshot.png)
+![Container Dashboard](https://github.com/grafana/kubernetes-app/blob/master/src/img/cluster-dashboard-screenshot.png?raw=true)
 
-![Container Dashboard](https://raw.githubusercontent.com/grafana/kubernetes-app/master/src/img/container-dashboard-screenshot.png)
+![Container Dashboard](https://github.com/grafana/kubernetes-app/blob/master/src/img/container-dashboard-screenshot.png?raw=true)
 
-![Node Dashboard](https://raw.githubusercontent.com/grafana/kubernetes-app/master/src/img/node-dashboard-screenshot.png)
+![Node Dashboard](https://github.com/grafana/kubernetes-app/blob/master/src/img/node-dashboard-screenshot.png?raw=true)
 
 ### Requirements
 
@@ -70,7 +70,7 @@ grafana-cli plugins install kubernetes-app
 
 1. Go to the Cluster List page via the Kubernetes app menu.
 
-   ![Cluster List in main menu](https://raw.githubusercontent.com/grafana/kubernetes-app/master/src/img/app-menu-screenshot.png)
+   ![Cluster List in main menu](https://github.com/grafana/kubernetes-app/blob/master/src/img/app-menu-screenshot.png?raw=true)
 
 2. Click the `New Cluster` button.
 
