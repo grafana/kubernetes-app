@@ -177,3 +177,4 @@ function unslugify(str) {
 }
 
 NodeDataCtrl.templateUrl = 'panels/nodeData/partials/node_info.html';
+NodeDataCtrl.scrollable = true;

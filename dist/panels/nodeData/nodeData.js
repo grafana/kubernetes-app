@@ -264,6 +264,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
       _export('NodeDataCtrl', NodeDataCtrl);
 
       NodeDataCtrl.templateUrl = 'panels/nodeData/partials/node_info.html';
+      NodeDataCtrl.scrollable = true;
     }
   };
 });
