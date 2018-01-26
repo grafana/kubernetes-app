@@ -1,24 +1,21 @@
-'use strict';
-
-System.register(['./podNav', 'app/plugins/sdk'], function (_export, _context) {
-  "use strict";
-
-  var PodNavCtrl, loadPluginCss;
-  return {
-    setters: [function (_podNav) {
-      PodNavCtrl = _podNav.PodNavCtrl;
-    }, function (_appPluginsSdk) {
-      loadPluginCss = _appPluginsSdk.loadPluginCss;
-    }],
-    execute: function () {
-
-      loadPluginCss({
-        dark: 'plugins/grafana-kubernetes-app/css/dark.css',
-        light: 'plugins/grafana-kubernetes-app/css/light.css'
-      });
-
-      _export('PanelCtrl', PodNavCtrl);
+///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+System.register(['./podNav', 'app/plugins/sdk'], function(exports_1) {
+    var podNav_1, sdk_1;
+    return {
+        setters:[
+            function (podNav_1_1) {
+                podNav_1 = podNav_1_1;
+            },
+            function (sdk_1_1) {
+                sdk_1 = sdk_1_1;
+            }],
+        execute: function() {
+            sdk_1.loadPluginCss({
+                dark: 'plugins/grafana-kubernetes-app/css/dark.css',
+                light: 'plugins/grafana-kubernetes-app/css/light.css'
+            });
+            exports_1("PanelCtrl", podNav_1.PodNavCtrl);
+        }
     }
-  };
 });
 //# sourceMappingURL=module.js.map

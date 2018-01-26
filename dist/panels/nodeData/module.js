@@ -1,24 +1,21 @@
-'use strict';
-
-System.register(['./nodeData', 'app/plugins/sdk'], function (_export, _context) {
-  "use strict";
-
-  var NodeDataCtrl, loadPluginCss;
-  return {
-    setters: [function (_nodeData) {
-      NodeDataCtrl = _nodeData.NodeDataCtrl;
-    }, function (_appPluginsSdk) {
-      loadPluginCss = _appPluginsSdk.loadPluginCss;
-    }],
-    execute: function () {
-
-      loadPluginCss({
-        dark: 'plugins/grafana-kubernetes-app/css/dark.css',
-        light: 'plugins/grafana-kubernetes-app/css/light.css'
-      });
-
-      _export('PanelCtrl', NodeDataCtrl);
+///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+System.register(['./nodeData', 'app/plugins/sdk'], function(exports_1) {
+    var nodeData_1, sdk_1;
+    return {
+        setters:[
+            function (nodeData_1_1) {
+                nodeData_1 = nodeData_1_1;
+            },
+            function (sdk_1_1) {
+                sdk_1 = sdk_1_1;
+            }],
+        execute: function() {
+            sdk_1.loadPluginCss({
+                dark: 'plugins/grafana-kubernetes-app/css/dark.css',
+                light: 'plugins/grafana-kubernetes-app/css/light.css'
+            });
+            exports_1("PanelCtrl", nodeData_1.NodeDataCtrl);
+        }
     }
-  };
 });
 //# sourceMappingURL=module.js.map

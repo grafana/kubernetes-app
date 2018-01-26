@@ -1,31 +1,22 @@
-'use strict';
-
-System.register(['./datasource'], function (_export, _context) {
-  "use strict";
-
-  var K8sDatasource, K8sConfigCtrl;
-
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
+///<reference path="../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+System.register(['./datasource'], function(exports_1) {
+    var datasource_1;
+    var K8sConfigCtrl;
+    return {
+        setters:[
+            function (datasource_1_1) {
+                datasource_1 = datasource_1_1;
+            }],
+        execute: function() {
+            K8sConfigCtrl = (function () {
+                function K8sConfigCtrl() {
+                }
+                K8sConfigCtrl.templateUrl = 'datasource/config.html';
+                return K8sConfigCtrl;
+            })();
+            exports_1("Datasource", datasource_1.K8sDatasource);
+            exports_1("ConfigCtrl", K8sConfigCtrl);
+        }
     }
-  }
-
-  return {
-    setters: [function (_datasource) {
-      K8sDatasource = _datasource.K8sDatasource;
-    }],
-    execute: function () {
-      _export('ConfigCtrl', K8sConfigCtrl = function K8sConfigCtrl() {
-        _classCallCheck(this, K8sConfigCtrl);
-      });
-
-      K8sConfigCtrl.templateUrl = 'datasource/config.html';
-
-      _export('Datasource', K8sDatasource);
-
-      _export('ConfigCtrl', K8sConfigCtrl);
-    }
-  };
 });
 //# sourceMappingURL=module.js.map
