@@ -1,79 +1,64 @@
 module.exports = function(grunt) {
-
   require('load-grunt-tasks')(grunt);
 
-  grunt.loadNpmTasks('grunt-execute');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-typescript');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+
 
   grunt.initConfig({
-
-    clean: ["dist"],
+    clean: ['dist'],
 
     copy: {
-      src_to_dist: {
+      dist_js: {
+        expand: true,
         cwd: 'src',
-        expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss'],
+        src: ['**/*.ts', '**/*.d.ts'],
         dest: 'dist'
       },
-      includes_to_dist: {
-        cwd: 'includes',
+      dist_html: {
         expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss'],
+        cwd: 'src',
+        src: ['**/*.html', '**/*.json'],
         dest: 'dist'
       },
-      pluginDef: {
+      dist_css: {
         expand: true,
-        src: ['README.md'],
+        flatten: true,
+        cwd: 'src/css',
+        src: ['*.css'],
+        dest: 'dist/css/'
+      },
+      dist_img: {
+        expand: true,
+        flatten: true,
+        cwd: 'src/img',
+        src: ['*.*'],
+        dest: 'dist/img/'
+      },
+      dist_statics: {
+        expand: true,
+        flatten: true,
+        src: ['src/plugin.json', 'LICENSE', 'README.md', 'src/query_help.md'],
+        dest: 'dist/'
+      }
+    },
+
+    typescript: {
+      build: {
+        src: ['dist/**/*.ts', '!**/*.d.ts'],
         dest: 'dist',
-      }
-    },
-
-    watch: {
-      rebuild_all: {
-        files: ['src/**/*', 'README.md'],
-        tasks: ['default'],
-        options: {spawn: false}
-      },
-    },
-
-    babel: {
-      options: {
-        sourceMap: true,
-        presets:  ["es2015"],
-        plugins: ['transform-es2015-modules-systemjs', "transform-es2015-for-of"],
-      },
-      dist: {
-        files: [{
-          cwd: 'src',
-          expand: true,
-          src: ['**/*.js', '!src/directives/*.js', '!src/filters/*.js'],
-          dest: 'dist',
-          ext:'.js'
-        }]
-      },
-    },
-
-    jshint: {
-      source: {
-        files: {
-          src: ['src/**/*.js'],
+        options: {
+          module: 'system',
+          target: 'es5',
+          rootDir: 'dist/',
+          declaration: true,
+          emitDecoratorMetadata: true,
+          experimentalDecorators: true,
+          sourceMap: true,
+          noImplicitAny: false,
         }
-      },
-      options: {
-        jshintrc: true,
-        reporter: require('jshint-stylish'),
-        ignores: [
-          'node_modules/*',
-          'dist/*',
-        ]
       }
-    },
-    jscs: {
-      src: ['src/**/*.js'],
-      options: {
-        config: ".jscs.json",
-      },
     },
 
     sass: {
@@ -86,26 +71,26 @@ module.exports = function(grunt) {
           "dist/css/kubernetes.light.css": "src/sass/kubernetes.light.scss",
         }
       }
+    },
+
+    watch: {
+      files: ['src/**/*.ts', 'src/**/*.html', 'src/**/*.css', 'src/img/*.*', 'src/plugin.json', 'README.md', 'src/query_help.md'],
+      tasks: ['default'],
+      options: {
+        debounceDelay: 250,
+      },
     }
   });
-
+  
+  grunt.loadNpmTasks("grunt-ts");
   grunt.registerTask('default', [
     'clean',
+    'copy:dist_js',
     'sass',
-    'copy:src_to_dist',
-    'copy:pluginDef',
-    'babel',
-    'jshint',
-    'jscs',
-    ]);
-
-  // does not have sass due to grafana file dependency
-  grunt.registerTask('test', [
-    'clean',
-    'copy:src_to_dist',
-    'copy:pluginDef',
-    'babel',
-    'jshint',
-    'jscs',
-    ]);
+    'typescript:build',
+    'copy:dist_html',
+    'copy:dist_css',
+    'copy:dist_img',
+    'copy:dist_statics'
+  ]);
 };
