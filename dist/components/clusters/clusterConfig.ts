@@ -483,10 +483,6 @@ export class ClusterConfigCtrl {
     regex: (.+)
     target_label: __metrics_path__
     replacement: /api/v1/nodes/\${1}/proxy/metrics
-  - source_labels: [__address__]
-    regex: .*
-    target_label: kubernetes_cluster
-    replacement: ${this.cluster.name}
 - job_name: \'kubernetes-cadvisor\'
   scheme: https
   tls_config:
@@ -504,10 +500,6 @@ export class ClusterConfigCtrl {
     regex: (.+)
     target_label: __metrics_path__
     replacement: /api/v1/nodes/\${1}/proxy/metrics/cadvisor
-  - source_labels: [__address__]
-    regex: .*
-    target_label: kubernetes_cluster
-    replacement: ${this.cluster.name}
 - job_name: \'kubernetes-kube-state\'
   kubernetes_sd_configs:
   - role: pod
@@ -523,10 +515,6 @@ export class ClusterConfigCtrl {
   - source_labels: [__meta_kubernetes_pod_label_grafanak8sapp]
     regex: .*true.*
     action: keep
-  - source_labels: [__address__]
-    regex: .*
-    target_label: kubernetes_cluster
-    replacement: ${this.cluster.name}
   - source_labels: ['__meta_kubernetes_pod_label_daemon', '__meta_kubernetes_pod_node_name']
     regex: 'node-exporter;(.*)'
     action: replace

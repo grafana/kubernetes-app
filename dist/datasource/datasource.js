@@ -27,6 +27,7 @@ System.register(['lodash'], function(exports_1) {
                     this.url = instanceSettings.url;
                     this.name = instanceSettings.name;
                     this.id = instanceSettings.id;
+                    this.ds = instanceSettings.jsonData.ds;
                     this.backendSrv = backendSrv;
                     this.$q = $q;
                 }
@@ -136,15 +137,21 @@ System.register(['lodash'], function(exports_1) {
                     throw new Error("Annotation Support not implemented yet.");
                 };
                 K8sDatasource.prototype.metricFindQuery = function (query) {
+                    var promises = [];
+                    var namespaces;
                     if (!query) {
                         return Promise.resolve([]);
                     }
                     var interpolated = this.templateSrv.replace(query, {});
                     var query_list = interpolated.split(" ");
+                    if (query_list.length > 1) {
+                        namespaces = query_list[1].replace("{", "").replace("}", "").split(",");
+                    }
+                    else {
+                        namespaces = [""]; //Gets all pods/deployments
+                    }
                     switch (query_list[0]) {
                         case 'pod':
-                            var namespaces = query_list[1].replace("{", "").replace("}", "").split(",");
-                            var promises = [];
                             for (var _i = 0; _i < namespaces.length; _i++) {
                                 var ns = namespaces[_i];
                                 promises.push(this.getPods(ns));
@@ -157,6 +164,23 @@ System.register(['lodash'], function(exports_1) {
                                     data.push({
                                         text: pod.metadata.name,
                                         value: pod.metadata.name,
+                                    });
+                                }
+                                return data;
+                            });
+                        case 'deployment':
+                            for (var _a = 0; _a < namespaces.length; _a++) {
+                                var ns = namespaces[_a];
+                                promises.push(this.getDeployments(ns));
+                            }
+                            return Promise.all(promises).then(function (res) {
+                                var data = [];
+                                var deployments = lodash_1.default.flatten(res).filter(function (n) { return n; });
+                                for (var _i = 0; _i < deployments.length; _i++) {
+                                    var deployment = deployments[_i];
+                                    data.push({
+                                        text: deployment.metadata.name,
+                                        value: deployment.metadata.name,
                                     });
                                 }
                                 return data;
@@ -187,6 +211,11 @@ System.register(['lodash'], function(exports_1) {
                                 ;
                                 return data;
                             });
+                        case 'datasource':
+                            return Promise.resolve([{
+                                    text: this.ds,
+                                    value: this.ds,
+                                }]);
                     }
                 };
                 K8sDatasource.baseApiUrl = '/api/v1/';

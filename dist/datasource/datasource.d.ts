@@ -7,6 +7,7 @@ export declare class K8sDatasource {
     name: string;
     url: string;
     type: string;
+    ds: string;
     static baseApiUrl: string;
     constructor(instanceSettings: any, backendSrv: any, templateSrv: any, $q: any);
     testDatasource(): any;

@@ -7,6 +7,7 @@ export class K8sDatasource {
   name: string;
   url: string;
   type: string;
+  ds: string;
   static baseApiUrl = '/api/v1/';
 
   constructor(instanceSettings, private backendSrv, private templateSrv, private $q) {
@@ -14,6 +15,7 @@ export class K8sDatasource {
     this.url = instanceSettings.url;
     this.name = instanceSettings.name;
     this.id = instanceSettings.id;
+    this.ds = instanceSettings.jsonData.ds;
     this.backendSrv = backendSrv;
     this.$q = $q;
   }
@@ -137,15 +139,20 @@ export class K8sDatasource {
   }
 
   metricFindQuery(query: string) {
+    let promises: any[] = [];
+    let namespaces: string[];
     if (!query) {
       return Promise.resolve([]);
     }
     let interpolated = this.templateSrv.replace(query, {});
     let query_list = interpolated.split(" ");
+    if (query_list.length > 1) {
+      namespaces = query_list[1].replace("{", "").replace("}", "").split(",")
+    } else {
+      namespaces = [""] //Gets all pods/deployments
+    }
     switch (query_list[0]) {
       case 'pod':
-        let namespaces = query_list[1].replace("{", "").replace("}", "").split(",")
-        let promises: any[] = [];
         for (let ns of namespaces) {
           promises.push(this.getPods(ns))
         }
@@ -156,6 +163,21 @@ export class K8sDatasource {
             data.push({
               text: pod.metadata.name,
               value: pod.metadata.name,
+            });
+          }
+          return data
+        })
+      case 'deployment':
+        for (let ns of namespaces) {
+          promises.push(this.getDeployments(ns))
+        }
+        return Promise.all(promises).then((res) => {
+          let data: any[] = [];
+          let deployments = _.flatten(res).filter(n => n)
+          for (let deployment of deployments) {
+            data.push({
+              text: deployment.metadata.name,
+              value: deployment.metadata.name,
             });
           }
           return data
@@ -182,6 +204,11 @@ export class K8sDatasource {
           };
           return data;
         });
+      case 'datasource': // Returns the prometheus datasource associated with the cluster
+        return Promise.resolve([{
+          text: this.ds,
+          value: this.ds,
+        }]);
     }
   }
 }
