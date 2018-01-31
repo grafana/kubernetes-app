@@ -19,8 +19,9 @@ System.register(['lodash'], function(exports_1) {
             }],
         execute: function() {
             K8sDatasource = (function () {
-                function K8sDatasource(instanceSettings, backendSrv, $q) {
+                function K8sDatasource(instanceSettings, backendSrv, templateSrv, $q) {
                     this.backendSrv = backendSrv;
+                    this.templateSrv = templateSrv;
                     this.$q = $q;
                     this.type = instanceSettings.type;
                     this.url = instanceSettings.url;
@@ -126,6 +127,66 @@ System.register(['lodash'], function(exports_1) {
                             .then(function (pod) {
                             return [pod];
                         });
+                    }
+                };
+                K8sDatasource.prototype.query = function (options) {
+                    throw new Error("Query Support not implemented yet.");
+                };
+                K8sDatasource.prototype.annotationQuery = function (options) {
+                    throw new Error("Annotation Support not implemented yet.");
+                };
+                K8sDatasource.prototype.metricFindQuery = function (query) {
+                    if (!query) {
+                        return Promise.resolve([]);
+                    }
+                    var interpolated = this.templateSrv.replace(query, {});
+                    var query_list = interpolated.split(" ");
+                    switch (query_list[0]) {
+                        case 'pod':
+                            var namespaces = query_list[1].replace("{", "").replace("}", "").split(",");
+                            var promises = [];
+                            for (var _i = 0; _i < namespaces.length; _i++) {
+                                var ns = namespaces[_i];
+                                promises.push(this.getPods(ns));
+                            }
+                            return Promise.all(promises).then(function (res) {
+                                var data = [];
+                                var pods = lodash_1.default.flatten(res).filter(function (n) { return n; });
+                                for (var _i = 0; _i < pods.length; _i++) {
+                                    var pod = pods[_i];
+                                    data.push({
+                                        text: pod.metadata.name,
+                                        value: pod.metadata.name,
+                                    });
+                                }
+                                return data;
+                            });
+                        case 'namespace':
+                            return this.getNamespaces().then(function (namespaces) {
+                                var data = [];
+                                for (var _i = 0; _i < namespaces.length; _i++) {
+                                    var ns = namespaces[_i];
+                                    data.push({
+                                        text: ns.metadata.name,
+                                        value: ns.metadata.name,
+                                    });
+                                }
+                                ;
+                                return data;
+                            });
+                        case 'node':
+                            return this.getNodes().then(function (nodes) {
+                                var data = [];
+                                for (var _i = 0; _i < nodes.length; _i++) {
+                                    var node = nodes[_i];
+                                    data.push({
+                                        text: node.metadata.name,
+                                        value: node.metadata.name,
+                                    });
+                                }
+                                ;
+                                return data;
+                            });
                     }
                 };
                 K8sDatasource.baseApiUrl = '/api/v1/';

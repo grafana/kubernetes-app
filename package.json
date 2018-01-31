@@ -28,8 +28,6 @@
     "typescript": "~2.6.2"
   },
   "dependencies": {
-    "grunt-cli": "^1.2.0",
-    "grunt-ts": "^6.0.0-beta.17",
     "lodash": "^4.17.4"
   },
   "homepage": "https://grafana.com/"

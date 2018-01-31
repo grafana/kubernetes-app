@@ -419,7 +419,7 @@ chalk@^1.1.1, chalk@^1.1.3, chalk@~1.1.1:
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
 
-chokidar@^1.0.5, chokidar@^1.6.1:
+chokidar@^1.0.5:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -521,15 +521,6 @@ cryptiles@3.x.x:
   dependencies:
     boom "5.x.x"
 
-csproj2ts@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/csproj2ts/-/csproj2ts-1.0.0.tgz#20d5d0aa7cebcc4f58cc715dd35518fe0522e625"
-  dependencies:
-    es6-promise "^4.1.1"
-    lodash "^4.17.4"
-    semver "^5.4.1"
-    xml2js "^0.4.19"
-
 currently-unhandled@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"
@@ -601,10 +592,6 @@ detect-libc@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
 
-detect-newline@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
-
 each-async@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/each-async/-/each-async-1.1.1.tgz#dee5229bdf0ab6ba2012a395e1b869abf8813473"
@@ -642,14 +629,6 @@ es6-iterator@~2.0.3:
     d "1"
     es5-ext "^0.10.35"
     es6-symbol "^3.1.1"
-
-es6-promise@^4.1.1:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.2.4.tgz#dc4221c2b16518760bd8c39a52d8f356fc00ed29"
-
-es6-promise@~0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-0.1.2.tgz#f112c29fea5a0998539fcb6a2fd21443d28f05f7"
 
 es6-symbol@^3.1.1, es6-symbol@~3.1.1:
   version "3.1.1"
@@ -946,7 +925,7 @@ grafana-sdk-mocks@grafana/grafana-sdk-mocks:
   version "1.0.0"
   resolved "https://codeload.github.com/grafana/grafana-sdk-mocks/tar.gz/82d4b132f1ac9761c969c917382d5fb9988ec632"
 
-grunt-cli@^1.2.0, grunt-cli@~1.2.0:
+grunt-cli@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/grunt-cli/-/grunt-cli-1.2.0.tgz#562b119ebb069ddb464ace2845501be97b35b6a8"
   dependencies:
@@ -1024,22 +1003,6 @@ grunt-systemjs-builder@^0.2.5:
   resolved "https://registry.yarnpkg.com/grunt-systemjs-builder/-/grunt-systemjs-builder-0.2.7.tgz#e1ba74ec95dd03f7706ae2e22cf4ef0e1bd29cc9"
   dependencies:
     systemjs-builder "0.14.11 - 0.15.x"
-
-grunt-ts@^6.0.0-beta.17:
-  version "6.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/grunt-ts/-/grunt-ts-6.0.0-beta.17.tgz#2058cc93b08513216dc46c853762dc1e2a759175"
-  dependencies:
-    chokidar "^1.6.1"
-    csproj2ts "^1.0.0"
-    detect-indent "^4.0.0"
-    detect-newline "^2.1.0"
-    es6-promise "~0.1.1"
-    jsmin2 "^1.2.1"
-    lodash "^4.17.4"
-    ncp "0.5.1"
-    rimraf "2.2.6"
-    semver "^5.3.0"
-    strip-bom "^2.0.0"
 
 grunt-typescript@^0.8.0:
   version "0.8.0"
@@ -1338,10 +1301,6 @@ jsesc@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-1.3.0.tgz#46c3fec8c1892b12b0833db9bc7622176dbab34b"
 
-jsmin2@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/jsmin2/-/jsmin2-1.2.1.tgz#88fbe2fbf75f0a91f66020fd981cd693f4bfe57e"
-
 json-schema-traverse@^0.3.0:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.3.1.tgz#349a6d44c53a51de89b40805c5d5e59b417d3340"
@@ -1561,10 +1520,6 @@ multimatch@^2.0.0:
 nan@^2.3.0, nan@^2.3.2:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.8.0.tgz#ed715f3fe9de02b57a5e6252d90a96675e1f085a"
-
-ncp@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/ncp/-/ncp-0.5.1.tgz#743985316e3db459281b587169e845735a05439f"
 
 node-gyp@^3.3.1:
   version "3.6.2"
@@ -1982,10 +1937,6 @@ rimraf@2, rimraf@^2.5.1, rimraf@^2.6.1:
   dependencies:
     glob "^7.0.5"
 
-rimraf@2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.6.tgz#c59597569b14d956ad29cacc42bdddf5f0ea4f4c"
-
 rimraf@~2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
@@ -2013,10 +1964,6 @@ sass-graph@^2.1.1:
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
 
-sax@>=0.6.0:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
-
 scss-tokenizer@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/scss-tokenizer/-/scss-tokenizer-0.2.3.tgz#8eb06db9a9723333824d3f5530641149847ce5d1"
@@ -2024,7 +1971,7 @@ scss-tokenizer@^0.2.3:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
 
-"semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.4.1:
+"semver@2 || 3 || 4 || 5", semver@^5.3.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.5.0.tgz#dc4bbc7a6ca9d916dee5d43516f0092b58f7b8ab"
 
@@ -2386,17 +2333,6 @@ wrap-ansi@^2.0.0:
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
-
-xml2js@^0.4.19:
-  version "0.4.19"
-  resolved "https://registry.yarnpkg.com/xml2js/-/xml2js-0.4.19.tgz#686c20f213209e94abf0d1bcf1efaa291c7827a7"
-  dependencies:
-    sax ">=0.6.0"
-    xmlbuilder "~9.0.1"
-
-xmlbuilder@~9.0.1:
-  version "9.0.4"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.4.tgz#519cb4ca686d005a8420d3496f3f0caeecca580f"
 
 y18n@^3.2.1:
   version "3.2.1"

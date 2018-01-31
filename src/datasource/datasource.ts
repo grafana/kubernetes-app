@@ -9,7 +9,7 @@ export class K8sDatasource {
   type: string;
   static baseApiUrl = '/api/v1/';
 
-  constructor(instanceSettings, private backendSrv, private $q) {
+  constructor(instanceSettings, private backendSrv, private templateSrv, private $q) {
     this.type = instanceSettings.type;
     this.url = instanceSettings.url;
     this.name = instanceSettings.name;
@@ -125,6 +125,63 @@ export class K8sDatasource {
       .then(pod => {
         return [pod];
       });
+    }
+  }
+
+  query(options) {
+    throw new Error("Query Support not implemented yet.");
+  }
+
+  annotationQuery(options) {
+    throw new Error("Annotation Support not implemented yet.");
+  }
+
+  metricFindQuery(query: string) {
+    if (!query) {
+      return Promise.resolve([]);
+    }
+    let interpolated = this.templateSrv.replace(query, {});
+    let query_list = interpolated.split(" ");
+    switch (query_list[0]) {
+      case 'pod':
+        let namespaces = query_list[1].replace("{", "").replace("}", "").split(",")
+        let promises: any[] = [];
+        for (let ns of namespaces) {
+          promises.push(this.getPods(ns))
+        }
+        return Promise.all(promises).then((res) => {
+          let data: any[] = [];
+          let pods = _.flatten(res).filter(n => n)
+          for (let pod of pods) {
+            data.push({
+              text: pod.metadata.name,
+              value: pod.metadata.name,
+            });
+          }
+          return data
+        })
+      case 'namespace':
+        return this.getNamespaces().then(namespaces => {
+          let data: any[] = [];
+          for (let ns of namespaces) {
+            data.push({
+              text: ns.metadata.name,
+              value: ns.metadata.name,
+            });
+          };
+          return data;
+        });
+      case 'node':
+        return this.getNodes().then(nodes => {
+          let data: any[] = [];
+          for (let node of nodes) {
+            data.push({
+              text: node.metadata.name,
+              value: node.metadata.name,
+            });
+          };
+          return data;
+        });
     }
   }
 }

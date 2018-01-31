@@ -6,10 +6,10 @@
   "staticRoot": ".",
 
   "partials": {
-    "config": "public/app/plugins/grafana-kubernetes-app/datasource/config.html"
+    "config": "public/app/plugins/grafana-kubernetes-app/datasource/partials/config.html"
   },
 
-  "metrics": false,
+  "metrics": true,
   "annotations": false,
 
   "info": {

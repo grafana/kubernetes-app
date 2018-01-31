@@ -82,7 +82,6 @@ module.exports = function(grunt) {
     }
   });
   
-  grunt.loadNpmTasks("grunt-ts");
   grunt.registerTask('default', [
     'clean',
     'copy:dist_js',
