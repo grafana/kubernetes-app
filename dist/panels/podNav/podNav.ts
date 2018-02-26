@@ -156,7 +156,7 @@ export class PodNavCtrl extends PanelCtrl {
       variable.current.value = this.selectedPods;
     } else {
       variable.current.text = _.isEmpty(this.chosenTags) ? 'All': this.currentPods.join(' + ');
-      variable.current.value = _.isEmpty(this.chosenTags) ? '$__all': this.currentPods;
+      variable.current.value = _.isEmpty(this.chosenTags) ? ['.+']: this.currentPods;
     }
 
     this.variableSrv.updateOptions(variable).then(() => {

@@ -155,7 +155,7 @@ System.register(['app/plugins/sdk', 'lodash'], function(exports_1) {
                     }
                     else {
                         variable.current.text = lodash_1.default.isEmpty(this.chosenTags) ? 'All' : this.currentPods.join(' + ');
-                        variable.current.value = lodash_1.default.isEmpty(this.chosenTags) ? '$__all' : this.currentPods;
+                        variable.current.value = lodash_1.default.isEmpty(this.chosenTags) ? ['.+'] : this.currentPods;
                     }
                     this.variableSrv.updateOptions(variable).then(function () {
                         _this.variableSrv.variableUpdated(variable).then(function () {
