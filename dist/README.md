@@ -59,7 +59,7 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 1. Use the grafana-cli tool to install kubernetes from the commandline:
 
 ```
-grafana-cli plugins install kubernetes-app
+grafana-cli plugins install grafana-kubernetes-app
 ```
 
 2. Restart your Grafana server.
@@ -70,11 +70,19 @@ grafana-cli plugins install kubernetes-app
 
 1. Go to the Cluster List page via the Kubernetes app menu.
 
-   ![Cluster List in main menu](https://github.com/grafana/kubernetes-app/blob/master/src/img/app-menu-screenshot.png?raw=true)
+    ![Cluster List in main menu](https://github.com/grafana/kubernetes-app/blob/master/src/img/app-menu-screenshot.png?raw=true)
 
 2. Click the `New Cluster` button.
 
 3. Fill in the Auth details for your cluster.
+
+     TLS certs/keys must be provided in plaintext, not base64 encoded form. For example:
+     ```
+     -----BEGIN CERTIFICATE-----
+    MIQWQtAEFeqqfAFeAEGEQWIGNwEQNFGQ4AEFN35AKWadgAENGqiEGNIWm1QETDGF
+     ...
+     -----END CERTIFICATE-----
+     ```
 
 4. Choose the Prometheus datasource that will be used for reading data in the dashboards.
 
