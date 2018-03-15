@@ -298,7 +298,7 @@
       },
       "yaxes": [
         {
-          "format": "bits",
+          "format": "bytes",
           "logBase": 1,
           "max": null,
           "min": 0,
