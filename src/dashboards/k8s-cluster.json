@@ -65,7 +65,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 100,
+        "maxValue": 1,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -120,7 +120,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "80,90",
+      "thresholds": ".8,.9",
       "title": "Cluster Pod Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -145,7 +145,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 100,
+        "maxValue": 1,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -200,7 +200,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "80,90",
+      "thresholds": ".8,.9",
       "title": "Cluster CPU Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -225,7 +225,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 100,
+        "maxValue": 1,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -280,7 +280,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "80,90",
+      "thresholds": ".8,.9",
       "title": "Cluster Memory Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -305,7 +305,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 100,
+        "maxValue": 1,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -360,7 +360,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": "80,90",
+      "thresholds": ".8,.9",
       "title": "Cluster Disk Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
