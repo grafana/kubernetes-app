@@ -68,7 +68,7 @@ export class NodeDataCtrl extends PanelCtrl {
           });
         } else {
           this.isInListMode = false;
-          this.clusterDS.getNode(unslugify(node_name)).then(node => {
+          this.clusterDS.getNode(node_name).then(node => {
             this.node = node;
             this.pageReady = true;
           });
@@ -144,8 +144,8 @@ export class NodeDataCtrl extends PanelCtrl {
 
   goToNodeDashboard(node) {
     const variable = _.find(this.templateVariables, {'name': 'node'});
-    variable.current.text = node === 'All' ? 'All': slugify(node.metadata.name);
-    variable.current.value = node === 'All' ? '$__all': slugify(node.metadata.name);
+    variable.current.text = node === 'All' ? 'All': node.metadata.name;
+    variable.current.value = node === 'All' ? '$__all': node.metadata.name;
 
     this.variableSrv.variableUpdated(variable).then(() => {
       this.$scope.$emit('template-variable-value-updated');
@@ -174,14 +174,4 @@ export class NodeDataCtrl extends PanelCtrl {
   conditionLastTransitionTime(condition) {
     return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
   }
-}
-
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
-}
-
-function unslugify(str) {
-  var slug = str.replace(/[_]/g, ".");
-  return slug;
 }

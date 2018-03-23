@@ -2,10 +2,6 @@
 System.register(['lodash', 'jquery'], function(exports_1) {
     var lodash_1, jquery_1;
     var ClusterWorkloadsCtrl;
-    function slugify(str) {
-        var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-        return slug;
-    }
     return {
         setters:[
             function (lodash_1_1) {
@@ -90,7 +86,7 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,
-                        "var-node": slugify(pod.spec.nodeName),
+                        "var-node": pod.spec.nodeName,
                         "var-namespace": pod.metadata.namespace,
                         "var-pod": pod.metadata.name
                     });
@@ -114,7 +110,7 @@ System.register(['lodash', 'jquery'], function(exports_1) {
                         this.$location.path("plugins/grafana-kubernetes-app/page/pod-info")
                             .search({
                             "cluster": this.cluster.id,
-                            "namespace": slugify(pod.metadata.namespace),
+                            "namespace": pod.metadata.namespace,
                             "pod": pod.metadata.name
                         });
                     }

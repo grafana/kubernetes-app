@@ -2,10 +2,6 @@
 System.register(['app/core/utils/kbn', 'lodash', 'moment'], function(exports_1) {
     var kbn_1, lodash_1, moment_1;
     var NodeStatsDatasource;
-    function slugify(str) {
-        var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-        return slug;
-    }
     return {
         setters:[
             function (kbn_1_1) {
@@ -75,7 +71,7 @@ System.register(['app/core/utils/kbn', 'lodash', 'moment'], function(exports_1) 
                 };
                 NodeStatsDatasource.prototype.updateNodeWithStats = function (node, nodeStats) {
                     var formatFunc = kbn_1.default.valueFormats['percentunit'];
-                    var nodeName = slugify(node.metadata.name);
+                    var nodeName = node.metadata.name;
                     var findFunction = function (o) { return o.target.substring(7, o.target.length - 2) === nodeName; };
                     var podsUsedData = lodash_1.default.find(nodeStats.podsPerNode, findFunction);
                     if (podsUsedData) {

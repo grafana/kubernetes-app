@@ -2,11 +2,6 @@
 
 import moment from 'moment';
 
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
-}
-
 export class PodInfoCtrl {
   pageReady: boolean;
   pod: any;
@@ -68,7 +63,7 @@ export class PodInfoCtrl {
     .search({
       "var-datasource": this.datasource,
       "var-cluster": this.clusterDS.name,
-      "var-node": slugify(pod.spec.nodeName),
+      "var-node": pod.spec.nodeName,
       "var-namespace": pod.metadata.namespace,
       "var-pod": pod.metadata.name
     });

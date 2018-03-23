@@ -3,11 +3,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
-}
-
 export class ClusterWorkloadsCtrl {
   pageReady: boolean;
   cluster: any;
@@ -96,7 +91,7 @@ export class ClusterWorkloadsCtrl {
     .search({
       "var-datasource": this.cluster.jsonData.ds,
       "var-cluster": this.cluster.name,
-      "var-node": slugify(pod.spec.nodeName),
+      "var-node": pod.spec.nodeName,
       "var-namespace": pod.metadata.namespace,
       "var-pod": pod.metadata.name
     });
@@ -123,7 +118,7 @@ export class ClusterWorkloadsCtrl {
       this.$location.path("plugins/grafana-kubernetes-app/page/pod-info")
       .search({
         "cluster": this.cluster.id,
-        "namespace": slugify(pod.metadata.namespace),
+        "namespace": pod.metadata.namespace,
         "pod": pod.metadata.name
       });
     }
