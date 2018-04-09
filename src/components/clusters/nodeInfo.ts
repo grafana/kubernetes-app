@@ -51,7 +51,7 @@ export class NodeInfoCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": slugify(this.node.metadata.name)
+        "var-node": this.node.metadata.name
       });
   }
 
@@ -76,9 +76,4 @@ export class NodeInfoCtrl {
   conditionLastTransitionTime(condition) {
     return moment(condition.lastTransitionTime).format('YYYY-MM-DD HH:mm:ss');
   }
-}
-
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
 }

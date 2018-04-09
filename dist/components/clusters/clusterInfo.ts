@@ -3,11 +3,6 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
-}
-
 export class ClusterInfoCtrl {
   cluster: any;
   pageReady: boolean;
@@ -96,7 +91,7 @@ export class ClusterInfoCtrl {
       .search({
         "var-datasource": this.cluster.jsonData.ds,
         "var-cluster": this.cluster.name,
-        "var-node": node === 'All' ? 'All': slugify(node.metadata.name)
+        "var-node": node === 'All' ? 'All': node.metadata.name
       });
     }
   }
@@ -107,7 +102,7 @@ export class ClusterInfoCtrl {
       this.$location.path("plugins/grafana-kubernetes-app/page/cluster-workloads")
       .search({
         "cluster": this.cluster.id,
-        "namespace": slugify(ns.metadata.name)
+        "namespace": ns.metadata.name
       });
     }
   }

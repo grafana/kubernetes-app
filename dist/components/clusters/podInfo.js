@@ -2,10 +2,6 @@
 System.register(['moment'], function(exports_1) {
     var moment_1;
     var PodInfoCtrl;
-    function slugify(str) {
-        var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-        return slug;
-    }
     return {
         setters:[
             function (moment_1_1) {
@@ -68,7 +64,7 @@ System.register(['moment'], function(exports_1) {
                         .search({
                         "var-datasource": this.datasource,
                         "var-cluster": this.clusterDS.name,
-                        "var-node": slugify(pod.spec.nodeName),
+                        "var-node": pod.spec.nodeName,
                         "var-namespace": pod.metadata.namespace,
                         "var-pod": pod.metadata.name
                     });

@@ -2,10 +2,6 @@
 System.register(['moment'], function(exports_1) {
     var moment_1;
     var NodeInfoCtrl;
-    function slugify(str) {
-        var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-        return slug;
-    }
     return {
         setters:[
             function (moment_1_1) {
@@ -57,7 +53,7 @@ System.register(['moment'], function(exports_1) {
                         .search({
                         "var-datasource": this.cluster.jsonData.ds,
                         "var-cluster": this.cluster.name,
-                        "var-node": slugify(this.node.metadata.name)
+                        "var-node": this.node.metadata.name
                     });
                 };
                 NodeInfoCtrl.prototype.conditionStatus = function (condition) {

@@ -62,7 +62,7 @@ export default class NodeStatsDatasource {
 
   updateNodeWithStats(node, nodeStats) {
     var formatFunc = kbn.valueFormats['percentunit'];
-    const nodeName = slugify(node.metadata.name);
+    const nodeName = node.metadata.name;
     const findFunction = function(o) {return o.target.substring(7, o.target.length - 2) === nodeName;};
     const podsUsedData = _.find(nodeStats.podsPerNode, findFunction);
     if (podsUsedData) {
@@ -88,9 +88,4 @@ export default class NodeStatsDatasource {
 
     return node;
   }
-}
-
-function slugify(str) {
-  var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-  return slug;
 }

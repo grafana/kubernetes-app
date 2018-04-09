@@ -7,14 +7,6 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
     };
     var moment_1, sdk_1, lodash_1, nodeStats_1;
     var panelDefaults, NodeDataCtrl;
-    function slugify(str) {
-        var slug = str.replace("@", "at").replace("&", "and").replace(/[.]/g, "_").replace("/\W+/", "");
-        return slug;
-    }
-    function unslugify(str) {
-        var slug = str.replace(/[_]/g, ".");
-        return slug;
-    }
     return {
         setters:[
             function (moment_1_1) {
@@ -81,7 +73,7 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
                             }
                             else {
                                 _this.isInListMode = false;
-                                _this.clusterDS.getNode(unslugify(node_name)).then(function (node) {
+                                _this.clusterDS.getNode(node_name).then(function (node) {
                                     _this.node = node;
                                     _this.pageReady = true;
                                 });
@@ -155,8 +147,8 @@ System.register(['moment', 'app/plugins/sdk', 'lodash', './nodeStats'], function
                 NodeDataCtrl.prototype.goToNodeDashboard = function (node) {
                     var _this = this;
                     var variable = lodash_1.default.find(this.templateVariables, { 'name': 'node' });
-                    variable.current.text = node === 'All' ? 'All' : slugify(node.metadata.name);
-                    variable.current.value = node === 'All' ? '$__all' : slugify(node.metadata.name);
+                    variable.current.text = node === 'All' ? 'All' : node.metadata.name;
+                    variable.current.value = node === 'All' ? '$__all' : node.metadata.name;
                     this.variableSrv.variableUpdated(variable).then(function () {
                         _this.$scope.$emit('template-variable-value-updated');
                         _this.$scope.$root.$broadcast('refresh');
