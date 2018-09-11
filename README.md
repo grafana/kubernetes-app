@@ -83,6 +83,13 @@ grafana-cli plugins install grafana-kubernetes-app
      ...
      -----END CERTIFICATE-----
      ```
+   All TLS certs/keys are from .kube/config, need `base64 -d` to decode:
+
+   | field | comment |
+   | ------ | ------ |
+   | CA Cert | clusters.cluster.certificate-authority-data |
+   | Client Cert | users.user.client-certificate-data |
+   | Client Key | users.user.client-key-data |
 
 4. Choose the Prometheus datasource that will be used for reading data in the dashboards.
 
