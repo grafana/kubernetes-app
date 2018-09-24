@@ -126,7 +126,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"$pod\"}) by (pod_name)",
+          "expr": "sum(container_memory_usage_bytes{pod_name=~\"$pod\",namespace=~\"$namespace\"}) by (pod_name)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
@@ -217,7 +217,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(container_cpu_usage_seconds_total{pod_name=~\"$pod\"}[2m])) by (pod_name)",
+          "expr": "sum(irate(container_cpu_usage_seconds_total{pod_name=~\"$pod\",namespace=~\"$namespace\"}[2m])) by (pod_name)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
@@ -307,7 +307,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_network_transmit_bytes_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
+          "expr": "rate(container_network_receive_bytes_total{pod_name=~\"$pod\",namespace=~\"$namespace\",kubernetes_io_hostname=~\"$node\"}[2m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -398,7 +398,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_network_receive_bytes_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
+          "expr": "rate(container_network_transmit_bytes_total{pod_name=~\"$pod\",namespace=~\"$namespace\",kubernetes_io_hostname=~\"$node\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
@@ -489,7 +489,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_fs_io_time_seconds_total{pod_name=~\"$pod\"}[2m])",
+          "expr": "rate(container_fs_io_time_seconds_total{pod_name=~\"$pod\",namespace=~\"$namespace\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{pod_name}}",
@@ -577,7 +577,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_fs_write_seconds_total{pod_name=~\"$pod\"}[2m])",
+          "expr": "rate(container_fs_write_seconds_total{pod_name=~\"$pod\",namespace=~\"$namespace\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
