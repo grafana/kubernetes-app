@@ -20,7 +20,19 @@
       "version": ""
     }
   ],
-  "annotations": {},
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Summary metrics about containers running on Kubernetes nodes.",
   "editable": true,
   "gnetId": null,
@@ -120,7 +132,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "0.8,0.9",
       "title": "Cluster Pod Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -200,7 +212,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "0.8,0.9",
       "title": "Cluster CPU Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -280,7 +292,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "0.8,0.9",
       "title": "Cluster Memory Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -354,13 +366,13 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum (node_filesystem_size{nodename=~\"$node\"}) - sum (node_filesystem_free{nodename=~\"$node\"})) / sum (node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "(sum (node_filesystem_size_bytes{nodename=~\"$node\"}) - sum (node_filesystem_free_bytes{nodename=~\"$node\"})) / sum (node_filesystem_size_bytes{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "0.8,0.9",
       "title": "Cluster Disk Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -465,7 +477,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -560,7 +576,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -654,7 +674,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -693,14 +717,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"}) - sum(node_filesystem_free{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{nodename=~\"$node\"}) - sum(node_filesystem_free_bytes{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "usage",
           "refId": "A"
         },
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{nodename=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "limit",
@@ -741,7 +765,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "collapsed": false,
@@ -2515,6 +2543,7 @@
         "query": "grafana-kubernetes-datasource",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -2529,6 +2558,7 @@
         "query": "datasource",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
         "tags": [],
@@ -2544,6 +2574,7 @@
         "query": "prometheus",
         "refresh": 1,
         "regex": "/$ds/",
+        "skipUrlSync": false,
         "type": "datasource"
       },
       {
@@ -2558,6 +2589,7 @@
         "query": "node",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": null,
         "tags": [],
@@ -2577,6 +2609,7 @@
         "query": "namespace",
         "refresh": 1,
         "regex": "",
+        "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": null,
         "tags": [],
