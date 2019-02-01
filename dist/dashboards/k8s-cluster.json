@@ -520,14 +520,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(kube_node_status_capacity_cpu_cores{node=~\"$node\"})",
+          "expr": "sum(kube_node_status_allocatable_cpu_cores{node=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "allocatable",
           "refId": "A"
         },
         {
-          "expr": "sum(kube_node_status_allocatable_cpu_cores{node=~\"$node\"})",
+          "expr": "sum(kube_node_status_capacity_cpu_cores{node=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "capacity",
