@@ -126,7 +126,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\", namespace=~\"$namespace\"}) by (pod_name)",
+          "expr": "sum(container_memory_usage_bytes{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\", namespace=~\"$namespace\", image!=\"\"}) by (pod_name)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
@@ -217,7 +217,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(container_cpu_usage_seconds_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\", namespace=~\"$namespace\"}[2m])) by (pod_name)",
+          "expr": "sum(irate(container_cpu_usage_seconds_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\", namespace=~\"$namespace\", image!=\"\"}[2m])) by (pod_name)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ pod_name }}",
