@@ -1,5 +1,3 @@
-///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import kbn from 'app/core/utils/kbn';
 import _ from 'lodash';
 import moment from 'moment';

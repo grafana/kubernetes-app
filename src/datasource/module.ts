@@ -1,5 +1,3 @@
-///<reference path="../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import {K8sDatasource} from './datasource';
 import {K8sQueryCtrl} from './query_ctrl';
 

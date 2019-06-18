@@ -1,5 +1,3 @@
-///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import {PanelCtrl} from 'app/plugins/sdk';
 import _ from 'lodash';
 

@@ -30,8 +30,8 @@
       {"name": "Pod Details Page", "path": "img/pod-details-screenshot.png"},
       {"name": "Namespace Details Page", "path": "img/namespace-details-screenshot.png"}
     ],
-    "version": "1.0.1",
-    "updated": "2018-01-18"
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
   },
 
   "includes": [
@@ -80,7 +80,7 @@
   ],
 
   "dependencies": {
-    "grafanaVersion": "5.0+",
+    "grafanaVersion": "6.3+",
     "plugins": []
   }
 }
