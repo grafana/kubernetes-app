@@ -1,16 +1,20 @@
 {
   "private": true,
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Kubernetes App",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "test:coverage": "yarn test --coverage",
+    "test:badges": "yarn test:coverage && jest-coverage-badges",
+    "prettier:check": "prettier --list-different \"src/**/*.{ts,tsx}\"",
+    "prettier:write": "prettier --list-different \"src/**/*.{ts,tsx}\" --write"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/grafana/kubernetes-app.git"
   },
-  "author": "",
+  "author": "Grafana Labs",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/grafana/kubernetes-app/issues"
@@ -18,10 +22,17 @@
   "devDependencies": {
     "@grafana/toolkit": "next",
     "@grafana/ui": "next",
-    "tslint": "^5.17.0"
-  },
-  "dependencies": {
-    "lodash": "^4.17.4"
-  },
-  "homepage": "https://grafana.com/"
+    "@types/jest": "^24.0.13",
+    "@types/jsonata": "^1.3.1",
+    "@types/lodash": "^4.14.134",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.1",
+    "enzyme-to-json": "^3.3.5",
+    "jest": "^24.8.0",
+    "jest-coverage-badges": "^1.1.2",
+    "jquery": "^3.4.1",
+    "prettier": "^1.17.1",
+    "prettier-eslint-cli": "^4.7.1",
+    "ts-jest": "^24.0.2"
+  }
 }
