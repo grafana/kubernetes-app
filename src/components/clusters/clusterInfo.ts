@@ -12,7 +12,7 @@ export class ClusterInfoCtrl {
   clusterDS: any;
 
   static templateUrl = 'components/clusters/partials/cluster_info.html';
-  
+
   /** @ngInject */
   constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
     this.$q = $q;
@@ -83,7 +83,7 @@ export class ClusterInfoCtrl {
   }
 
   goToNodeDashboard(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
       this.$location.path("dashboard/db/k8s-node")
       .search({
@@ -95,7 +95,7 @@ export class ClusterInfoCtrl {
   }
 
   goToWorkloads(ns, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
       this.$location.path("plugins/grafana-kubernetes-app/page/cluster-workloads")
       .search({
@@ -106,11 +106,11 @@ export class ClusterInfoCtrl {
   }
 
   goToNodeInfo(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    var closestElm = _.head($(evt.target).closest('div'));
-    var clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
+    const closestElm = _.head($(evt.target).closest('div'));
+    const clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
+    const clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/grafana-kubernetes-app/page/node-info")

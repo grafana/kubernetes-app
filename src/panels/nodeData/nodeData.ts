@@ -21,7 +21,14 @@ export class NodeDataCtrl extends PanelCtrl {
   static scrollable = true;
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, private alertSrv, private timeSrv, private variableSrv) {
+  constructor($scope, $injector,
+    private backendSrv,
+    private datasourceSrv,
+    private $location,
+    private alertSrv,
+    private timeSrv,
+    private variableSrv
+  ) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
@@ -130,7 +137,7 @@ export class NodeDataCtrl extends PanelCtrl {
       .then(ds => {
         if (!ds) {
           this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
-          throw "Failed to connect to " + id;
+          throw new Error("Failed to connect to " + id);
         }
         this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
@@ -152,7 +159,7 @@ export class NodeDataCtrl extends PanelCtrl {
   }
 
   conditionStatus(condition) {
-    var status;
+    let status;
     if (condition.type === "Ready") {
       status = condition.status === "True";
     } else {

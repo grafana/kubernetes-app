@@ -12,7 +12,7 @@ export class ClustersCtrl {
 
   /** @ngInject */
   constructor($scope, $injector, private backendSrv, private contextSrv, private $location) {
-    var self = this;
+    const self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     document.title = 'Grafana Kubernetes App';
     this.clusters = {};
@@ -23,7 +23,7 @@ export class ClustersCtrl {
   }
 
   getClusters() {
-    var self = this;
+    const self = this;
     return this.backendSrv.get('/api/datasources')
     .then((result) => {
       self.clusters = _.filter(result, {"type": "grafana-kubernetes-datasource"});

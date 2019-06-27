@@ -8,7 +8,7 @@ export class PodInfoCtrl {
   datasource: any;
 
   static templateUrl = 'components/clusters/partials/pod_info.html';
-  
+
   /** @ngInject */
   constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
     document.title = 'Grafana Kubernetes App';
@@ -20,7 +20,7 @@ export class PodInfoCtrl {
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-      let pod_name    = $location.search().pod;
+      const pod_name    = $location.search().pod;
 
       this.loadDatasource(this.cluster_id).then(() => {
         this.clusterDS.getPod(pod_name).then(pod => {
@@ -43,7 +43,7 @@ export class PodInfoCtrl {
   }
 
   conditionStatus(condition) {
-    var status;
+    let status;
     if (condition.type === "Ready") {
       status = condition.status === "True";
     } else {

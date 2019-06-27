@@ -1,15 +1,8 @@
 {
-  "compileOnSave": false,
+  "extends": "./node_modules/@grafana/toolkit/src/config/tsconfig.plugin.json",
+  "include": ["src", "types"],
   "compilerOptions": {
-      "target": "ES5",
-      "module": "system",
-      "sourceMap": true,
-      "declaration": true,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "noImplicitAny": false
-  },
-  "exclude": [
-      "./node_modules/**"
-  ]
+    "rootDir": "./src",
+    "typeRoots": ["./node_modules/@types"]
+  }
 }

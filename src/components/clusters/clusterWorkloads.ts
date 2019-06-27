@@ -52,7 +52,7 @@ export class ClusterWorkloadsCtrl {
   }
 
   getWorkloads() {
-    let namespace = this.namespace;
+    const namespace = this.namespace;
     this.clusterDS.getNamespaces().then(namespaces => {
       this.namespaces = namespaces;
     });
@@ -71,7 +71,7 @@ export class ClusterWorkloadsCtrl {
   }
 
   componentHealth(component) {
-    var health = "unhealthy";
+    let health = "unhealthy";
     _.forEach(component.conditions, function(condition) {
       if ((condition.type === "Healthy") && (condition.status === "True")) {
         health = "healthy";
@@ -106,11 +106,11 @@ export class ClusterWorkloadsCtrl {
   }
 
   goToPodInfo(pod, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    var closestElm = _.head($(evt.target).closest('div'));
-    var clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
+    const closestElm = _.head($(evt.target).closest('div'));
+    const clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
+    const clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
         clickTargetIsNodeDashboard === false) {
       this.$location.path("plugins/grafana-kubernetes-app/page/pod-info")

@@ -137,69 +137,69 @@ export class K8sDatasource {
   }
 
   metricFindQuery(query: string) {
-    let promises: any[] = [];
+    const promises: any[] = [];
     let namespaces: string[];
     if (!query) {
       return Promise.resolve([]);
     }
-    let interpolated = this.templateSrv.replace(query, {});
-    let query_list = interpolated.split(" ");
+    const interpolated = this.templateSrv.replace(query, {});
+    const query_list = interpolated.split(" ");
     if (query_list.length > 1) {
-      namespaces = query_list[1].replace("{", "").replace("}", "").split(",")
+      namespaces = query_list[1].replace("{", "").replace("}", "").split(",");
     } else {
-      namespaces = [""] //Gets all pods/deployments
+      namespaces = [""]; //Gets all pods/deployments
     }
     switch (query_list[0]) {
       case 'pod':
-        for (let ns of namespaces) {
-          promises.push(this.getPods(ns))
+        for (const ns of namespaces) {
+          promises.push(this.getPods(ns));
         }
         return Promise.all(promises).then((res) => {
-          let data: any[] = [];
-          let pods = _.flatten(res).filter(n => n)
-          for (let pod of pods) {
+          const data: any[] = [];
+          const pods = _.flatten(res).filter(n => n);
+          for (const pod of pods) {
             data.push({
               text: pod.metadata.name,
               value: pod.metadata.name,
             });
           }
-          return data
-        })
+          return data;
+        });
       case 'deployment':
-        for (let ns of namespaces) {
-          promises.push(this.getDeployments(ns))
+        for (const ns of namespaces) {
+          promises.push(this.getDeployments(ns));
         }
         return Promise.all(promises).then((res) => {
-          let data: any[] = [];
-          let deployments = _.flatten(res).filter(n => n)
-          for (let deployment of deployments) {
+          const data: any[] = [];
+          const deployments = _.flatten(res).filter(n => n);
+          for (const deployment of deployments) {
             data.push({
               text: deployment.metadata.name,
               value: deployment.metadata.name,
             });
           }
-          return data
-        })
+          return data;
+        });
       case 'namespace':
         return this.getNamespaces().then(namespaces => {
-          let data: any[] = [];
-          for (let ns of namespaces) {
+          const data: any[] = [];
+          for (const ns of namespaces) {
             data.push({
               text: ns.metadata.name,
               value: ns.metadata.name,
             });
-          };
+          }
           return data;
         });
       case 'node':
         return this.getNodes().then(nodes => {
-          let data: any[] = [];
-          for (let node of nodes) {
+          const data: any[] = [];
+          for (const node of nodes) {
             data.push({
               text: node.metadata.name,
               value: node.metadata.name,
             });
-          };
+          }
           return data;
         });
       case 'datasource': // Returns the prometheus datasource associated with the cluster

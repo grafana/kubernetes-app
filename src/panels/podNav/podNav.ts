@@ -64,7 +64,7 @@ export class PodNavCtrl extends PanelCtrl {
     this.getCluster().then(() => {
       return this.getPods().then(pods => {
         this.parseTagsFromPods(pods);
-        this.currentPods = _.uniq(_.map(pods, p => { return p.metadata.name; }));
+        this.currentPods = _.uniq(_.map(pods, p => p.metadata.name));
       });
     });
   }
@@ -125,7 +125,7 @@ export class PodNavCtrl extends PanelCtrl {
 
     this.getPodsByLabel()
     .then(pods => {
-      this.currentPods = _.uniq(_.map(pods, p => { return p.metadata.name; }));
+      this.currentPods = _.uniq(_.map(pods, p => p.metadata.name));
       this.parseTagsFromPods(pods);
       this.updateTemplateVariableWithPods();
     });
@@ -166,7 +166,7 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   removeEmptyTags() {
-    this.chosenTags = _.omitBy(this.chosenTags, val => { return !val;});
+    this.chosenTags = _.omitBy(this.chosenTags, val => !val);
   }
 
   getCluster() {
@@ -180,7 +180,7 @@ export class PodNavCtrl extends PanelCtrl {
     .then((ds) => {
       if (!ds) {
         this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
-        throw "Failed to connect to " + clusterName;
+        throw new Error("Failed to connect to " + clusterName);
       }
 
       if (!(ds.jsonData.ds)) {
@@ -196,7 +196,7 @@ export class PodNavCtrl extends PanelCtrl {
     delete this.chosenTags[tag];
     this.getPodsByLabel()
     .then(pods => {
-      this.currentPods = _.uniq(_.map(pods, p => { return p.metadata.name; }));
+      this.currentPods = _.uniq(_.map(pods, p => p.metadata.name));
       this.parseTagsFromPods(pods);
       this.updateTemplateVariableWithPods();
     });
@@ -213,7 +213,7 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   removePodTag(podName) {
-    _.remove(this.selectedPods, p => { return p === podName;});
+    _.remove(this.selectedPods, p => p === podName);
     this.updateTemplateVariableWithPods();
 
     if (this.selectedPods.length === 0) {

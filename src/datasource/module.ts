@@ -2,7 +2,7 @@ import {K8sDatasource} from './datasource';
 import {K8sQueryCtrl} from './query_ctrl';
 
 class K8sConfigCtrl {
-  static templateUrl = 'datasource/partials/config.html'; 
+  static templateUrl = 'datasource/partials/config.html';
 }
 
 export {

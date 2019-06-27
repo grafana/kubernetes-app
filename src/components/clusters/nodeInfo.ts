@@ -21,8 +21,8 @@ export class NodeInfoCtrl {
       alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
       return;
     } else {
-      let cluster_id = $location.search().cluster;
-      let node_name  = $location.search().node;
+      const cluster_id = $location.search().cluster;
+      const node_name  = $location.search().node;
 
       this.loadDatasource(cluster_id).then(() => {
         this.clusterDS.getNode(node_name).then(node => {
@@ -54,7 +54,7 @@ export class NodeInfoCtrl {
   }
 
   conditionStatus(condition) {
-    var status;
+    let status;
     if (condition.type === "Ready") {
       status = condition.status === "True";
     } else {

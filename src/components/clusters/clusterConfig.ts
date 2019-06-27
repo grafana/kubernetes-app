@@ -2,10 +2,10 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 import angular from 'angular';
 
-const nodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
+const nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
 const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
 
-let kubestateDeployment = {
+const kubestateDeployment = {
   "apiVersion": "apps/v1beta1",
   "kind": "Deployment",
   "metadata": {
@@ -127,12 +127,12 @@ export class ClusterConfigCtrl {
   showHelp: boolean;
   showPrometheusExample: boolean;
   datasources: [any];
-  
+
   static templateUrl = 'components/clusters/partials/cluster_config.html';
 
   /** @ngInject */
   constructor($scope, $injector, private backendSrv, private $q, private contextSrv, private $location, private $window, private alertSrv) {
-    var self = this;
+    const self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.cluster = {
       type: 'grafana-kubernetes-datasource'
@@ -157,8 +157,8 @@ export class ClusterConfigCtrl {
   }
 
   getDatasources() {
-    var self = this;
-    var promises = [];
+    const self = this;
+    const promises = [];
     if ("cluster" in self.$location.search()) {
       promises.push(self.getCluster(this.$location.search().cluster).then(() => {
         return self.getDeployments().then(ds => {
@@ -177,7 +177,7 @@ export class ClusterConfigCtrl {
   }
 
   getCluster(id) {
-    var self = this;
+    const self = this;
     return this.backendSrv.get('/api/datasources/' + id)
       .then((ds) => {
         if (!(ds.jsonData.ds)) {
@@ -188,7 +188,7 @@ export class ClusterConfigCtrl {
   }
 
   getPrometheusDatasources() {
-    var self = this;
+    const self = this;
     return this.backendSrv.get('/api/datasources')
     .then((result) => {
       // self.hostedMetricsDS = _.filter(result, obj =>
@@ -201,7 +201,7 @@ export class ClusterConfigCtrl {
   }
 
   getDeployments() {
-    var self = this;
+    const self = this;
     return this.backendSrv.request({
       url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
       method: 'GET',
@@ -225,30 +225,30 @@ export class ClusterConfigCtrl {
   }
 
   savePrometheusConfigToFile() {
-    let blob = new Blob([this.generatePrometheusConfig()], {
+    const blob = new Blob([this.generatePrometheusConfig()], {
       type: "application/yaml"
     });
     this.saveToFile('prometheus.yml', blob);
   }
 
   saveNodeExporterDSToFile() {
-    let blob = new Blob([angular.toJson(nodeExporterDaemonSet, true)], {
+    const blob = new Blob([angular.toJson(nodeExporterDaemonSet, true)], {
       type: "application/json"
     });
     this.saveToFile('grafanak8s-node-exporter-ds.json', blob);
   }
 
   saveKubeStateDeployToFile() {
-    let blob = new Blob([angular.toJson(kubestateDeployment, true)], {
+    const blob = new Blob([angular.toJson(kubestateDeployment, true)], {
       type: "application/json"
     });
     this.saveToFile('grafanak8s-kubestate-deploy.json', blob);
   }
 
   saveToFile(filename, blob) {
-    let blobUrl = window.URL.createObjectURL(blob);
+    const blobUrl = window.URL.createObjectURL(blob);
 
-    let element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', blobUrl);
     element.setAttribute('download', filename);
     element.style.display = 'none';
@@ -258,7 +258,7 @@ export class ClusterConfigCtrl {
   }
 
   deploy() {
-    var question = !this.prometheusDeployed ?
+    const question = !this.prometheusDeployed ?
       'This action will deploy Prometheus exporters to your Kubernetes cluster.' +
       'Are you sure you want to deploy?' :
       'This action will update the Prometheus exporters on your Kubernetes cluster. ' +
@@ -275,7 +275,7 @@ export class ClusterConfigCtrl {
   }
 
   undeploy() {
-    var question = 'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. ' +
+    const question = 'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. ' +
       'Are you sure you want to remove it?';
 
     appEvents.emit('confirm-modal', {
@@ -313,8 +313,8 @@ export class ClusterConfigCtrl {
       }
     }).then(result => {
       if (!result.resources || result.resources.length === 0) {
-        throw "This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " +
-          "You can install manually using the instructions at the bottom of the page.";
+        throw new Error("This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " +
+          "You can install manually using the instructions at the bottom of the page.");
       }
     });
   }
@@ -380,7 +380,7 @@ export class ClusterConfigCtrl {
   }
 
   deletePods() {
-    var self = this;
+    const self = this;
     return this.backendSrv.request({
       url: 'api/datasources/proxy/' + self.cluster.id +
         '/api/v1/namespaces/kube-system/pods?labelSelector=grafanak8sapp%3Dtrue',
@@ -390,10 +390,10 @@ export class ClusterConfigCtrl {
       }
     }).then(pods => {
       if (!pods || pods.items.length === 0) {
-        throw "No pods found to update.";
+        throw new Error("No pods found to update.");
       }
 
-      var promises = [];
+      const promises = [];
 
       _.forEach(pods.items, pod => {
         promises.push(this.backendSrv.request({
@@ -411,7 +411,7 @@ export class ClusterConfigCtrl {
   }
 
   deployPrometheus() {
-    let self = this;
+    const self = this;
     if (!this.cluster || !this.cluster.id) {
       this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
       return;
@@ -436,7 +436,7 @@ export class ClusterConfigCtrl {
   }
 
   undeployPrometheus() {
-    var self = this;
+    const self = this;
     return this.checkApiVersion(self.cluster.id)
       .then(() => {
         return this.deleteDeployment(self.cluster.id, 'kube-state-metrics');

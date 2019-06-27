@@ -7,7 +7,7 @@ export class K8sQueryCtrl extends QueryCtrl {
   defaults = {
   };
 
-  /** @ngInject **/
+  /** @ngInject */
   constructor($scope, $injector, private templateSrv) {
     super($scope, $injector);
 

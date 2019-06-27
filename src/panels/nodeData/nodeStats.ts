@@ -8,7 +8,7 @@ export default class NodeStatsDatasource {
   issuePrometheusQuery(prometheusDS, query) {
     return this.datasourceSrv.get(prometheusDS)
       .then((datasource) => {
-        var metricsQuery = {
+        const metricsQuery = {
           range: { from: moment().subtract(5, 'minute'), to: moment() },
           targets: [{ expr: query.expr, format: 'time_series' }],
           legendFormat: query.legend,
@@ -59,7 +59,7 @@ export default class NodeStatsDatasource {
   }
 
   updateNodeWithStats(node, nodeStats) {
-    var formatFunc = kbn.valueFormats['percentunit'];
+    const formatFunc = kbn.valueFormats['percentunit'];
     const nodeName = node.metadata.name;
     const findFunction = function(o) {return o.target.substring(7, o.target.length - 2) === nodeName;};
     const podsUsedData = _.find(nodeStats.podsPerNode, findFunction);
