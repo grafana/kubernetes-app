@@ -1,5 +1,5 @@
 import {NodeDataCtrl} from './nodeData';
-import {loadPluginCss} from 'app/plugins/sdk';
+import {loadPluginCss} from 'grafana/app/plugins/sdk';
 
 loadPluginCss({
   dark: 'plugins/grafana-kubernetes-app/css/dark.css',

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import appEvents from 'app/core/app_events';
+import appEvents from 'grafana/app/core/app_events';
 import angular from 'angular';
 
 const nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
@@ -126,12 +126,12 @@ export class ClusterConfigCtrl {
   prometheusDeployed: boolean;
   showHelp: boolean;
   showPrometheusExample: boolean;
-  datasources: [any];
+  datasources: any[] = [];
 
   static templateUrl = 'components/clusters/partials/cluster_config.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private $q, private contextSrv, private $location, private $window, private alertSrv) {
+  constructor($scope, $injector, private backendSrv, private $q, contextSrv, private $location, private $window, private alertSrv) {
     const self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.cluster = {
@@ -158,7 +158,7 @@ export class ClusterConfigCtrl {
 
   getDatasources() {
     const self = this;
-    const promises = [];
+    const promises: any[] = [];
     if ("cluster" in self.$location.search()) {
       promises.push(self.getCluster(this.$location.search().cluster).then(() => {
         return self.getDeployments().then(ds => {
@@ -393,7 +393,7 @@ export class ClusterConfigCtrl {
         throw new Error("No pods found to update.");
       }
 
-      const promises = [];
+      const promises: any[] = [];
 
       _.forEach(pods.items, pod => {
         promises.push(this.backendSrv.request({

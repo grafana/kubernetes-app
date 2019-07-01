@@ -10,7 +10,7 @@ export class PodInfoCtrl {
   static templateUrl = 'components/clusters/partials/pod_info.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, alertSrv) {
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;

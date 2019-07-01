@@ -26,6 +26,7 @@ export class K8sDatasource {
       if (response.status === 200) {
         return { status: "success", message: "Data source is working", title: "Success" };
       }
+      return { status: "warning", message: "error", title: "Error" };
     });
   }
 
@@ -114,7 +115,7 @@ export class K8sDatasource {
   }
 
   getPodsByName(names) {
-    const promises = [];
+    const promises: any[] = [];
     if (Array.isArray(names)) {
       _.forEach(names, name => {
         promises.push(this.getPod(name));

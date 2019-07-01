@@ -1,17 +1,17 @@
 import _ from 'lodash';
-import appEvents from 'app/core/app_events';
+import appEvents from 'grafana/app/core/app_events';
 
 export class ClustersCtrl {
   cluster: any;
   pageReady: boolean;
-  datasources: [any];
+  datasources: any[] = [];
   clusters: {};
   isOrgEditor: boolean;
 
   static templateUrl = 'components/clusters/partials/clusters.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private contextSrv, private $location) {
+  constructor($scope, $injector, private backendSrv, contextSrv, private $location) {
     const self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     document.title = 'Grafana Kubernetes App';

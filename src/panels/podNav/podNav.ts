@@ -1,4 +1,4 @@
-import {PanelCtrl} from 'app/plugins/sdk';
+import {PanelCtrl} from 'grafana/app/plugins/sdk';
 import _ from 'lodash';
 
 const panelDefaults = {
@@ -11,13 +11,13 @@ export class PodNavCtrl extends PanelCtrl {
   currentPods: any[];
   selectedPods: any;
   chosenTags: any;
-  clusterName: string;
+  clusterName = '';
   clusterDS: any;
 
 
   static templateUrl = 'panels/podNav/partials/pod_nav.html';
 
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, private alertSrv, private variableSrv, private $q) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, $location, private alertSrv, private variableSrv, private $q) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
@@ -88,7 +88,7 @@ export class PodNavCtrl extends PanelCtrl {
   getPods() {
     if (this.currentPods.length === 0) {
       if (_.isArray(this.namespace)) {
-        const promises = [];
+        const promises: any[] = [];
         _.forEach(this.namespace, ns => {
           promises.push(this.clusterDS.getPods(ns));
         });
@@ -133,7 +133,7 @@ export class PodNavCtrl extends PanelCtrl {
 
   getPodsByLabel() {
     if (_.isArray(this.namespace)) {
-      const promises = [];
+      const promises: any[] = [];
       _.forEach(this.namespace, ns => {
         promises.push(this.clusterDS.getPodsByLabel(ns, this.chosenTags));
       });

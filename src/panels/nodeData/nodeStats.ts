@@ -1,9 +1,9 @@
-import kbn from 'app/core/utils/kbn';
+import kbn from 'grafana/app/core/utils/kbn';
 import _ from 'lodash';
 import moment from 'moment';
 
 export default class NodeStatsDatasource {
-  constructor(private datasourceSrv, private timeSrv) {}
+  constructor(private datasourceSrv) {}
 
   issuePrometheusQuery(prometheusDS, query) {
     return this.datasourceSrv.get(prometheusDS)
@@ -64,20 +64,20 @@ export default class NodeStatsDatasource {
     const findFunction = function(o) {return o.target.substring(7, o.target.length - 2) === nodeName;};
     const podsUsedData = _.find(nodeStats.podsPerNode, findFunction);
     if (podsUsedData) {
-      node.podsUsed = _.last(podsUsedData.datapoints)[0];
+      node.podsUsed = _.last(podsUsedData.datapoints) as any[0];
       node.podsUsedPerc = formatFunc(node.podsUsed / node.status.capacity.pods, 2, 5);
     }
 
     const cpuData = _.find(nodeStats.cpuPerNode, findFunction);
     if (cpuData) {
-      node.cpuUsage = _.last(cpuData.datapoints)[0];
+      node.cpuUsage = _.last(cpuData.datapoints) as any[0];
       node.cpuUsageFormatted = kbn.valueFormats['none'](node.cpuUsage, 2, null);
       node.cpuUsagePerc = formatFunc(node.cpuUsage / node.status.capacity.cpu, 2, 5);
     }
 
     const memData = _.find(nodeStats.memoryPerNode, findFunction);
     if (memData) {
-      node.memoryUsage = _.last(memData.datapoints)[0];
+      node.memoryUsage = _.last(memData.datapoints) as any[0];
       const memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2)  * 1000;
       node.memUsageFormatted = kbn.valueFormats['bytes'](node.memoryUsage, 2, null);
       node.memCapacityFormatted = kbn.valueFormats['bytes'](memCapacity, 2, null);

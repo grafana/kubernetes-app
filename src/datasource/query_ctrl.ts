@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {QueryCtrl} from 'app/plugins/sdk';
+import {QueryCtrl} from 'grafana/app/plugins/sdk';
 
 export class K8sQueryCtrl extends QueryCtrl {
   static templateUrl = 'datasource/partials/query.editor.html';
@@ -8,7 +8,7 @@ export class K8sQueryCtrl extends QueryCtrl {
   };
 
   /** @ngInject */
-  constructor($scope, $injector, private templateSrv) {
+  constructor($scope, $injector) {
     super($scope, $injector);
 
     _.defaultsDeep(this.target, this.defaults);

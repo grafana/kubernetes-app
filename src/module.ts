@@ -5,7 +5,7 @@ import {ClusterInfoCtrl} from './components/clusters/clusterInfo';
 import {ClusterWorkloadsCtrl} from './components/clusters/clusterWorkloads';
 import {NodeInfoCtrl} from './components/clusters/nodeInfo';
 import {PodInfoCtrl} from './components/clusters/podInfo';
-import {loadPluginCss} from 'app/plugins/sdk';
+import {loadPluginCss} from 'grafana/app/plugins/sdk';
 
 loadPluginCss({
   dark: 'plugins/grafana-kubernetes-app/css/dark.css',

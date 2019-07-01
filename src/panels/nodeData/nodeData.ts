@@ -1,5 +1,5 @@
 import moment from 'moment';
-import {PanelCtrl} from 'app/plugins/sdk';
+import {PanelCtrl} from 'grafana/app/plugins/sdk';
 import _ from 'lodash';
 import NodeStatsDatasource from './nodeStats';
 
@@ -24,16 +24,14 @@ export class NodeDataCtrl extends PanelCtrl {
   constructor($scope, $injector,
     private backendSrv,
     private datasourceSrv,
-    private $location,
     private alertSrv,
-    private timeSrv,
     private variableSrv
   ) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
     this.templateVariables = this.variableSrv.variables;
-    this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv, timeSrv);
+    this.nodeStatsDatasource = new NodeStatsDatasource(datasourceSrv);
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
@@ -123,6 +121,12 @@ export class NodeDataCtrl extends PanelCtrl {
         };
       }
     }
+    return {
+      text: 'warning',
+      iconClass: "icon-gf icon-gf-critical",
+      stateClass: 'alert-state-warning',
+      message: 'Unknown state: '+health
+    };
   }
 
   refresh() {

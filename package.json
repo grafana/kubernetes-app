@@ -20,17 +20,42 @@
   "bugs": {
     "url": "https://github.com/grafana/kubernetes-app/issues"
   },
+  "dependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "jquery": "^3.2.1",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1"
+  },
   "devDependencies": {
-    "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
-    "@types/jest": "^24.0.13",
-    "@types/lodash": "^4.14.134",
+    "@types/jest": "^23.3.1",
+    "@types/lodash": "^4.14.74",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.0.1",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^1.0.0",
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@types/angular": "1.6.54",
+    "angular": "1.6.6",
+
     "grafana-sdk-mocks": "grafana/grafana-sdk-mocks",
-    "jest": "^24.8.0",
-    "jest-coverage-badges": "^1.1.2",
-    "jquery": "^3.4.1",
-    "prettier": "^1.17.1",
-    "prettier-eslint-cli": "^4.7.1",
-    "ts-jest": "^24.0.2"
+    "jest": "^23.0.1",
+    "ng-annotate-webpack-plugin": "^0.3.0",
+    "prettier": "^1.15.3",
+    "prettier-eslint": "^8.8.0",
+    "prettier-eslint-cli": "^4.7.0",
+    "pretty-quick": "^1.10.0",
+    "release-it": "^10",
+    "replace-in-file-webpack-plugin": "^1.0.6",
+    "style-loader": "^0.22",
+    "ts-jest": "^23",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3",
+    "uglifyjs-webpack-plugin": "^2.0.1",
+    "webpack": "^4.9.1",
+    "webpack-cli": "^3.1"
   }
 }

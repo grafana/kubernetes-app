@@ -15,7 +15,7 @@ export class ClusterWorkloadsCtrl {
   static templateUrl = 'components/clusters/partials/cluster_workloads.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, alertSrv) {
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
@@ -108,7 +108,7 @@ export class ClusterWorkloadsCtrl {
   goToPodInfo(pod, evt) {
     const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    const closestElm = _.head($(evt.target).closest('div'));
+    const closestElm = _.head($(evt.target).closest('div')) as any;
     const clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
     const clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToPodDashboard(pod, $event)" : false;
     if (clickTargetIsLinkOrHasLinkParents === false &&
