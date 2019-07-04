@@ -8,8 +8,8 @@ import {PodInfoCtrl} from './components/clusters/podInfo';
 import {loadPluginCss} from 'grafana/app/plugins/sdk';
 
 loadPluginCss({
-  dark: 'plugins/grafana-kubernetes-app/css/dark.css',
-  light: 'plugins/grafana-kubernetes-app/css/light.css'
+  dark: 'plugins/grafana-kubernetes-app/styles/dark.css',
+  light: 'plugins/grafana-kubernetes-app/styles/light.css'
 });
 
 export {

@@ -4,19 +4,16 @@
   "description": "Kubernetes App",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
-    "dev": "grafana-toolkit plugin:dev",
     "test": "grafana-toolkit plugin:test",
-    "test:coverage": "yarn test --coverage",
-    "test:badges": "yarn test:coverage && jest-coverage-badges",
-    "prettier:check": "prettier --list-different \"src/**/*.{ts,tsx}\"",
-    "prettier:write": "prettier --list-different \"src/**/*.{ts,tsx}\" --write"
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/grafana/kubernetes-app.git"
   },
   "author": "Grafana Labs",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/grafana/kubernetes-app/issues"
   },
