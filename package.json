@@ -1,6 +1,5 @@
 {
-  "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2-dev",
   "description": "Kubernetes App",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -24,7 +23,6 @@
   },
   "devDependencies": {
     "@grafana/toolkit": "next",
-    "grafana-sdk-mocks": "grafana/grafana-sdk-mocks",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
     "@types/angular": "1.6.54",
     "angular": "1.6.6"
