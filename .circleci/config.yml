@@ -19,14 +19,15 @@ jobs:
           name: install dependencies
           command: 'yarn install --pure-lockfile'
       - run:
-          name: Run Toolkit CI
-          command: 'npx grafana-toolkit plugin:ci'
+          name: Run Toolkit Build
+          command: 'npx grafana-toolkit plugin:ci-build'
+      - run:
+          name: Bundle Plugin
+          command: 'npx grafana-toolkit plugin:ci-bundle'
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - ~/.cache/yarn
+            - node_modules
       - store_artifacts:
-          path: artifacts
-      - store_artifacts:
-          path: dist
+          path: ci/artifacts
