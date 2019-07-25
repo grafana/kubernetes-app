@@ -1,8 +1,7 @@
-import {PanelCtrl} from 'grafana/app/plugins/sdk';
+import { PanelCtrl } from 'grafana/app/plugins/sdk';
 import _ from 'lodash';
 
-const panelDefaults = {
-};
+const panelDefaults = {};
 
 export class PodNavCtrl extends PanelCtrl {
   templateVariables: any;
@@ -14,7 +13,6 @@ export class PodNavCtrl extends PanelCtrl {
   clusterName = '';
   clusterDS: any;
 
-
   static templateUrl = 'panels/podNav/partials/pod_nav.html';
 
   constructor($scope, $injector, private backendSrv, private datasourceSrv, $location, private alertSrv, private variableSrv, private $q) {
@@ -22,7 +20,7 @@ export class PodNavCtrl extends PanelCtrl {
     _.defaults(this.panel, panelDefaults);
 
     this.templateVariables = this.variableSrv.variables;
-    this.namespace = "All";
+    this.namespace = 'All';
     this.currentTags = {};
     this.currentPods = [];
     this.selectedPods = [];
@@ -45,17 +43,20 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   needsRefresh() {
-    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
-    const ns = _.find(this.templateVariables, {'name': 'namespace'});
+    const cluster = _.find(this.templateVariables, { name: 'cluster' });
+    const ns = _.find(this.templateVariables, { name: 'namespace' });
 
-    if (this.clusterName !== cluster.current.value) { return true; }
+    if (this.clusterName !== cluster.current.value) {
+      return true;
+    }
 
-    if ((ns.current.value === '$__all' || ns.current.value[0] === '$__all')
-      && (this.namespace === ns.current.value || this.namespace === '')) {
+    if ((ns.current.value === '$__all' || ns.current.value[0] === '$__all') && (this.namespace === ns.current.value || this.namespace === '')) {
       return false;
     }
 
-    if (ns.current.value !== this.namespace) { return true; }
+    if (ns.current.value !== this.namespace) {
+      return true;
+    }
 
     return false;
   }
@@ -70,15 +71,15 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   setDefaults() {
-    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
+    const cluster = _.find(this.templateVariables, { name: 'cluster' });
     if (!cluster) {
-      this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+      this.alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     }
 
-    const ns = _.find(this.templateVariables, {'name': 'namespace'});
+    const ns = _.find(this.templateVariables, { name: 'namespace' });
     this.namespace = ns.current.value !== '$__all' && ns.current.value[0] !== '$__all' ? ns.current.value : '';
-    const podVariable = _.find(this.templateVariables, {'name': 'pod'});
+    const podVariable = _.find(this.templateVariables, { name: 'pod' });
 
     if (podVariable.current.value !== '$__all') {
       this.selectedPods = _.isArray(podVariable.current.value) ? podVariable.current.value : [podVariable.current.value];
@@ -92,8 +93,7 @@ export class PodNavCtrl extends PanelCtrl {
         _.forEach(this.namespace, ns => {
           promises.push(this.clusterDS.getPods(ns));
         });
-        return this.$q.all(promises)
-        .then(pods => {
+        return this.$q.all(promises).then(pods => {
           return _.flatten(pods).filter(n => n);
         });
       } else {
@@ -123,8 +123,7 @@ export class PodNavCtrl extends PanelCtrl {
     this.removeEmptyTags();
     this.selectedPods = [];
 
-    this.getPodsByLabel()
-    .then(pods => {
+    this.getPodsByLabel().then(pods => {
       this.currentPods = _.uniq(_.map(pods, p => p.metadata.name));
       this.parseTagsFromPods(pods);
       this.updateTemplateVariableWithPods();
@@ -137,8 +136,7 @@ export class PodNavCtrl extends PanelCtrl {
       _.forEach(this.namespace, ns => {
         promises.push(this.clusterDS.getPodsByLabel(ns, this.chosenTags));
       });
-      return this.$q.all(promises)
-      .then(pods => {
+      return this.$q.all(promises).then(pods => {
         return _.flatten(pods).filter(n => n);
       });
     } else {
@@ -147,14 +145,14 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   updateTemplateVariableWithPods() {
-    const variable = _.find(this.templateVariables, {'name': 'pod'});
+    const variable = _.find(this.templateVariables, { name: 'pod' });
 
     if (this.selectedPods.length > 0) {
       variable.current.text = this.selectedPods.join(' + ');
       variable.current.value = this.selectedPods;
     } else {
-      variable.current.text = _.isEmpty(this.chosenTags) ? 'All': this.currentPods.join(' + ');
-      variable.current.value = _.isEmpty(this.chosenTags) ? ['.+']: this.currentPods;
+      variable.current.text = _.isEmpty(this.chosenTags) ? 'All' : this.currentPods.join(' + ');
+      variable.current.value = _.isEmpty(this.chosenTags) ? ['.+'] : this.currentPods;
     }
 
     this.variableSrv.updateOptions(variable).then(() => {
@@ -170,32 +168,33 @@ export class PodNavCtrl extends PanelCtrl {
   }
 
   getCluster() {
-    const clusterName = _.find(this.templateVariables, {'name': 'cluster'}).current.value;
+    const clusterName = _.find(this.templateVariables, { name: 'cluster' }).current.value;
     this.clusterName = clusterName;
 
-    return this.backendSrv.get('/api/datasources')
-    .then(result => {
-      return _.filter(result, {"name": clusterName})[0];
-    })
-    .then((ds) => {
-      if (!ds) {
-        this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
-        throw new Error("Failed to connect to " + clusterName);
-      }
+    return this.backendSrv
+      .get('/api/datasources')
+      .then(result => {
+        return _.filter(result, { name: clusterName })[0];
+      })
+      .then(ds => {
+        if (!ds) {
+          this.alertSrv.set('Failed to connect', 'Could not connect to the specified cluster.', 'error');
+          throw new Error('Failed to connect to ' + clusterName);
+        }
 
-      if (!(ds.jsonData.ds)) {
-        ds.jsonData.ds = "";
-      }
-      return this.datasourceSrv.get(ds.name);
-    }).then(clusterDS => {
-      this.clusterDS = clusterDS;
-    });
+        if (!ds.jsonData.ds) {
+          ds.jsonData.ds = '';
+        }
+        return this.datasourceSrv.get(ds.name);
+      })
+      .then(clusterDS => {
+        this.clusterDS = clusterDS;
+      });
   }
 
   removeTag(tag) {
     delete this.chosenTags[tag];
-    this.getPodsByLabel()
-    .then(pods => {
+    this.getPodsByLabel().then(pods => {
       this.currentPods = _.uniq(_.map(pods, p => p.metadata.name));
       this.parseTagsFromPods(pods);
       this.updateTemplateVariableWithPods();

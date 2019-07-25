@@ -6,8 +6,9 @@ export default class NodeStatsDatasource {
   constructor(private datasourceSrv) {}
 
   issuePrometheusQuery(prometheusDS, query) {
-    return this.datasourceSrv.get(prometheusDS)
-      .then((datasource) => {
+    return this.datasourceSrv
+      .get(prometheusDS)
+      .then(datasource => {
         const metricsQuery = {
           range: { from: moment().subtract(5, 'minute'), to: moment() },
           targets: [{ expr: query.expr, format: 'time_series' }],
@@ -15,7 +16,8 @@ export default class NodeStatsDatasource {
           interval: '60s',
         };
         return datasource.query(metricsQuery);
-      }).then((result) => {
+      })
+      .then(result => {
         if (result && result.data) {
           return result.data;
         }
@@ -28,40 +30,44 @@ export default class NodeStatsDatasource {
 
     const podQuery = {
       expr: 'sum(label_join(kubelet_running_pod_count, "node",  "", "kubernetes_io_hostname")) by (node)',
-      legend: "{{node}}",
+      legend: '{{node}}',
     };
     const cpuQuery = {
       expr: 'sum(kube_pod_container_resource_requests_cpu_cores) by (node)',
-      legend: "{{node}}",
+      legend: '{{node}}',
     };
     const memoryQuery = {
       expr: 'sum(kube_pod_container_resource_requests_memory_bytes) by (node)',
-      legend: "{{node}}",
+      legend: '{{node}}',
     };
 
     return this.issuePrometheusQuery(prometheusDS, podQuery)
       .then(data => {
         podsPerNode = data;
         return;
-      }).then(() => {
+      })
+      .then(() => {
         return this.issuePrometheusQuery(prometheusDS, cpuQuery);
       })
       .then(data => {
         cpuPerNode = data;
         return;
-      }).then(() => {
+      })
+      .then(() => {
         return this.issuePrometheusQuery(prometheusDS, memoryQuery);
       })
       .then(data => {
         memoryPerNode = data;
-        return {podsPerNode, cpuPerNode, memoryPerNode};
+        return { podsPerNode, cpuPerNode, memoryPerNode };
       });
   }
 
   updateNodeWithStats(node, nodeStats) {
     const formatFunc = kbn.valueFormats['percentunit'];
     const nodeName = node.metadata.name;
-    const findFunction = function(o) {return o.target.substring(7, o.target.length - 2) === nodeName;};
+    const findFunction = function(o) {
+      return o.target.substring(7, o.target.length - 2) === nodeName;
+    };
     const podsUsedData = _.find(nodeStats.podsPerNode, findFunction);
     if (podsUsedData) {
       node.podsUsed = _.last(podsUsedData.datapoints) as any[0];
@@ -78,10 +84,10 @@ export default class NodeStatsDatasource {
     const memData = _.find(nodeStats.memoryPerNode, findFunction);
     if (memData) {
       node.memoryUsage = _.last(memData.datapoints) as any[0];
-      const memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2)  * 1000;
+      const memCapacity = node.status.capacity.memory.substring(0, node.status.capacity.memory.length - 2) * 1000;
       node.memUsageFormatted = kbn.valueFormats['bytes'](node.memoryUsage, 2, null);
       node.memCapacityFormatted = kbn.valueFormats['bytes'](memCapacity, 2, null);
-      node.memoryUsagePerc = formatFunc((node.memoryUsage / memCapacity), 2, 5);
+      node.memoryUsagePerc = formatFunc(node.memoryUsage / memCapacity, 2, 5);
     }
 
     return node;

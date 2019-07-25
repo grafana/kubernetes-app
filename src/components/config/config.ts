@@ -1,4 +1,3 @@
-
 export class KubernetesConfigCtrl {
   static templateUrl = 'components/config/config.html';
   enabled: boolean;
@@ -18,8 +17,8 @@ export class KubernetesConfigCtrl {
     return this.appEditCtrl.importDashboards().then(() => {
       this.enabled = true;
       return {
-        url: "plugins/grafana-kubernetes-app/page/clusters",
-        message: "Kubernetes App enabled!"
+        url: 'plugins/grafana-kubernetes-app/page/clusters',
+        message: 'Kubernetes App enabled!',
       };
     });
   }

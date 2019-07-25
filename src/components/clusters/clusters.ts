@@ -24,9 +24,8 @@ export class ClustersCtrl {
 
   getClusters() {
     const self = this;
-    return this.backendSrv.get('/api/datasources')
-    .then((result) => {
-      self.clusters = _.filter(result, {"type": "grafana-kubernetes-datasource"});
+    return this.backendSrv.get('/api/datasources').then(result => {
+      self.clusters = _.filter(result, { type: 'grafana-kubernetes-datasource' });
     });
   }
 
@@ -39,17 +38,18 @@ export class ClustersCtrl {
   deleteCluster(cluster) {
     appEvents.emit('confirm-modal', {
       title: 'Delete',
-      text: 'Are you sure you want to delete this data source? ' +
+      text:
+        'Are you sure you want to delete this data source? ' +
         'If you need to undeploy the collectors, then do that before deleting the data source.',
-      yesText: "Delete",
-      icon: "fa-trash",
+      yesText: 'Delete',
+      icon: 'fa-trash',
       onConfirm: () => {
         this.confirmDelete(cluster.id);
-      }
+      },
     });
   }
 
   clusterInfo(cluster) {
-    this.$location.path("plugins/grafana-kubernetes-app/page/cluster-info").search({"cluster": cluster.id});
+    this.$location.path('plugins/grafana-kubernetes-app/page/cluster-info').search({ cluster: cluster.id });
   }
 }

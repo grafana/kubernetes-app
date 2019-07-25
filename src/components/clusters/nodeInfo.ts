@@ -17,12 +17,12 @@ export class NodeInfoCtrl {
     this.clusterDS = {};
     this.node = {};
 
-    if (!("cluster" in $location.search())) {
-      alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+    if (!('cluster' in $location.search())) {
+      alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     } else {
       const cluster_id = $location.search().cluster;
-      const node_name  = $location.search().node;
+      const node_name = $location.search().node;
 
       this.loadDatasource(cluster_id).then(() => {
         this.clusterDS.getNode(node_name).then(node => {
@@ -34,36 +34,37 @@ export class NodeInfoCtrl {
   }
 
   loadDatasource(id) {
-    return this.backendSrv.get('api/datasources/' + id)
+    return this.backendSrv
+      .get('api/datasources/' + id)
       .then(ds => {
         this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
-      }).then(clusterDS => {
+      })
+      .then(clusterDS => {
         this.clusterDS = clusterDS;
         return clusterDS;
       });
   }
 
   goToNodeDashboard() {
-    this.$location.path("dashboard/db/k8s-node")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": this.node.metadata.name
-      });
+    this.$location.path('dashboard/db/k8s-node').search({
+      'var-datasource': this.cluster.jsonData.ds,
+      'var-cluster': this.cluster.name,
+      'var-node': this.node.metadata.name,
+    });
   }
 
   conditionStatus(condition) {
     let status;
-    if (condition.type === "Ready") {
-      status = condition.status === "True";
+    if (condition.type === 'Ready') {
+      status = condition.status === 'True';
     } else {
-      status = condition.status === "False";
+      status = condition.status === 'False';
     }
 
     return {
       value: status,
-      text: status ? "Ok" : "Error"
+      text: status ? 'Ok' : 'Error',
     };
   }
 

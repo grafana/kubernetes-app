@@ -19,35 +19,40 @@ export class K8sDatasource {
   }
 
   testDatasource() {
-    return this.backendSrv.datasourceRequest({
-      url: this.url + '/',
-      method: 'GET'
-    }).then(response => {
-      if (response.status === 200) {
-        return { status: "success", message: "Data source is working", title: "Success" };
-      }
-      return { status: "warning", message: "error", title: "Error" };
-    });
+    return this.backendSrv
+      .datasourceRequest({
+        url: this.url + '/',
+        method: 'GET',
+      })
+      .then(response => {
+        if (response.status === 200) {
+          return { status: 'success', message: 'Data source is working', title: 'Success' };
+        }
+        return { status: 'warning', message: 'error', title: 'Error' };
+      });
   }
 
   _get(apiResource) {
-    return this.backendSrv.datasourceRequest({
-      url: this.url + apiResource,
-      method: "GET",
-      headers: { 'Content-Type': 'application/json' }
-    }).then(
-      response => {
-        return response.data;
-      }, error => {
-        return error;
-      });
+    return this.backendSrv
+      .datasourceRequest({
+        url: this.url + apiResource,
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then(
+        response => {
+          return response.data;
+        },
+        error => {
+          return error;
+        }
+      );
   }
 
   getNodes() {
-    return this._get('/api/v1/nodes')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/nodes').then(result => {
+      return result.items;
+    });
   }
 
   getNode(name) {
@@ -55,57 +60,49 @@ export class K8sDatasource {
   }
 
   getNamespaces() {
-    return this._get('/api/v1/namespaces')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/namespaces').then(result => {
+      return result.items;
+    });
   }
 
   getComponentStatuses() {
-    return this._get('/api/v1/componentstatuses')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/componentstatuses').then(result => {
+      return result.items;
+    });
   }
 
   getDaemonSets(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets').then(result => {
+      return result.items;
+    });
   }
 
   getReplicationControllers(namespace) {
-    return this._get('/api/v1/' + addNamespace(namespace) + 'replicationcontrollers')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/' + addNamespace(namespace) + 'replicationcontrollers').then(result => {
+      return result.items;
+    });
   }
 
   getDeployments(namespace) {
-    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments').then(result => {
+      return result.items;
+    });
   }
 
   getPods(namespace) {
-    return this._get('/api/v1/' + addNamespace(namespace) + 'pods')
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/' + addNamespace(namespace) + 'pods').then(result => {
+      return result.items;
+    });
   }
 
   getPodsByLabel(namespace, labels) {
-    return this._get('/api/v1/' + addNamespace(namespace) + 'pods?labelSelector=' + addLabels(labels))
-      .then(result => {
-        return result.items;
-      });
+    return this._get('/api/v1/' + addNamespace(namespace) + 'pods?labelSelector=' + addLabels(labels)).then(result => {
+      return result.items;
+    });
   }
 
   getPod(name) {
-    return this._get('/api/v1/pods/?fieldSelector=metadata.name%3D' + name)
-    .then(result => {
+    return this._get('/api/v1/pods/?fieldSelector=metadata.name%3D' + name).then(result => {
       if (result.items && result.items.length === 1) {
         return result.items[0];
       } else {
@@ -122,19 +119,18 @@ export class K8sDatasource {
       });
       return this.$q.all(promises);
     } else {
-      return this.getPod(names)
-      .then(pod => {
+      return this.getPod(names).then(pod => {
         return [pod];
       });
     }
   }
 
   query(options) {
-    throw new Error("Query Support not implemented yet.");
+    throw new Error('Query Support not implemented yet.');
   }
 
   annotationQuery(options) {
-    throw new Error("Annotation Support not implemented yet.");
+    throw new Error('Annotation Support not implemented yet.');
   }
 
   metricFindQuery(query: string) {
@@ -144,18 +140,21 @@ export class K8sDatasource {
       return Promise.resolve([]);
     }
     const interpolated = this.templateSrv.replace(query, {});
-    const query_list = interpolated.split(" ");
+    const query_list = interpolated.split(' ');
     if (query_list.length > 1) {
-      namespaces = query_list[1].replace("{", "").replace("}", "").split(",");
+      namespaces = query_list[1]
+        .replace('{', '')
+        .replace('}', '')
+        .split(',');
     } else {
-      namespaces = [""]; //Gets all pods/deployments
+      namespaces = ['']; //Gets all pods/deployments
     }
     switch (query_list[0]) {
       case 'pod':
         for (const ns of namespaces) {
           promises.push(this.getPods(ns));
         }
-        return Promise.all(promises).then((res) => {
+        return Promise.all(promises).then(res => {
           const data: any[] = [];
           const pods = _.flatten(res).filter(n => n);
           for (const pod of pods) {
@@ -170,7 +169,7 @@ export class K8sDatasource {
         for (const ns of namespaces) {
           promises.push(this.getDeployments(ns));
         }
-        return Promise.all(promises).then((res) => {
+        return Promise.all(promises).then(res => {
           const data: any[] = [];
           const deployments = _.flatten(res).filter(n => n);
           for (const deployment of deployments) {
@@ -204,10 +203,12 @@ export class K8sDatasource {
           return data;
         });
       case 'datasource': // Returns the prometheus datasource associated with the cluster
-        return Promise.resolve([{
-          text: this.ds,
-          value: this.ds,
-        }]);
+        return Promise.resolve([
+          {
+            text: this.ds,
+            value: this.ds,
+          },
+        ]);
     }
   }
 }

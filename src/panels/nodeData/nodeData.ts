@@ -1,10 +1,9 @@
 import moment from 'moment';
-import {PanelCtrl} from 'grafana/app/plugins/sdk';
+import { PanelCtrl } from 'grafana/app/plugins/sdk';
 import _ from 'lodash';
 import NodeStatsDatasource from './nodeStats';
 
-const panelDefaults = {
-};
+const panelDefaults = {};
 
 export class NodeDataCtrl extends PanelCtrl {
   templateVariables: any;
@@ -16,17 +15,11 @@ export class NodeDataCtrl extends PanelCtrl {
   isInListMode: boolean;
   nodes: any[];
 
-
   static templateUrl = 'panels/nodeData/partials/node_info.html';
   static scrollable = true;
 
   /** @ngInject */
-  constructor($scope, $injector,
-    private backendSrv,
-    private datasourceSrv,
-    private alertSrv,
-    private variableSrv
-  ) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, private alertSrv, private variableSrv) {
     super($scope, $injector);
     _.defaults(this.panel, panelDefaults);
 
@@ -46,47 +39,48 @@ export class NodeDataCtrl extends PanelCtrl {
   }
 
   loadCluster() {
-    const cluster = _.find(this.templateVariables, {'name': 'cluster'});
+    const cluster = _.find(this.templateVariables, { name: 'cluster' });
     if (!cluster) {
-      this.alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+      this.alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     } else {
       const cluster_id = cluster.current.value;
-      const nodeVar = _.find(this.templateVariables, {'name': 'node'});
-      const node_name  = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
-      const prometheusDS  = _.find(this.templateVariables, {'name': 'datasource'}).current.value;
+      const nodeVar = _.find(this.templateVariables, { name: 'node' });
+      const node_name = nodeVar.current.value !== '$__all' ? nodeVar.current.value : 'All';
+      const prometheusDS = _.find(this.templateVariables, { name: 'datasource' }).current.value;
 
-      this.loadDatasource(cluster_id).then(() => {
-        return this.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
-      }).then(nodeStats => {
-        if (node_name === 'All') {
-          this.isInListMode = true;
-          this.clusterDS.getNodes().then(nodes => {
-            this.nodes = _.map(nodes, node => {
-              node.healthState = this.getNodeHealth(node);
-              this.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
+      this.loadDatasource(cluster_id)
+        .then(() => {
+          return this.nodeStatsDatasource.getNodeStats(cluster_id, prometheusDS);
+        })
+        .then(nodeStats => {
+          if (node_name === 'All') {
+            this.isInListMode = true;
+            this.clusterDS.getNodes().then(nodes => {
+              this.nodes = _.map(nodes, node => {
+                node.healthState = this.getNodeHealth(node);
+                this.nodeStatsDatasource.updateNodeWithStats(node, nodeStats);
 
-              return node;
+                return node;
+              });
             });
-          });
-        } else {
-          this.isInListMode = false;
-          this.clusterDS.getNode(node_name).then(node => {
-            this.node = node;
-            this.pageReady = true;
-          });
-        }
-      });
+          } else {
+            this.isInListMode = false;
+            this.clusterDS.getNode(node_name).then(node => {
+              this.node = node;
+              this.pageReady = true;
+            });
+          }
+        });
     }
   }
 
   getNodeHealth(node) {
-    let health = "unhealthy";
+    let health = 'unhealthy';
     let message = '';
     _.forEach(node.status.conditions, condition => {
-      if (condition.type   === "Ready" &&
-          condition.status === "True") {
-        health = "ok";
+      if (condition.type === 'Ready' && condition.status === 'True') {
+        health = 'ok';
       } else {
         message = condition.message;
       }
@@ -109,23 +103,23 @@ export class NodeDataCtrl extends PanelCtrl {
           text: 'UNHEALTHY',
           iconClass: 'icon-gf icon-gf-critical',
           stateClass: 'alert-state-critical',
-          message: message || ''
+          message: message || '',
         };
       }
       case 'warning': {
         return {
           text: 'warning',
-          iconClass: "icon-gf icon-gf-critical",
+          iconClass: 'icon-gf icon-gf-critical',
           stateClass: 'alert-state-warning',
-          message: message || ''
+          message: message || '',
         };
       }
     }
     return {
       text: 'warning',
-      iconClass: "icon-gf icon-gf-critical",
+      iconClass: 'icon-gf icon-gf-critical',
       stateClass: 'alert-state-warning',
-      message: 'Unknown state: '+health
+      message: 'Unknown state: ' + health,
     };
   }
 
@@ -134,27 +128,29 @@ export class NodeDataCtrl extends PanelCtrl {
   }
 
   loadDatasource(id) {
-    return this.backendSrv.get('api/datasources')
+    return this.backendSrv
+      .get('api/datasources')
       .then(result => {
-        return _.filter(result, {"type": "grafana-kubernetes-datasource", "name": id})[0];
+        return _.filter(result, { type: 'grafana-kubernetes-datasource', name: id })[0];
       })
       .then(ds => {
         if (!ds) {
-          this.alertSrv.set("Failed to connect", "Could not connect to the specified cluster.", 'error');
-          throw new Error("Failed to connect to " + id);
+          this.alertSrv.set('Failed to connect', 'Could not connect to the specified cluster.', 'error');
+          throw new Error('Failed to connect to ' + id);
         }
         this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
-      }).then(clusterDS => {
+      })
+      .then(clusterDS => {
         this.clusterDS = clusterDS;
         return clusterDS;
       });
   }
 
   goToNodeDashboard(node) {
-    const variable = _.find(this.templateVariables, {'name': 'node'});
-    variable.current.text = node === 'All' ? 'All': node.metadata.name;
-    variable.current.value = node === 'All' ? '$__all': node.metadata.name;
+    const variable = _.find(this.templateVariables, { name: 'node' });
+    variable.current.text = node === 'All' ? 'All' : node.metadata.name;
+    variable.current.value = node === 'All' ? '$__all' : node.metadata.name;
 
     this.variableSrv.variableUpdated(variable).then(() => {
       this.$scope.$emit('template-variable-value-updated');
@@ -164,15 +160,15 @@ export class NodeDataCtrl extends PanelCtrl {
 
   conditionStatus(condition) {
     let status;
-    if (condition.type === "Ready") {
-      status = condition.status === "True";
+    if (condition.type === 'Ready') {
+      status = condition.status === 'True';
     } else {
-      status = condition.status === "False";
+      status = condition.status === 'False';
     }
 
     return {
       value: status,
-      text: status ? "Ok" : "Error"
+      text: status ? 'Ok' : 'Error',
     };
   }
 

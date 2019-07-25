@@ -6,117 +6,123 @@ const nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
 const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
 
 const kubestateDeployment = {
-  "apiVersion": "apps/v1beta1",
-  "kind": "Deployment",
-  "metadata": {
-    "name": "kube-state-metrics",
-    "namespace": "kube-system"
+  apiVersion: 'apps/v1beta1',
+  kind: 'Deployment',
+  metadata: {
+    name: 'kube-state-metrics',
+    namespace: 'kube-system',
   },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "k8s-app": "kube-state-metrics",
-        "grafanak8sapp": "true"
-      }
-    },
-    "replicas": 1,
-    "template": {
-      "metadata": {
-        "labels": {
-          "k8s-app": "kube-state-metrics",
-          "grafanak8sapp": "true"
-        }
+  spec: {
+    selector: {
+      matchLabels: {
+        'k8s-app': 'kube-state-metrics',
+        grafanak8sapp: 'true',
       },
-      "spec": {
-        "containers": [{
-          "name": "kube-state-metrics",
-          "image": kubestateImage,
-          "ports": [{
-            "name": "http-metrics",
-            "containerPort": 8080
-          }],
-          "readinessProbe": {
-            "httpGet": {
-              "path": "/healthz",
-              "port": 8080
+    },
+    replicas: 1,
+    template: {
+      metadata: {
+        labels: {
+          'k8s-app': 'kube-state-metrics',
+          grafanak8sapp: 'true',
+        },
+      },
+      spec: {
+        containers: [
+          {
+            name: 'kube-state-metrics',
+            image: kubestateImage,
+            ports: [
+              {
+                name: 'http-metrics',
+                containerPort: 8080,
+              },
+            ],
+            readinessProbe: {
+              httpGet: {
+                path: '/healthz',
+                port: 8080,
+              },
+              initialDelaySeconds: 5,
+              timeoutSeconds: 5,
             },
-            "initialDelaySeconds": 5,
-            "timeoutSeconds": 5
-          }
-        }]
-      }
-    }
-  }
+          },
+        ],
+      },
+    },
+  },
 };
 
 const nodeExporterDaemonSet = {
-  "kind": "DaemonSet",
-  "apiVersion": "extensions/v1beta1",
-  "metadata": {
-    "name": "node-exporter",
-    "namespace": "kube-system"
+  kind: 'DaemonSet',
+  apiVersion: 'extensions/v1beta1',
+  metadata: {
+    name: 'node-exporter',
+    namespace: 'kube-system',
   },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "daemon": "node-exporter",
-        "grafanak8sapp": "true"
-      }
-    },
-    "template": {
-      "metadata": {
-        "name": "node-exporter",
-        "labels": {
-          "daemon": "node-exporter",
-          "grafanak8sapp": "true"
-        }
+  spec: {
+    selector: {
+      matchLabels: {
+        daemon: 'node-exporter',
+        grafanak8sapp: 'true',
       },
-      "spec": {
-        "volumes": [
+    },
+    template: {
+      metadata: {
+        name: 'node-exporter',
+        labels: {
+          daemon: 'node-exporter',
+          grafanak8sapp: 'true',
+        },
+      },
+      spec: {
+        volumes: [
           {
-            "name": "proc",
-            "hostPath": {
-              "path": "/proc"
-            }
+            name: 'proc',
+            hostPath: {
+              path: '/proc',
+            },
           },
           {
-            "name": "sys",
-            "hostPath": {
-              "path": "/sys"
-            }
-          }
-        ],
-        "containers": [{
-          "name": "node-exporter",
-          "image": nodeExporterImage,
-          "args": [
-            "--path.procfs=/proc_host",
-            "--path.sysfs=/host_sys"
-          ],
-          "ports": [{
-            "name": "node-exporter",
-            "hostPort": 9100,
-            "containerPort": 9100
-          }],
-          "volumeMounts": [{
-              "name": "sys",
-              "readOnly": true,
-              "mountPath": "/host_sys"
+            name: 'sys',
+            hostPath: {
+              path: '/sys',
             },
-            {
-              "name": "proc",
-              "readOnly": true,
-              "mountPath": "/proc_host"
-            }
-          ],
-          "imagePullPolicy": "IfNotPresent"
-        }],
-        "restartPolicy": "Always",
-        "hostNetwork": true,
-        "hostPID": true
-      }
-    }
-  }
+          },
+        ],
+        containers: [
+          {
+            name: 'node-exporter',
+            image: nodeExporterImage,
+            args: ['--path.procfs=/proc_host', '--path.sysfs=/host_sys'],
+            ports: [
+              {
+                name: 'node-exporter',
+                hostPort: 9100,
+                containerPort: 9100,
+              },
+            ],
+            volumeMounts: [
+              {
+                name: 'sys',
+                readOnly: true,
+                mountPath: '/host_sys',
+              },
+              {
+                name: 'proc',
+                readOnly: true,
+                mountPath: '/proc_host',
+              },
+            ],
+            imagePullPolicy: 'IfNotPresent',
+          },
+        ],
+        restartPolicy: 'Always',
+        hostNetwork: true,
+        hostPID: true,
+      },
+    },
+  },
 };
 
 export class ClusterConfigCtrl {
@@ -135,7 +141,7 @@ export class ClusterConfigCtrl {
     const self = this;
     this.isOrgEditor = contextSrv.hasRole('Editor') || contextSrv.hasRole('Admin');
     this.cluster = {
-      type: 'grafana-kubernetes-datasource'
+      type: 'grafana-kubernetes-datasource',
     };
     this.pageReady = false;
     this.prometheusDeployed = false;
@@ -159,16 +165,18 @@ export class ClusterConfigCtrl {
   getDatasources() {
     const self = this;
     const promises: any[] = [];
-    if ("cluster" in self.$location.search()) {
-      promises.push(self.getCluster(this.$location.search().cluster).then(() => {
-        return self.getDeployments().then(ds => {
-          _.forEach(ds.items, function (deployment) {
-            if (deployment.metadata.name === "prometheus-deployment") {
-              self.prometheusDeployed = true;
-            }
+    if ('cluster' in self.$location.search()) {
+      promises.push(
+        self.getCluster(this.$location.search().cluster).then(() => {
+          return self.getDeployments().then(ds => {
+            _.forEach(ds.items, function(deployment) {
+              if (deployment.metadata.name === 'prometheus-deployment') {
+                self.prometheusDeployed = true;
+              }
+            });
           });
-        });
-      }));
+        })
+      );
     }
 
     promises.push(self.getPrometheusDatasources());
@@ -178,24 +186,22 @@ export class ClusterConfigCtrl {
 
   getCluster(id) {
     const self = this;
-    return this.backendSrv.get('/api/datasources/' + id)
-      .then((ds) => {
-        if (!(ds.jsonData.ds)) {
-          ds.jsonData.ds = "";
-        }
-        self.cluster = ds;
-      });
+    return this.backendSrv.get('/api/datasources/' + id).then(ds => {
+      if (!ds.jsonData.ds) {
+        ds.jsonData.ds = '';
+      }
+      self.cluster = ds;
+    });
   }
 
   getPrometheusDatasources() {
     const self = this;
-    return this.backendSrv.get('/api/datasources')
-    .then((result) => {
+    return this.backendSrv.get('/api/datasources').then(result => {
       // self.hostedMetricsDS = _.filter(result, obj =>
       //   /grafana.net\/(graphite|prometheus)$/.test(obj.url)
       // );
       self.datasources = _.filter(result, {
-        "type": "prometheus"
+        type: 'prometheus',
       });
     });
   }
@@ -206,8 +212,8 @@ export class ClusterConfigCtrl {
       url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -217,30 +223,30 @@ export class ClusterConfigCtrl {
         return this.getDatasources();
       })
       .then(() => {
-        this.alertSrv.set("Saved", "Saved and successfully connected to " + this.cluster.name, 'success', 3000);
+        this.alertSrv.set('Saved', 'Saved and successfully connected to ' + this.cluster.name, 'success', 3000);
       })
       .catch(err => {
-        this.alertSrv.set("Saved", "Saved but failed to connect to " + this.cluster.name + '. Error: ' + err, 'error', 5000);
+        this.alertSrv.set('Saved', 'Saved but failed to connect to ' + this.cluster.name + '. Error: ' + err, 'error', 5000);
       });
   }
 
   savePrometheusConfigToFile() {
     const blob = new Blob([this.generatePrometheusConfig()], {
-      type: "application/yaml"
+      type: 'application/yaml',
     });
     this.saveToFile('prometheus.yml', blob);
   }
 
   saveNodeExporterDSToFile() {
     const blob = new Blob([angular.toJson(nodeExporterDaemonSet, true)], {
-      type: "application/json"
+      type: 'application/json',
     });
     this.saveToFile('grafanak8s-node-exporter-ds.json', blob);
   }
 
   saveKubeStateDeployToFile() {
     const blob = new Blob([angular.toJson(kubestateDeployment, true)], {
-      type: "application/json"
+      type: 'application/json',
     });
     this.saveToFile('grafanak8s-kubestate-deploy.json', blob);
   }
@@ -258,34 +264,32 @@ export class ClusterConfigCtrl {
   }
 
   deploy() {
-    const question = !this.prometheusDeployed ?
-      'This action will deploy Prometheus exporters to your Kubernetes cluster.' +
-      'Are you sure you want to deploy?' :
-      'This action will update the Prometheus exporters on your Kubernetes cluster. ' +
-      'Are you sure you want to deploy?';
+    const question = !this.prometheusDeployed
+      ? 'This action will deploy Prometheus exporters to your Kubernetes cluster.' + 'Are you sure you want to deploy?'
+      : 'This action will update the Prometheus exporters on your Kubernetes cluster. ' + 'Are you sure you want to deploy?';
     appEvents.emit('confirm-modal', {
       title: 'Deploy to Kubernetes Cluster',
       text: question,
-      yesText: "Deploy",
-      icon: "fa-question",
+      yesText: 'Deploy',
+      icon: 'fa-question',
       onConfirm: () => {
         this.saveAndDeploy();
-      }
+      },
     });
   }
 
   undeploy() {
-    const question = 'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. ' +
-      'Are you sure you want to remove it?';
+    const question =
+      'This action will remove the DaemonSet on your Kubernetes cluster that collects health metrics. ' + 'Are you sure you want to remove it?';
 
     appEvents.emit('confirm-modal', {
       title: 'Remove Daemonset Collector',
       text: question,
-      yesText: "Remove",
-      icon: "fa-question",
+      yesText: 'Remove',
+      icon: 'fa-question',
       onConfirm: () => {
         this.undeployPrometheus();
-      }
+      },
     });
   }
 
@@ -298,25 +302,28 @@ export class ClusterConfigCtrl {
   }
 
   saveAndDeploy() {
-    return this.saveDatasource()
-      .then(() => {
-        return this.deployPrometheus();
-      });
+    return this.saveDatasource().then(() => {
+      return this.deployPrometheus();
+    });
   }
 
   checkApiVersion(clusterId) {
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(result => {
-      if (!result.resources || result.resources.length === 0) {
-        throw new Error("This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " +
-          "You can install manually using the instructions at the bottom of the page.");
-      }
-    });
+    return this.backendSrv
+      .request({
+        url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(result => {
+        if (!result.resources || result.resources.length === 0) {
+          throw new Error(
+            'This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. ' +
+              'You can install manually using the instructions at the bottom of the page.'
+          );
+        }
+      });
   }
 
   createConfigMap(clusterId, cm) {
@@ -325,8 +332,8 @@ export class ClusterConfigCtrl {
       method: 'POST',
       data: cm,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -336,8 +343,8 @@ export class ClusterConfigCtrl {
       method: 'POST',
       data: daemonSet,
       headers: {
-        'Content-Type': "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
@@ -354,56 +361,61 @@ export class ClusterConfigCtrl {
       method: 'POST',
       data: deployment,
       headers: {
-        'Content-Type': "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
     });
   }
 
   deleteDeployment(clusterId, deploymentName) {
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
-      method: 'DELETE'
-    }).then(() => {
-      return this.backendSrv.request({
-        url: 'api/datasources/proxy/' + clusterId +
-          '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
-        method: 'DELETE'
+    return this.backendSrv
+      .request({
+        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
+        method: 'DELETE',
+      })
+      .then(() => {
+        return this.backendSrv.request({
+          url:
+            'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
+          method: 'DELETE',
+        });
       });
-    });
   }
 
   deleteConfigMap(clusterId, cmName) {
     return this.backendSrv.request({
       url: 'api/datasources/proxy/' + clusterId + '/api/v1/namespaces/kube-system/configmaps/' + cmName,
-      method: 'DELETE'
+      method: 'DELETE',
     });
   }
 
   deletePods() {
     const self = this;
-    return this.backendSrv.request({
-      url: 'api/datasources/proxy/' + self.cluster.id +
-        '/api/v1/namespaces/kube-system/pods?labelSelector=grafanak8sapp%3Dtrue',
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(pods => {
-      if (!pods || pods.items.length === 0) {
-        throw new Error("No pods found to update.");
-      }
+    return this.backendSrv
+      .request({
+        url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods?labelSelector=grafanak8sapp%3Dtrue',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(pods => {
+        if (!pods || pods.items.length === 0) {
+          throw new Error('No pods found to update.');
+        }
 
-      const promises: any[] = [];
+        const promises: any[] = [];
 
-      _.forEach(pods.items, pod => {
-        promises.push(this.backendSrv.request({
-          url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pod.metadata.name,
-          method: 'DELETE',
-        }));
+        _.forEach(pods.items, pod => {
+          promises.push(
+            this.backendSrv.request({
+              url: 'api/datasources/proxy/' + self.cluster.id + '/api/v1/namespaces/kube-system/pods/' + pod.metadata.name,
+              method: 'DELETE',
+            })
+          );
+        });
+
+        return this.$q.all(promises);
       });
-
-      return this.$q.all(promises);
-    });
   }
 
   cancel() {
@@ -413,7 +425,7 @@ export class ClusterConfigCtrl {
   deployPrometheus() {
     const self = this;
     if (!this.cluster || !this.cluster.id) {
-      this.alertSrv.set("Error", "Could not connect to cluster.", 'error');
+      this.alertSrv.set('Error', 'Could not connect to cluster.', 'error');
       return;
     }
     return this.checkApiVersion(self.cluster.id)
@@ -421,17 +433,17 @@ export class ClusterConfigCtrl {
         return this.createDeployment(self.cluster.id, kubestateDeployment);
       })
       .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+        this.alertSrv.set('Error', err, 'error');
       })
       .then(() => {
         return this.createDaemonSet(self.cluster.id, nodeExporterDaemonSet);
       })
       .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+        this.alertSrv.set('Error', err, 'error');
       })
       .then(() => {
         this.prometheusDeployed = true;
-        this.alertSrv.set("Deployed", "Prometheus and exporters have been deployed to " + self.cluster.name, 'success', 5000);
+        this.alertSrv.set('Deployed', 'Prometheus and exporters have been deployed to ' + self.cluster.name, 'success', 5000);
       });
   }
 
@@ -442,23 +454,23 @@ export class ClusterConfigCtrl {
         return this.deleteDeployment(self.cluster.id, 'kube-state-metrics');
       })
       .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+        this.alertSrv.set('Error', err, 'error');
       })
       .then(() => {
         return this.deleteDaemonSet(self.cluster.id);
       })
       .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+        this.alertSrv.set('Error', err, 'error');
       })
       .then(() => {
         return this.deletePods();
       })
       .catch(err => {
-        this.alertSrv.set("Error", err, 'error');
+        this.alertSrv.set('Error', err, 'error');
       })
       .then(() => {
         this.prometheusDeployed = false;
-        this.alertSrv.set("Grafana K8s removed", "Prometheus and exporters removed from " + self.cluster.name, 'success', 5000);
+        this.alertSrv.set('Grafana K8s removed', 'Prometheus and exporters removed from ' + self.cluster.name, 'success', 5000);
       });
   }
 
@@ -521,14 +533,14 @@ export class ClusterConfigCtrl {
 
   generatePrometheusConfigMap() {
     return {
-      "apiVersion": "v1",
-      "kind": "ConfigMap",
-      "metadata": {
-        "name": "prometheus-configmap"
+      apiVersion: 'v1',
+      kind: 'ConfigMap',
+      metadata: {
+        name: 'prometheus-configmap',
       },
-      "data": {
-        "prometheus.yml": this.generatePrometheusConfig()
-      }
+      data: {
+        'prometheus.yml': this.generatePrometheusConfig(),
+      },
     };
   }
 }

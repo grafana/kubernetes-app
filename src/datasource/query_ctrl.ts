@@ -1,11 +1,10 @@
 import _ from 'lodash';
-import {QueryCtrl} from 'grafana/app/plugins/sdk';
+import { QueryCtrl } from 'grafana/app/plugins/sdk';
 
 export class K8sQueryCtrl extends QueryCtrl {
   static templateUrl = 'datasource/partials/query.editor.html';
 
-  defaults = {
-  };
+  defaults = {};
 
   /** @ngInject */
   constructor($scope, $injector) {

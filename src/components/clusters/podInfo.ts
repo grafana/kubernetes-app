@@ -15,12 +15,12 @@ export class PodInfoCtrl {
 
     this.pageReady = false;
     this.pod = {};
-    if (!("cluster" in $location.search())) {
-      alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+    if (!('cluster' in $location.search())) {
+      alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     } else {
       this.cluster_id = $location.search().cluster;
-      const pod_name    = $location.search().pod;
+      const pod_name = $location.search().pod;
 
       this.loadDatasource(this.cluster_id).then(() => {
         this.clusterDS.getPod(pod_name).then(pod => {
@@ -32,11 +32,13 @@ export class PodInfoCtrl {
   }
 
   loadDatasource(id) {
-    return this.backendSrv.get('api/datasources/' + id)
+    return this.backendSrv
+      .get('api/datasources/' + id)
       .then(ds => {
         this.datasource = ds.jsonData.ds;
         return this.datasourceSrv.get(ds.name);
-      }).then(clusterDS => {
+      })
+      .then(clusterDS => {
         this.clusterDS = clusterDS;
         return clusterDS;
       });
@@ -44,26 +46,25 @@ export class PodInfoCtrl {
 
   conditionStatus(condition) {
     let status;
-    if (condition.type === "Ready") {
-      status = condition.status === "True";
+    if (condition.type === 'Ready') {
+      status = condition.status === 'True';
     } else {
-      status = condition.status === "False";
+      status = condition.status === 'False';
     }
 
     return {
       value: status,
-      text: status ? "Ok" : "Error"
+      text: status ? 'Ok' : 'Error',
     };
   }
 
   goToPodDashboard(pod) {
-    this.$location.path("dashboard/db/k8s-container")
-    .search({
-      "var-datasource": this.datasource,
-      "var-cluster": this.clusterDS.name,
-      "var-node": pod.spec.nodeName,
-      "var-namespace": pod.metadata.namespace,
-      "var-pod": pod.metadata.name
+    this.$location.path('dashboard/db/k8s-container').search({
+      'var-datasource': this.datasource,
+      'var-cluster': this.clusterDS.name,
+      'var-node': pod.spec.nodeName,
+      'var-namespace': pod.metadata.namespace,
+      'var-pod': pod.metadata.name,
     });
   }
 
