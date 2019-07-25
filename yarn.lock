@@ -721,9 +721,9 @@
   integrity sha512-9BzfKEdWluY8Nl9oMOxsaPioUHwdohGmIXHGObvXzzqPf9U96LBFlbn1ZAOuntmPnXC107hDVHnM3tXcynFaCA==
 
 "@grafana/toolkit@next":
-  version "6.4.0-alpha.37"
-  resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-6.4.0-alpha.37.tgz#8c661ceefe4ecd5024a6ac654fff435e25358fc0"
-  integrity sha512-ut1IzVQWvGRWHYCd+AOO9YeQQSDKZ3yJ7rYS7S2Ua0aNTNJIGjiVJ/ek7SlcDnJYtzNvGCcOqObZLV774xdv8g==
+  version "6.4.0-alpha.39"
+  resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-6.4.0-alpha.39.tgz#0f7a18466e0b0b30aa78dbfd1be10366998af831"
+  integrity sha512-nts/rIO5DPRWIIgR/phl71ey7uOxCGaJiR9HRGiL66620vRE77bU7TwsNyw/XLahJ44K8+zSYVksv1/SNT6Qvw==
   dependencies:
     "@babel/core" "7.4.5"
     "@babel/preset-env" "7.4.5"
@@ -1230,9 +1230,9 @@
     "@types/puppeteer" "*"
 
 "@types/puppeteer@*":
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.12.4.tgz#8388efdb0b30a54a7e7c4831ca0d709191d77ff1"
-  integrity sha512-aaGbJaJ9TuF9vZfTeoh876sBa+rYJWPwtsmHmYr28pGr42ewJnkDTq2aeSKEmS39SqUdkwLj73y/d7rBSp7mDQ==
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@types/puppeteer/-/puppeteer-1.19.0.tgz#59f0050bae019cee7c3af2bb840a25892a3078b6"
+  integrity sha512-Db9LWOuTm2bR/qgPE7PQCmnsCQ6flHdULuIDWTks8YdQ/SGHKg5WGWG54gl0734NDKCTF5MbqAp2qWuvBiyQ3Q==
   dependencies:
     "@types/node" "*"
 
@@ -1828,9 +1828,9 @@ autoprefixer@^9.4.9:
     postcss-value-parser "^4.0.0"
 
 aws-sdk@^2.495.0:
-  version "2.499.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.499.0.tgz#280955126c4bf245c154eeb00cac6ba987c91c68"
-  integrity sha512-Uz9147/QJ2e14LwvnLngkCjjiII3cGKSYggd7ywyYWJciPZPNMPJFSbWdCSjSqiFoRVsHdHQ8bBPhr+Sn22zSw==
+  version "2.500.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.500.0.tgz#2e4c5b7027c2d583fd0018f0aeed712cea135f7f"
+  integrity sha512-zVSO6STyBbbn5foqiH8Z0agpudtOibSRLhTXNkVnJTwJwYK5f9mv5WKOKcLivx/fvXwVE8QehZWyE3vBzl8I+w==
   dependencies:
     buffer "4.9.1"
     events "1.1.1"
