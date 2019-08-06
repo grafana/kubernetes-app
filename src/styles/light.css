@@ -1,5 +1,5 @@
 tr.dashlist-item:hover {
-  background-color: #333;
+  background-color: #ececec;
   cursor: pointer;
 }
 
@@ -48,12 +48,12 @@ tr.dashlist-item:hover {
 .podnav-result {
   display: block;
   padding: 3px 10px;
-  background-color: #292929;
+  background-color: #f4f5f8;
   margin-bottom: 4px;
 }
 
 .podnav-result:hover {
-  background-color: #333;
+  background-color: #ececec;
   cursor: pointer;
 }
 

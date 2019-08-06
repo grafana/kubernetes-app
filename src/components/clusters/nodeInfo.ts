@@ -1,5 +1,3 @@
-///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import moment from 'moment';
 
 export class NodeInfoCtrl {
@@ -11,7 +9,7 @@ export class NodeInfoCtrl {
   static templateUrl = 'components/clusters/partials/node_info.html';
 
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $location, alertSrv) {
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
@@ -19,12 +17,12 @@ export class NodeInfoCtrl {
     this.clusterDS = {};
     this.node = {};
 
-    if (!("cluster" in $location.search())) {
-      alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+    if (!('cluster' in $location.search())) {
+      alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     } else {
-      let cluster_id = $location.search().cluster;
-      let node_name  = $location.search().node;
+      const cluster_id = $location.search().cluster;
+      const node_name = $location.search().node;
 
       this.loadDatasource(cluster_id).then(() => {
         this.clusterDS.getNode(node_name).then(node => {
@@ -36,36 +34,37 @@ export class NodeInfoCtrl {
   }
 
   loadDatasource(id) {
-    return this.backendSrv.get('api/datasources/' + id)
+    return this.backendSrv
+      .get('api/datasources/' + id)
       .then(ds => {
         this.cluster = ds;
         return this.datasourceSrv.get(ds.name);
-      }).then(clusterDS => {
+      })
+      .then(clusterDS => {
         this.clusterDS = clusterDS;
         return clusterDS;
       });
   }
 
   goToNodeDashboard() {
-    this.$location.path("dashboard/db/k8s-node")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": this.node.metadata.name
-      });
+    this.$location.path('dashboard/db/k8s-node').search({
+      'var-datasource': this.cluster.jsonData.ds,
+      'var-cluster': this.cluster.name,
+      'var-node': this.node.metadata.name,
+    });
   }
 
   conditionStatus(condition) {
-    var status;
-    if (condition.type === "Ready") {
-      status = condition.status === "True";
+    let status;
+    if (condition.type === 'Ready') {
+      status = condition.status === 'True';
     } else {
-      status = condition.status === "False";
+      status = condition.status === 'False';
     }
 
     return {
       value: status,
-      text: status ? "Ok" : "Error"
+      text: status ? 'Ok' : 'Error',
     };
   }
 

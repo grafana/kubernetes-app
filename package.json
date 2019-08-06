@@ -1,34 +1,30 @@
 {
-  "private": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.2-dev",
+  "description": "Kubernetes App",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "grafana-toolkit plugin:build",
+    "test": "grafana-toolkit plugin:test",
+    "dev": "grafana-toolkit plugin:dev",
+    "watch": "grafana-toolkit plugin:dev --watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/grafana/kubernetes-app.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Grafana Labs",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/grafana/kubernetes-app/issues"
   },
-  "devDependencies": {
-    "grafana-sdk-mocks": "grafana/grafana-sdk-mocks",
-    "grunt": "^1.0.1",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-typescript": "^0.8.0",
-    "grunt-sass": "^1.1.0",
-    "grunt-systemjs-builder": "^0.2.5",
-    "load-grunt-tasks": "~3.2.0",
-    "typescript": "~2.6.2"
-  },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "jquery": "^3.2.1",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1"
   },
-  "homepage": "https://grafana.com/"
+  "devDependencies": {
+    "@grafana/toolkit": "next",
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@types/angular": "1.6.54",
+    "angular": "1.6.6"
+  }
 }

@@ -1,5 +1,3 @@
-///<reference path="../../../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import _ from 'lodash';
 import $ from 'jquery';
 
@@ -14,30 +12,28 @@ export class ClusterInfoCtrl {
   clusterDS: any;
 
   static templateUrl = 'components/clusters/partials/cluster_info.html';
-  
+
   /** @ngInject */
-  constructor($scope, $injector, private backendSrv, private datasourceSrv, private $q, private $location, private alertSrv) {
-    this.$q = $q;
+  constructor($scope, $injector, private backendSrv, private datasourceSrv, $q, private $location, alertSrv) {
     document.title = 'Grafana Kubernetes App';
 
     this.pageReady = false;
     this.cluster = {};
     this.componentStatuses = [];
     this.namespaces = [];
-    this.namespace = "";
+    this.namespace = '';
     this.nodes = [];
 
-    if (!("cluster" in $location.search())) {
-      alertSrv.set("no cluster specified.", "no cluster specified in url", 'error');
+    if (!('cluster' in $location.search())) {
+      alertSrv.set('no cluster specified.', 'no cluster specified in url', 'error');
       return;
     }
 
-    this.getCluster($location.search().cluster)
-      .then(clusterDS => {
-        this.clusterDS = clusterDS;
-        this.pageReady = true;
-        this.getClusterInfo();
-      });
+    this.getCluster($location.search().cluster).then(clusterDS => {
+      this.clusterDS = clusterDS;
+      this.pageReady = true;
+      this.getClusterInfo();
+    });
   }
 
   getCluster(id) {
@@ -66,71 +62,64 @@ export class ClusterInfoCtrl {
   }
 
   goToClusterDashboard() {
-    this.$location.path("dashboard/db/k8s-cluster")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name
-      });
+    this.$location.path('dashboard/db/k8s-cluster').search({
+      'var-datasource': this.cluster.jsonData.ds,
+      'var-cluster': this.cluster.name,
+    });
   }
 
   goToPodDashboard() {
-    this.$location.path("dashboard/db/k8s-container")
-    .search({
-      "var-datasource": this.cluster.jsonData.ds,
-      "var-cluster": this.cluster.name,
-      "var-node": 'All',
-      "var-namespace": 'All',
-      "var-pod": 'All'
+    this.$location.path('dashboard/db/k8s-container').search({
+      'var-datasource': this.cluster.jsonData.ds,
+      'var-cluster': this.cluster.name,
+      'var-node': 'All',
+      'var-namespace': 'All',
+      'var-pod': 'All',
     });
   }
 
   goToNodeDashboard(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("dashboard/db/k8s-node")
-      .search({
-        "var-datasource": this.cluster.jsonData.ds,
-        "var-cluster": this.cluster.name,
-        "var-node": node === 'All' ? 'All': node.metadata.name
+      this.$location.path('dashboard/db/k8s-node').search({
+        'var-datasource': this.cluster.jsonData.ds,
+        'var-cluster': this.cluster.name,
+        'var-node': node === 'All' ? 'All' : node.metadata.name,
       });
     }
   }
 
   goToWorkloads(ns, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
     if (clickTargetIsLinkOrHasLinkParents === false) {
-      this.$location.path("plugins/grafana-kubernetes-app/page/cluster-workloads")
-      .search({
-        "cluster": this.cluster.id,
-        "namespace": ns.metadata.name
+      this.$location.path('plugins/grafana-kubernetes-app/page/cluster-workloads').search({
+        cluster: this.cluster.id,
+        namespace: ns.metadata.name,
       });
     }
   }
 
   goToNodeInfo(node, evt) {
-    var clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
+    const clickTargetIsLinkOrHasLinkParents = $(evt.target).closest('a').length > 0;
 
-    var closestElm = _.head($(evt.target).closest('div'));
-    var clickTargetClickAttr = _.find(closestElm.attributes, {name: "ng-click"});
-    var clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === "ctrl.goToNodeDashboard(node, $event)" : false;
-    if (clickTargetIsLinkOrHasLinkParents === false &&
-        clickTargetIsNodeDashboard === false) {
-      this.$location.path("plugins/grafana-kubernetes-app/page/node-info")
-      .search({
-        "cluster": this.cluster.id,
-        "node": node.metadata.name
+    const closestElm = _.head($(evt.target).closest('div')) as any;
+    const clickTargetClickAttr = _.find(closestElm.attributes, { name: 'ng-click' });
+    const clickTargetIsNodeDashboard = clickTargetClickAttr ? clickTargetClickAttr.value === 'ctrl.goToNodeDashboard(node, $event)' : false;
+    if (clickTargetIsLinkOrHasLinkParents === false && clickTargetIsNodeDashboard === false) {
+      this.$location.path('plugins/grafana-kubernetes-app/page/node-info').search({
+        cluster: this.cluster.id,
+        node: node.metadata.name,
       });
     }
   }
 }
 
 function getComponentHealth(component) {
-  let health = "unhealthy";
+  let health = 'unhealthy';
   let message = '';
   _.forEach(component.conditions, condition => {
-    if (condition.type   === "Healthy" &&
-        condition.status === "True") {
-      health = "ok";
+    if (condition.type === 'Healthy' && condition.status === 'True') {
+      health = 'ok';
     } else {
       message = condition.message;
     }
@@ -139,12 +128,11 @@ function getComponentHealth(component) {
 }
 
 function getNodeHealth(node) {
-  let health = "unhealthy";
+  let health = 'unhealthy';
   let message = '';
   _.forEach(node.status.conditions, condition => {
-    if (condition.type   === "Ready" &&
-        condition.status === "True") {
-      health = "ok";
+    if (condition.type === 'Ready' && condition.status === 'True') {
+      health = 'ok';
     } else {
       message = condition.message;
     }
@@ -159,7 +147,7 @@ function getHealthState(health, message) {
         text: 'OK',
         iconClass: 'icon-gf icon-gf-online',
         stateClass: 'alert-state-ok',
-        message: ''
+        message: '',
       };
     }
     case 'unhealthy': {
@@ -167,16 +155,22 @@ function getHealthState(health, message) {
         text: 'UNHEALTHY',
         iconClass: 'icon-gf icon-gf-critical',
         stateClass: 'alert-state-critical',
-        message: message || ''
+        message: message || '',
       };
     }
     case 'warning': {
       return {
         text: 'warning',
-        iconClass: "icon-gf icon-gf-critical",
+        iconClass: 'icon-gf icon-gf-critical',
         stateClass: 'alert-state-warning',
-        message: message || ''
+        message: message || '',
       };
     }
   }
+  return {
+    text: 'warning',
+    iconClass: 'icon-gf icon-gf-critical',
+    stateClass: 'alert-state-warning',
+    message: 'Unknown Health: ' + health,
+  };
 }
