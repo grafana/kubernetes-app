@@ -4,121 +4,121 @@ import _ from 'lodash';
 import appEvents from 'app/core/app_events';
 import angular from 'angular';
 
-const nodeExporterImage='quay.io/prometheus/node-exporter:v0.15.0';
-const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
+const nodeExporterImage='quay.io/prometheus/node-exporter:v0.18.1';
+const kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.8.0';
 
 let kubestateDeployment = {
-  "apiVersion": "apps/v1beta1",
-  "kind": "Deployment",
-  "metadata": {
-    "name": "kube-state-metrics",
-    "namespace": "kube-system"
-  },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "k8s-app": "kube-state-metrics",
-        "grafanak8sapp": "true"
-      }
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+        "name": "kube-state-metrics",
+        "namespace": "kube-system"
     },
-    "replicas": 1,
-    "template": {
-      "metadata": {
-        "labels": {
-          "k8s-app": "kube-state-metrics",
-          "grafanak8sapp": "true"
-        }
-      },
-      "spec": {
-        "containers": [{
-          "name": "kube-state-metrics",
-          "image": kubestateImage,
-          "ports": [{
-            "name": "http-metrics",
-            "containerPort": 8080
-          }],
-          "readinessProbe": {
-            "httpGet": {
-              "path": "/healthz",
-              "port": 8080
+    "spec": {
+        "selector": {
+            "matchLabels": {
+                "k8s-app": "kube-state-metrics",
+                "grafanak8sapp": "true"
+            }
+        },
+        "replicas": 1,
+        "template": {
+            "metadata": {
+                "labels": {
+                    "k8s-app": "kube-state-metrics",
+                    "grafanak8sapp": "true"
+                }
             },
-            "initialDelaySeconds": 5,
-            "timeoutSeconds": 5
-          }
-        }]
-      }
+            "spec": {
+                "containers": [{
+                        "name": "kube-state-metrics",
+                        "image": kubestateImage,
+                        "ports": [{
+                                "name": "http-metrics",
+                                "containerPort": 8080
+                            }],
+                        "readinessProbe": {
+                            "httpGet": {
+                                "path": "/healthz",
+                                "port": 8080
+                            },
+                            "initialDelaySeconds": 5,
+                            "timeoutSeconds": 5
+                        }
+                    }]
+            }
+        }
     }
-  }
 };
 
 const nodeExporterDaemonSet = {
-  "kind": "DaemonSet",
-  "apiVersion": "extensions/v1beta1",
-  "metadata": {
-    "name": "node-exporter",
-    "namespace": "kube-system"
-  },
-  "spec": {
-    "selector": {
-      "matchLabels": {
-        "daemon": "node-exporter",
-        "grafanak8sapp": "true"
-      }
-    },
-    "template": {
-      "metadata": {
+    "kind": "DaemonSet",
+    "apiVersion": "apps/v1",
+    "metadata": {
         "name": "node-exporter",
-        "labels": {
-          "daemon": "node-exporter",
-          "grafanak8sapp": "true"
-        }
-      },
-      "spec": {
-        "volumes": [
-          {
-            "name": "proc",
-            "hostPath": {
-              "path": "/proc"
+        "namespace": "kube-system"
+    },
+    "spec": {
+        "selector": {
+            "matchLabels": {
+                "daemon": "node-exporter",
+                "grafanak8sapp": "true"
             }
-          },
-          {
-            "name": "sys",
-            "hostPath": {
-              "path": "/sys"
-            }
-          }
-        ],
-        "containers": [{
-          "name": "node-exporter",
-          "image": nodeExporterImage,
-          "args": [
-            "--path.procfs=/proc_host",
-            "--path.sysfs=/host_sys"
-          ],
-          "ports": [{
-            "name": "node-exporter",
-            "hostPort": 9100,
-            "containerPort": 9100
-          }],
-          "volumeMounts": [{
-              "name": "sys",
-              "readOnly": true,
-              "mountPath": "/host_sys"
+        },
+        "template": {
+            "metadata": {
+                "name": "node-exporter",
+                "labels": {
+                    "daemon": "node-exporter",
+                    "grafanak8sapp": "true"
+                }
             },
-            {
-              "name": "proc",
-              "readOnly": true,
-              "mountPath": "/proc_host"
+            "spec": {
+                "volumes": [
+                    {
+                        "name": "proc",
+                        "hostPath": {
+                            "path": "/proc"
+                        }
+                    },
+                    {
+                        "name": "sys",
+                        "hostPath": {
+                            "path": "/sys"
+                        }
+                    }
+                ],
+                "containers": [{
+                        "name": "node-exporter",
+                        "image": nodeExporterImage,
+                        "args": [
+                            "--path.procfs=/proc_host",
+                            "--path.sysfs=/host_sys"
+                        ],
+                        "ports": [{
+                                "name": "node-exporter",
+                                "hostPort": 9100,
+                                "containerPort": 9100
+                            }],
+                        "volumeMounts": [{
+                                "name": "sys",
+                                "readOnly": true,
+                                "mountPath": "/host_sys"
+                            },
+                            {
+                                "name": "proc",
+                                "readOnly": true,
+                                "mountPath": "/proc_host"
+                            }
+                        ],
+                        "imagePullPolicy": "IfNotPresent"
+                    }],
+                "restartPolicy": "Always",
+                "hostNetwork": true,
+                "hostPID": true
             }
-          ],
-          "imagePullPolicy": "IfNotPresent"
-        }],
-        "restartPolicy": "Always",
-        "hostNetwork": true,
-        "hostPID": true
-      }
+        }
     }
-  }
 };
 
 export class ClusterConfigCtrl {
@@ -519,6 +519,9 @@ export class ClusterConfigCtrl {
     regex: 'node-exporter;(.*)'
     action: replace
     target_label: nodename`;
+  - source_labels: ['__meta_kubernetes_pod_node_name']
+    action: replace
+    target_label: instance
   }
 
   generatePrometheusConfigMap() {

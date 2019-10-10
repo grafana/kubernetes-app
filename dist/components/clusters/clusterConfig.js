@@ -14,10 +14,10 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 angular_1 = angular_1_1;
             }],
         execute: function() {
-            nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.15.0';
-            kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.1.0';
+            nodeExporterImage = 'quay.io/prometheus/node-exporter:v0.18.1';
+            kubestateImage = 'quay.io/coreos/kube-state-metrics:v1.8.0';
             kubestateDeployment = {
-                "apiVersion": "apps/v1beta1",
+                "apiVersion": "apps/v1",
                 "kind": "Deployment",
                 "metadata": {
                     "name": "kube-state-metrics",
@@ -61,7 +61,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
             };
             nodeExporterDaemonSet = {
                 "kind": "DaemonSet",
-                "apiVersion": "extensions/v1beta1",
+                "apiVersion": "apps/v1",
                 "metadata": {
                     "name": "node-exporter",
                     "namespace": "kube-system"
