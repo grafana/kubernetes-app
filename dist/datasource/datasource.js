@@ -74,7 +74,7 @@ System.register(['lodash'], function(exports_1) {
                     });
                 };
                 K8sDatasource.prototype.getDaemonSets = function (namespace) {
-                    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'daemonsets')
+                    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'daemonsets')
                         .then(function (result) {
                         return result.items;
                     });
@@ -86,7 +86,7 @@ System.register(['lodash'], function(exports_1) {
                     });
                 };
                 K8sDatasource.prototype.getDeployments = function (namespace) {
-                    return this._get('/apis/extensions/v1beta1/' + addNamespace(namespace) + 'deployments')
+                    return this._get('/apis/apps/v1/' + addNamespace(namespace) + 'deployments')
                         .then(function (result) {
                         return result.items;
                     });

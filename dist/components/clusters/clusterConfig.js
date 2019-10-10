@@ -199,7 +199,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 ClusterConfigCtrl.prototype.getDeployments = function () {
                     var self = this;
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
+                        url: 'api/datasources/proxy/' + self.cluster.id + '/apis/apps/v1/namespaces/kube-system/deployments',
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
@@ -295,14 +295,14 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 };
                 ClusterConfigCtrl.prototype.checkApiVersion = function (clusterId) {
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1',
+                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1',
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     }).then(function (result) {
                         if (!result.resources || result.resources.length === 0) {
-                            throw "This Kubernetes cluster does not support v1beta1 of the API which is needed to deploy automatically. " +
+                            throw "This Kubernetes cluster does not support v1 of the API which is needed to deploy automatically. " +
                                 "You can install manually using the instructions at the bottom of the page.";
                         }
                     });
@@ -319,7 +319,7 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 };
                 ClusterConfigCtrl.prototype.createDaemonSet = function (clusterId, daemonSet) {
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets',
+                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1/namespaces/kube-system/daemonsets',
                         method: 'POST',
                         data: daemonSet,
                         headers: {
@@ -329,13 +329,13 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 };
                 ClusterConfigCtrl.prototype.deleteDaemonSet = function (clusterId) {
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + clusterId + '/apis/extensions/v1beta1/namespaces/kube-system/daemonsets/node-exporter',
+                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1/namespaces/kube-system/daemonsets/node-exporter',
                         method: 'DELETE',
                     });
                 };
                 ClusterConfigCtrl.prototype.createDeployment = function (clusterId, deployment) {
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments',
+                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1/namespaces/kube-system/deployments',
                         method: 'POST',
                         data: deployment,
                         headers: {
@@ -346,12 +346,12 @@ System.register(['lodash', 'app/core/app_events', 'angular'], function(exports_1
                 ClusterConfigCtrl.prototype.deleteDeployment = function (clusterId, deploymentName) {
                     var _this = this;
                     return this.backendSrv.request({
-                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1beta1/namespaces/kube-system/deployments/' + deploymentName,
+                        url: 'api/datasources/proxy/' + clusterId + '/apis/apps/v1/namespaces/kube-system/deployments/' + deploymentName,
                         method: 'DELETE'
                     }).then(function () {
                         return _this.backendSrv.request({
                             url: 'api/datasources/proxy/' + clusterId +
-                                '/apis/extensions/v1beta1/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
+                                '/apis/apps/v1/namespaces/kube-system/replicasets?labelSelector=grafanak8sapp%3Dtrue',
                             method: 'DELETE'
                         });
                     });
