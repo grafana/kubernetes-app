@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.0.4"
     },
     {
       "type": "panel",
@@ -437,7 +437,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_free{nodename=~\"$node\"}) by (nodename)",
+          "expr": "sum(node_filesystem_free_bytes{instance=~\"$node\"}) by (nodename)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{ nodename }} free",
