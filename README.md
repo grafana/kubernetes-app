@@ -52,29 +52,17 @@ The Grafana Kubernetes App allows you to monitor your Kubernetes cluster's perfo
 - Read IOPS
 - Write IOPS
 
-### Documentation
+### Connect your cluster
 
-#### Installation
-
-1. Use the grafana-cli tool to install kubernetes from the commandline:
-
-```
-grafana-cli plugins install grafana-kubernetes-app
-```
-
-2. Restart your Grafana server.
-
-3. Log into your Grafana instance. Navigate to the Plugins section, found in the Grafana main menu. Click the Apps tabs in the Plugins section and select the newly installed Kubernetes app. To enable the app, click the Config tab and click on the Enable button.
-
-#### Connecting to your Cluster
+1. Install the plugin per the [Installation instructions](https://grafana.com/grafana/plugins/grafana-kubernetes-app/installation).
 
 1. Go to the Cluster List page via the Kubernetes app menu.
 
     ![Cluster List in main menu](https://github.com/grafana/kubernetes-app/blob/master/src/img/app-menu-screenshot.png?raw=true)
 
-2. Click the `New Cluster` button.
+1. Click the `New Cluster` button.
 
-3. Fill in the Auth details for your cluster.
+1. Fill in the Auth details for your cluster.
 
      TLS certs/keys must be provided in plaintext, not base64 encoded form. For example:
      ```
@@ -83,17 +71,10 @@ grafana-cli plugins install grafana-kubernetes-app
      ...
      -----END CERTIFICATE-----
      ```
-   All TLS certs/keys are from .kube/config, need `base64 -d` to decode:
 
-   | field | comment |
-   | ------ | ------ |
-   | CA Cert | clusters.cluster.certificate-authority-data |
-   | Client Cert | users.user.client-certificate-data |
-   | Client Key | users.user.client-key-data |
+1. Choose the Prometheus datasource that will be used for reading data in the dashboards.
 
-4. Choose the Prometheus datasource that will be used for reading data in the dashboards.
-
-6. Click `Deploy`. This will deploy a Node Exporter DaemonSet, to collect health metrics for every node, and a Deployment that collects cluster metrics.
+1. Click `Deploy`. This will deploy a Node Exporter DaemonSet, to collect health metrics for every node, and a Deployment that collects cluster metrics.
 
 ### Feedback and Questions
 
