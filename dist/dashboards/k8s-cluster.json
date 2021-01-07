@@ -5,22 +5,34 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.0.4"
     },
     {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
     },
     {
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
-      "version": ""
+      "version": "5.0.0"
     }
   ],
-  "annotations": {},
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Summary metrics about containers running on Kubernetes nodes.",
   "editable": true,
   "gnetId": null,
@@ -65,7 +77,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -120,7 +132,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Pod Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -145,7 +157,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -200,7 +212,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster CPU Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -225,7 +237,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -280,7 +292,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Memory Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -305,7 +317,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -354,13 +366,13 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum (node_filesystem_size{nodename=~\"$node\"}) - sum (node_filesystem_free{nodename=~\"$node\"})) / sum (node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "(sum (node_filesystem_size_bytes{instance=~\"$node\"}) - sum (node_filesystem_free_bytes{instance=~\"$node\"})) / sum (node_filesystem_size_bytes{instance=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Disk Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -693,14 +705,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"}) - sum(node_filesystem_free{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{instance=~\"$node\"}) - sum(node_filesystem_free_bytes{instance=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "usage",
           "refId": "A"
         },
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{instance=~\"$node\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "limit",
@@ -2065,7 +2077,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(delta(kube_pod_container_status_restarts{namespace=\"kube-system\"}[30m]))",
+          "expr": "sum(delta(kube_pod_container_status_restarts_total{namespace=~\"$namespace\"}[30m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"

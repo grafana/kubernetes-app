@@ -5,7 +5,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.0.4"
     },
     {
       "type": "panel",
@@ -126,10 +126,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_usage_bytes{pod_name=~\"$pod\"}) by (pod_name)",
+          "expr": "sum(container_memory_usage_bytes{pod=~\"$pod\"}) by (pod)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{ pod_name }}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
@@ -217,10 +217,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(container_cpu_usage_seconds_total{pod_name=~\"$pod\"}[2m])) by (pod_name)",
+          "expr": "sum(irate(container_cpu_usage_seconds_total{pod=~\"$pod\"}[2m])) by (pod)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{ pod_name }}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
@@ -307,11 +307,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_network_transmit_bytes_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
+          "expr": "rate(container_network_transmit_bytes_total{pod=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{ pod_name }}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
@@ -398,10 +398,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_network_receive_bytes_total{pod_name=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
+          "expr": "rate(container_network_receive_bytes_total{pod=~\"$pod\", kubernetes_io_hostname=~\"$node\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{ pod_name }}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
@@ -489,10 +489,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_fs_io_time_seconds_total{pod_name=~\"$pod\"}[2m])",
+          "expr": "rate(container_fs_io_time_seconds_total{pod=~\"$pod\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{pod_name}}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
@@ -577,10 +577,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(container_fs_write_seconds_total{pod_name=~\"$pod\"}[2m])",
+          "expr": "rate(container_fs_write_seconds_total{pod=~\"$pod\"}[2m])",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{ pod_name }}",
+          "legendFormat": "{{ pod }}",
           "refId": "A"
         }
       ],
