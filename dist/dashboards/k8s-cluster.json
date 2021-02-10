@@ -5,27 +5,46 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.1.2"
     },
     {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "1.0.0"
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
     },
     {
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
-      "version": ""
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": "5.0.0"
     }
   ],
-  "annotations": {},
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Summary metrics about containers running on Kubernetes nodes.",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
   "id": null,
+  "iteration": 1548249374049,
   "links": [
     {
       "asDropdown": true,
@@ -65,7 +84,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -120,7 +139,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Pod Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -145,7 +164,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -200,7 +219,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster CPU Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -225,7 +244,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -280,7 +299,7 @@
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Memory Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -305,7 +324,7 @@
       "datasource": "$datasource",
       "format": "percentunit",
       "gauge": {
-        "maxValue": 1,
+        "maxValue": 100,
         "minValue": 0,
         "show": true,
         "thresholdLabels": false,
@@ -354,13 +373,13 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "(sum (node_filesystem_size{nodename=~\"$node\"}) - sum (node_filesystem_free{nodename=~\"$node\"})) / sum (node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "(sum (node_filesystem_size_bytes{nodename=~\"$instance\"}) - sum (node_filesystem_free_bytes{nodename=~\"$instance\"})) / sum (node_filesystem_size_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
         }
       ],
-      "thresholds": ".8,.9",
+      "thresholds": "80,90",
       "title": "Cluster Disk Usage",
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -465,7 +484,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -560,7 +583,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -654,7 +681,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -693,14 +724,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"}) - sum(node_filesystem_free{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{nodename=~\"$instance\"}) - sum(node_filesystem_free_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "usage",
           "refId": "A"
         },
         {
-          "expr": "sum(node_filesystem_size{nodename=~\"$node\"})",
+          "expr": "sum(node_filesystem_size_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "limit",
@@ -741,7 +772,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "collapsed": false,
@@ -2065,7 +2100,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(delta(kube_pod_container_status_restarts{namespace=\"kube-system\"}[30m]))",
+          "expr": "sum(delta(kube_pod_container_status_restarts_total{namespace=\"kube-system\"}[30m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -2508,6 +2543,11 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": true,
+          "text": "Staging",
+          "value": "Staging"
+        },
         "hide": 0,
         "label": null,
         "name": "cluster",
@@ -2519,6 +2559,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 2,
         "includeAll": false,
@@ -2537,6 +2578,11 @@
         "useTags": false
       },
       {
+        "current": {
+          "selected": true,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
         "hide": 2,
         "label": "",
         "name": "datasource",
@@ -2548,6 +2594,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 0,
         "includeAll": true,
@@ -2567,6 +2614,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 0,
         "includeAll": true,
@@ -2575,6 +2623,26 @@
         "name": "namespace",
         "options": [],
         "query": "namespace",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": null,
+        "tags": [],
+        "tagsQuery": null,
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$cluster",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": "instance",
         "refresh": 1,
         "regex": "",
         "sort": 0,
@@ -2616,5 +2684,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "K8s Cluster"
+  "title": "K8s Cluster",
+  "uid": "XVS5mXQmz",
+  "version": 4
 }

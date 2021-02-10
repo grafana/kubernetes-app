@@ -5,13 +5,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.1.2"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
-      "version": ""
+      "version": "5.0.0"
     },
     {
       "type": "panel",
@@ -23,7 +23,7 @@
       "type": "panel",
       "id": "singlestat",
       "name": "Singlestat",
-      "version": ""
+      "version": "5.0.0"
     }
   ],
   "annotations": {
@@ -43,7 +43,7 @@
   "gnetId": 470,
   "graphTooltip": 1,
   "id": null,
-  "iteration": 1516060966755,
+  "iteration": 1548249692293,
   "links": [
     {
       "asDropdown": true,
@@ -90,7 +90,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 11
       },
       "id": 27,
       "panels": [],
@@ -115,7 +115,7 @@
         "h": 7,
         "w": 10,
         "x": 0,
-        "y": 9
+        "y": 12
       },
       "id": 1,
       "legend": {
@@ -143,7 +143,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum((avg(irate(node_cpu{nodename=~\"$node\", mode=\"system\"}[5m])) * 100))",
+          "expr": "sum((avg(irate(node_cpu_seconds_total{nodename=~\"$instance\", mode=\"system\"}[5m])) * 100))",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -152,21 +152,21 @@
           "refId": "A"
         },
         {
-          "expr": "sum((avg(irate(node_cpu{nodename=~\"$node\", mode=\"user\"}[5m])) * 100))",
+          "expr": "sum((avg(irate(node_cpu_seconds_total{nodename=~\"$instance\", mode=\"user\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "user",
           "refId": "B"
         },
         {
-          "expr": "sum((avg(irate(node_cpu{nodename=~\"$node\", mode=\"iowait\"}[5m])) * 100))",
+          "expr": "sum((avg(irate(node_cpu_seconds_total{nodename=~\"$instance\", mode=\"iowait\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "iowait",
           "refId": "C"
         },
         {
-          "expr": "sum((avg(irate(node_cpu{nodename=~\"$node\", mode=\"steal\"}[5m])) * 100))",
+          "expr": "sum((avg(irate(node_cpu_seconds_total{nodename=~\"$instance\", mode=\"steal\"}[5m])) * 100))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "steal",
@@ -206,7 +206,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -223,7 +227,7 @@
         "h": 7,
         "w": 10,
         "x": 10,
-        "y": 9
+        "y": 12
       },
       "id": 10,
       "legend": {
@@ -256,7 +260,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_memory_MemAvailable{nodename=~\"$node\"})",
+          "expr": "sum(node_memory_MemAvailable_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -264,14 +268,14 @@
           "refId": "A"
         },
         {
-          "expr": "sum(node_memory_MemFree{nodename=~\"$node\"})",
+          "expr": "sum(node_memory_MemFree_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "free",
           "refId": "B"
         },
         {
-          "expr": "sum(node_memory_Active{nodename=~\"$node\"})",
+          "expr": "sum(node_memory_Active_bytes{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "active",
@@ -298,7 +302,7 @@
       },
       "yaxes": [
         {
-          "format": "bytes",
+          "format": "bits",
           "logBase": 1,
           "max": null,
           "min": 0,
@@ -311,7 +315,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "cacheTimeout": null,
@@ -337,7 +345,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 9
+        "y": 12
       },
       "id": 23,
       "interval": null,
@@ -376,7 +384,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "avg(node_load1{nodename=~\"$node\"})",
+          "expr": "avg(node_load1{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A",
@@ -409,7 +417,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 19
       },
       "id": 24,
       "legend": {
@@ -437,18 +445,19 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_filesystem_free{nodename=~\"$node\"}) by (nodename)",
+          "expr": "sum(node_filesystem_free_bytes{nodename=~\"$instance\"}) by (nodename)",
           "format": "time_series",
+          "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{ nodename }} free",
+          "legendFormat": "{{ cluster }} free",
           "refId": "B"
         },
         {
-          "expr": "(sum(node_filesystem_size{nodename=~\"$node\"}) by (nodename) - sum(node_filesystem_free) by (nodename))",
+          "expr": "(sum(node_filesystem_size_bytes{nodename=~\"$instance\"}) by (nodename) - sum(node_filesystem_free_bytes) by (nodename))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
-          "legendFormat": "{{ nodename }} usage",
+          "legendFormat": "{{ cluster }} usage",
           "refId": "A"
         }
       ],
@@ -487,7 +496,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -504,7 +517,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 25
       },
       "id": 8,
       "legend": {
@@ -530,14 +543,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_disk_bytes_read{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_disk_read_bytes_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Read",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(node_disk_bytes_written{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_disk_written_bytes_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Write",
@@ -577,7 +590,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -594,7 +611,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 25
       },
       "id": 7,
       "legend": {
@@ -620,14 +637,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_disk_reads_completed{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_disk_reads_completed_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Reads",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(node_disk_writes_completed{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_disk_writes_completed_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Writes",
@@ -667,7 +684,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -684,7 +705,7 @@
         "h": 5,
         "w": 12,
         "x": 0,
-        "y": 28
+        "y": 31
       },
       "id": 9,
       "legend": {
@@ -715,14 +736,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_network_receive_bytes{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_network_receive_bytes_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "receive",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(node_network_transmit_bytes{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_network_transmit_bytes_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "transmit",
@@ -762,7 +783,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -779,7 +804,7 @@
         "h": 5,
         "w": 12,
         "x": 12,
-        "y": 28
+        "y": 31
       },
       "id": 18,
       "legend": {
@@ -810,14 +835,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(node_network_receive_errs{nodename=~\"$node\"})",
+          "expr": "sum(node_network_receive_errs_total{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "in",
           "refId": "A"
         },
         {
-          "expr": "sum(node_network_transmit_errs{nodename=~\"$node\"})",
+          "expr": "sum(node_network_transmit_errs_total{nodename=~\"$instance\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "in",
@@ -857,7 +882,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -874,7 +903,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 36
       },
       "id": 17,
       "legend": {
@@ -905,14 +934,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(node_network_receive_packets{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_network_receive_packets_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "receive",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(node_network_transmit_packets{nodename=~\"$node\"}[5m]))",
+          "expr": "sum(rate(node_network_transmit_packets_total{nodename=~\"$instance\"}[5m]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "transmit",
@@ -952,7 +981,11 @@
           "min": null,
           "show": false
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": false,
@@ -965,6 +998,11 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": true,
+          "text": "Staging",
+          "value": "Staging"
+        },
         "hide": 0,
         "label": null,
         "name": "cluster",
@@ -976,6 +1014,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 2,
         "includeAll": false,
@@ -994,6 +1033,11 @@
         "useTags": false
       },
       {
+        "current": {
+          "selected": true,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
         "hide": 2,
         "label": "",
         "name": "datasource",
@@ -1005,6 +1049,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 2,
         "includeAll": true,
@@ -1021,12 +1066,32 @@
         "tagsQuery": null,
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "$cluster",
+        "hide": 2,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": "instance",
+        "refresh": 1,
+        "regex": "",
+        "sort": 0,
+        "tagValuesQuery": null,
+        "tags": [],
+        "tagsQuery": null,
+        "type": "query",
+        "useTags": false
       }
     ]
   },
   "time": {
-    "from": "now-30m",
-    "to": "now"
+    "from": "2019-01-22T13:58:36.146Z",
+    "to": "2019-01-22T14:58:36.146Z"
   },
   "timepicker": {
     "now": true,
@@ -1055,5 +1120,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "K8s Node"
+  "title": "K8s Node",
+  "uid": "YWI5iuQik",
+  "version": 12
 }

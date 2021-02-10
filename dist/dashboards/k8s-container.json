@@ -5,13 +5,13 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "5.0.0-pre1"
+      "version": "5.1.2"
     },
     {
       "type": "panel",
       "id": "graph",
       "name": "Graph",
-      "version": ""
+      "version": "5.0.0"
     },
     {
       "type": "panel",
@@ -38,7 +38,7 @@
   "gnetId": 482,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1515624466721,
+  "iteration": 1548250247269,
   "links": [
     {
       "asDropdown": true,
@@ -95,7 +95,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 1,
       "legend": {
@@ -168,7 +168,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -185,7 +189,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 11
       },
       "id": 6,
       "legend": {
@@ -259,7 +263,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -276,7 +284,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 2,
       "legend": {
@@ -350,7 +358,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -367,7 +379,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 17
       },
       "id": 8,
       "legend": {
@@ -440,7 +452,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -457,7 +473,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 23
       },
       "id": 4,
       "legend": {
@@ -531,7 +547,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "alerting": {},
@@ -548,7 +568,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 23
       },
       "id": 5,
       "legend": {
@@ -619,7 +639,11 @@
           "min": null,
           "show": true
         }
-      ]
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "schemaVersion": 16,
@@ -631,6 +655,11 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": true,
+          "text": "Staging",
+          "value": "Staging"
+        },
         "hide": 0,
         "label": null,
         "name": "cluster",
@@ -642,6 +671,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 2,
         "includeAll": false,
@@ -660,6 +690,11 @@
         "useTags": false
       },
       {
+        "current": {
+          "selected": true,
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
         "hide": 2,
         "label": "",
         "name": "datasource",
@@ -671,6 +706,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 0,
         "includeAll": true,
@@ -690,6 +726,7 @@
       },
       {
         "allValue": null,
+        "current": {},
         "datasource": "$cluster",
         "hide": 0,
         "includeAll": true,
@@ -759,5 +796,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "K8s Container"
+  "title": "K8s Container",
+  "uid": "TVI5muQmz",
+  "version": 1
 }
